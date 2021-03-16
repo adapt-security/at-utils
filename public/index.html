@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-adapt-framework-version="" data-adapt-authoring-version="">
+  <head>
+    <title>Adapt authoring installer</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" style="text/css" href="deps/opt/bootstrap.css" />
+  </head>
+  <body>
+    <h1>Installer</h1>
+    <p>Installer for the Adapt authoring tool!</p>
+    <form id="form"></form>
+  </body>
+  <script type="text/javascript" src="deps/jquery.min.js"></script>
+  <script type="text/javascript" src="deps/underscore.js"></script>
+  <script type="text/javascript" src="deps/opt/jsv.js"></script>
+  <script type="text/javascript" src="lib/jsonform.js"></script>
+  <script>
+    $(function() {
+      const showOptional = false;
+      function filterOptional(schema) {
+        if(showOptional) {
+          return schema.properties;
+        }
+        return Object.entries(schema.properties).reduce(function(m,[k,v]) {
+          if(schema.required.includes(k)) m[k] = v;
+          return m;
+        }, {});
+      }
+      $.getJSON('/schemas', function(schemas) {
+        const schema = schemas.reduce(function(m,s) {
+          if(s.name === 'adapt-authoring-assets' || s.name === 'adapt-authoring-server' ||  s.name === 'adapt-authoring-sessions') {
+            return m; // these are broken
+          }
+          if(!showOptional && !s.schema.required) {
+            return m;
+          }
+          m[s.name] = { type: "object", title: s.name, properties: filterOptional(s.schema) };
+          return m;
+        }, {});
+        try {
+          $('#form').jsonForm({ 
+            schema,
+            onSubmit: function (errors, values) {
+              if(errors) {
+                return console.error(errors);
+              }
+              $.post('/save', values, function() {
+                console.log(arguments);
+              });
+            }
+          });
+        } catch(e) {
+          console.log(e);
+        }
+      });
+    });
+  </script>
+  <style>
+    body {
+      margin: 2% 10%;
+    }
+    fieldset {
+      border: 1px solid #e8e8e8;
+      padding: 15px 25px;
+    }
+  </style>
+</html>

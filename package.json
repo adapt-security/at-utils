@@ -1,0 +1,11 @@
+{
+  "name": "adapt-authoring-installer",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "license": "GPL-3.0",
+  "repository": "taylortom/adapt-authoring-installer",
+  "dependencies": {
+    "glob": "^7.1.6"
+  }
+}
