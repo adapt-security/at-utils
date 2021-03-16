@@ -7,7 +7,8 @@
   </head>
   <body>
     <h1>Installer</h1>
-    <p>Installer for the Adapt authoring tool!</p>
+    <p>Prototype installer for the Adapt authoring tool!</p>
+    <p>All options will be stored in conf/production.conf.js</p>
     <form id="form"></form>
   </body>
   <script type="text/javascript" src="deps/jquery.min.js"></script>
@@ -42,9 +43,9 @@
             schema,
             onSubmit: function (errors, values) {
               if(errors) {
-                return console.error(errors);
+                return console.log(errors);
               }
-              $.post('/save', values, function() {
+              $.post('/save', JSON.stringify(values), function() {
                 console.log(arguments);
               });
             }

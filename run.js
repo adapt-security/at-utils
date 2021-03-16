@@ -7,7 +7,7 @@ const data = {};
 async function Run() {
   try {
     data.schemas = await getSchemas();
-    await startServer();
+    startServer();
   } catch(e) {
     console.log(e);
   }
@@ -43,21 +43,26 @@ async function serveFile(filePath, res) {
     res.end(`Error, ${e}`);
   }
 }
-async function startServer() {
-  return new Promise(async (resolve, reject) => {
-    http.createServer((req, res) => {
-      switch(req.url) {
-        case '/schemas':
-          res.writeHead(200);
-          res.write(JSON.stringify(data.schemas));
-          res.end();
-          break;
-        default:
-          serveFile(req.url, res);
-      }
-    }).listen(8080);
-    resolve();
-  });
+function startServer() {
+  http.createServer((req, res) => {
+    if(req.method === 'GET' && req.url === '/schemas') {
+      res.writeHead(200);
+      res.write(JSON.stringify(data.schemas));
+      res.end();
+      return;
+    }
+    if(req.method === 'GET') {
+      serveFile(req.url, res);
+    }
+    if(req.method === 'POST' && req.url === '/save') {
+      let bodyData = '';
+      req.on('data', data => bodyData += data);
+      req.on('end', () => {
+        fs.writeFile(`${process.cwd()}/conf/production.conf.js`, `module.exports = ${JSON.stringify(JSON.parse(bodyData), null, 2)};`);
+      });
+    }
+  }).listen(8080);
+  console.log('\nInstaller running. Please visit http://localhost:8080 in your web browser.');
 }
 
 module.exports = Run();
