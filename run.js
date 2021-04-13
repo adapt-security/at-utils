@@ -58,7 +58,7 @@ function startServer() {
       let bodyData = '';
       req.on('data', data => bodyData += data);
       req.on('end', () => {
-        fs.writeFile(`${process.cwd()}/conf/production.conf.js`, `module.exports = ${JSON.stringify(JSON.parse(bodyData), null, 2)};`);
+        fs.writeFile(`${process.cwd()}/conf/production.config.js`, `module.exports = ${JSON.stringify(JSON.parse(bodyData), null, 2)};`);
       });
     }
   }).listen(8080);
