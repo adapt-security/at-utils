@@ -3,20 +3,10 @@
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { liked: false };
+    this.state = { configSchema: props.configSchema };
   }
-
   render() {
-    const configSchema = {
-      title: "Todo",
-      type: "object",
-      required: ["title"],
-      properties: {
-        title: {type: "string", title: "Title", default: "A new task"},
-        done: {type: "boolean", title: "Done?", default: false}
-      }
-    };
-    return <Form schema={configSchema}/>
+    return <Form schema={this.state.configSchema}/>
   }
 }
 
@@ -25,20 +15,33 @@ class Form extends React.Component {
     super(props);
     this.state = { schema: props.schema }
   }
-
   render() {
-    return <JSONSchemaForm.default schema={this.state.schema} onSubmit={this.onSubmit} onError={this.onError} />
+    try {
+      return <JSONSchemaForm.default schema={this.state.schema} onSubmit={this.onSubmit} onError={this.onError} />
+    } catch(e) {
+      console.log(e);
+    }
   }
-
   onSubmit() {
     console.log('onSubmit');
   }
-  
   onError() {
     console.log('onError');
   }
 }
 
-const log = (type) => console.log.bind(console, type);
+async function run() {
+  try {
+    const schemas = await (await fetch('/schemas')).json();
+    const configSchema = {
+      properties: schemas.reduce((m,s) => {
+        return { ...m, [s.name]: { title: s.name, ...s.schema } };
+      }, {})
+    };
+    ReactDOM.render(React.createElement(App, { configSchema }), document.querySelector('#app'));
+  } catch(e) {
+    console.error(e);
+  }
+}
 
-ReactDOM.render(React.createElement(App), document.querySelector('#app'));
+run();
