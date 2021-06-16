@@ -18,7 +18,7 @@ async function getSchemas() {
     glob(pattern, async (error, files) => {
       if(error) return reject(error);
       try {
-        resolve(await Promise.all(files.map(async f => {
+        data.configSchemas = await Promise.all(files.map(async f => {
           const pkg = JSON.parse(await fs.readFile(f.replace('conf/config.schema.json', 'package.json')));
           return { 
             name: pkg.name, 
@@ -26,10 +26,12 @@ async function getSchemas() {
             version: pkg.version,
             schema: JSON.parse(await fs.readFile(f)) 
           };
-        })));
+        }));
       } catch(e) {
         reject(e);
       }
+      data.userSchema = JSON.parse(await fs.readFile(`${process.cwd()}/node_modules/adapt-authoring-localauth/schema/localauthuser.schema.json`)) ;
+      resolve();
     });
   });
 }
@@ -86,7 +88,8 @@ function startServer() {
     const isGET = req.method === 'GET';
     const isPOST = req.method === 'POST';
     if(isGET) {
-      if(req.url === '/schemas') return sendResponse(res, 200, JSON.stringify(data.schemas));
+      if(req.url === '/schemas/config') return sendResponse(res, 200, JSON.stringify(data.configSchemas));
+      if(req.url === '/schemas/user') return sendResponse(res, 200, JSON.stringify(data.userSchema));
       return serveFile(req.url, res);
     }
     if(isPOST) {
