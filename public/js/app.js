@@ -8,24 +8,13 @@ class App extends React.Component {
   render() {
     return [
       <div>
-        <h2>1. Check prerequisites</h2>
-        <p>
-          Before you can install the application, you must have the following installed:
-        </p>
-        <ul>
-          <li>Git</li>
-          <li>MongoDB</li>
-        </ul>
-        <button onClick={this.checkReqs.bind(this)}>Run prerequisite check</button>
-      </div>,
-      <div>
-        <h2>2. Download application</h2>
+        <h2>1. Download application</h2>
         <p>This step will download the source code and local dependencies for the application.</p>
         <p>This process may take a while depending on your PC spec and internet connection.</p>
         <button onClick={this.downloadApp.bind(this)}>Download application</button>
       </div>,
       <div>
-        <h2>3. Configure your environment</h2>
+        <h2>2. Configure your environment</h2>
         <p>You now need to enter the configuration settings relevant to your system.</p> 
         <p>By default, any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox.</p>
         <button onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
@@ -36,14 +25,14 @@ class App extends React.Component {
         <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced}/>
       </div>,
       <div>
-        <h2>4. Create Super admin account</h2>
+        <h2>3. Create Super admin account</h2>
         <p>You now need to create a 'super admin' user which will be used to administer the system</p>
         <p>It is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</p>
         <button onClick={this.fetchUserSchema.bind(this)}>Get schema</button>
         <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced}/>
       </div>,
       <div>
-        <h2>5. Start building Adapt!</h2>
+        <h2>4. Start building Adapt!</h2>
         <p>Your Adapt authoring tool has been installed successfully! Click the button below to close the installer and navigate to your new installation.</p>
         <pre>{`
 cd ${this.state.dir}
@@ -52,13 +41,6 @@ npm start
         <button>Go!</button>
       </div>
     ]
-  }
-  async checkReqs() {
-    try {
-      // await fetch('/clone', { method: 'POST' });
-    } catch(e) {
-      alert(e);
-    }
   }
   async downloadApp() {
     try {
