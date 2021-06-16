@@ -22,14 +22,14 @@ class App extends React.Component {
           <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
           Show advanced settings
         </label>
-        <Form liveValidate key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced}/>
+        <Form liveValidate key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
       </div>,
       <div className="install-step">
         <h2>3. Create a super admin account</h2>
         <p>You now need to create a 'super admin' user which will be used to administer the system</p>
         <p>It is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</p>
         <button className="btn btn-dark" onClick={this.fetchUserSchema.bind(this)}>Get schema</button>
-        <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced}/>
+        <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} onSubmit={this.createUser.bind(this)}/>
       </div>,
       <div className="install-step">
         <h2>4. Start building with Adapt!</h2>
@@ -47,6 +47,14 @@ npm start
   async cleanUp() { 
     const cloneRes = await fetch('/cleanup', { method: 'POST' });
     // window.location = ;
+  }
+  async createUser({ formData }) { 
+    const res = await fetch('/registeruser', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if(res.status === 500) throw new Error(res.text());
   }
   async downloadApp() {
     try {
@@ -73,12 +81,23 @@ npm start
   async fetchUserSchema() {
     this.setState({ userSchema: await (await fetch(`/schemas/user`)).json() });
   }
+  async saveConfig({ formData }) {
+    const res = await fetch('/save', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if(res.status === 500) throw new Error(await res.text());
+    const res2 = await fetch('/start', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if(res2.status === 500) throw new Error(await res2.text());
+  }
 }
 
 class Form extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   filterOptional() {
     if(this.props.showOptional) {
       Object.values(this.props.schema.properties).forEach(v => {
@@ -107,18 +126,10 @@ class Form extends React.Component {
   render() {
     if(!this.props.schema) return '';
     try {
-      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} onSubmit={this.onSubmit} onError={this.onError} />
+      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} onSubmit={this.props.onSubmit} onError={this.onError} />
     } catch(e) {
       console.log(e);
     }
-  }
-  async onSubmit({ formData }) {
-    const res = await fetch('/save', { 
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    if(res.status === 500) throw new Error(await res.text());
   }
   onError() {
     alert('There are errors on the page, please check before submitting again');
