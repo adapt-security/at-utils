@@ -34,6 +34,9 @@ class Form extends React.Component {
         v.required.forEach(r => {
           if(!m[k]) m[k] = { type: 'object', properties: {} };
           m[k].properties[r] = v.properties[r];
+          if(Array.isArray(m[k].properties[r].type)) {
+            m[k].properties[r].type = m[k].properties[r].type[0];
+          }
         });
       }
       return m;
