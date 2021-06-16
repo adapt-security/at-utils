@@ -7,40 +7,40 @@ class App extends React.Component {
   }
   render() {
     return [
-      <div>
+      <div className="install-step">
         <h2>1. Download application</h2>
         <p>This step will download the source code and local dependencies for the application.</p>
         <p>This process may take a while depending on your PC spec and internet connection.</p>
-        <button onClick={this.downloadApp.bind(this)}>Download application</button>
+        <button className="btn btn-info" onClick={this.downloadApp.bind(this)}>Download application</button>
       </div>,
-      <div>
+      <div className="install-step">
         <h2>2. Configure your environment</h2>
         <p>You now need to enter the configuration settings relevant to your system.</p> 
-        <p>By default, any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox.</p>
-        <button onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
+        <p>By default, any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</p>
+        <button className="btn btn-dark" onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
         <label>
           <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
           Show advanced settings
         </label>
-        <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced}/>
+        <Form liveValidate key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced}/>
       </div>,
-      <div>
+      <div className="install-step">
         <h2>3. Create Super admin account</h2>
         <p>You now need to create a 'super admin' user which will be used to administer the system</p>
         <p>It is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</p>
-        <button onClick={this.fetchUserSchema.bind(this)}>Get schema</button>
+        <button className="btn btn-dark" onClick={this.fetchUserSchema.bind(this)}>Get schema</button>
         <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced}/>
       </div>,
-      <div>
+      <div className="install-step">
         <h2>4. Start building Adapt!</h2>
         <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
-        <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:</p>
+        <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:<br/><b>Make sure you also have MongoDB running!</b></p>
         <pre>{`
 cd ${this.state.dir}
 npm start
 `}</pre>
         <p>Click the button below to remove this installer and navigate to your new installation.</p>
-        <button onClick={this.cleanUp.bind(this)}>Letsa go</button>
+        <button className="btn btn-info" onClick={this.cleanUp.bind(this)}>Letsa go!</button>
       </div>
     ]
   }
