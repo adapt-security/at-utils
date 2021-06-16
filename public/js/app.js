@@ -33,14 +33,20 @@ class App extends React.Component {
       </div>,
       <div>
         <h2>4. Start building Adapt!</h2>
-        <p>Your Adapt authoring tool has been installed successfully! Click the button below to close the installer and navigate to your new installation.</p>
+        <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
+        <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:</p>
         <pre>{`
 cd ${this.state.dir}
 npm start
-        `}</pre>
-        <button>Go!</button>
+`}</pre>
+        <p>Click the button below to remove this installer and navigate to your new installation.</p>
+        <button onClick={this.cleanUp.bind(this)}>Letsa go</button>
       </div>
     ]
+  }
+  async cleanUp() { 
+    const cloneRes = await fetch('/cleanup', { method: 'POST' });
+    // window.location = ;
   }
   async downloadApp() {
     try {
