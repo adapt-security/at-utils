@@ -113,7 +113,7 @@ class Form extends React.Component {
     console.log('onSubmit', this);
   }
   onError() {
-    console.log('onError');
+    alert('There are errors on the page, please check before submitting again');
   }
 }
 
