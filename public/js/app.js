@@ -37,7 +37,7 @@ class App extends React.Component {
         <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:<br/><b>Make sure you also have MongoDB running!</b></p>
         <pre>{`
 cd ${this.state.dir}
-npm start
+NODE_ENV=production npm start
 `}</pre>
         <p>Click the button below to remove this installer and navigate to your new installation.</p>
         <button className="btn btn-info" onClick={this.cleanUp.bind(this)}>Letsa go!</button>
