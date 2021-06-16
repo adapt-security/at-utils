@@ -11,8 +11,8 @@ class App extends React.Component {
         <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
         Show advanced settings
       </label>,
-      <Form key={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced}/>,
-      <Form key={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced}/>
+      <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced}/>,
+      <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced}/>
     ]
   }
 }
@@ -45,7 +45,7 @@ class Form extends React.Component {
   }
   render() {
     try {
-      return <JSONSchemaForm.default schema={this.filterOptional()} onSubmit={this.onSubmit} onError={this.onError} />
+      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} onSubmit={this.onSubmit} onError={this.onError} />
     } catch(e) {
       console.log(e);
     }
