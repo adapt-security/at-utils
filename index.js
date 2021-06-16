@@ -67,6 +67,20 @@ async function getSchemas() {
     });
   });
 }
+async function handleBodyData(req) {
+  return new Promise((resolve, reject) => {
+    let bodyData = '';
+    req.on('data', data => bodyData += data);
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(bodyData);
+        resolve();
+      } catch(e) {
+        reject(e);
+      }
+    });
+  });
+}
 async function installDependencies(req, res) {
   try {
     await cmd('npm i --production', rootDir);
@@ -100,7 +114,8 @@ async function saveConfig(req, res) {
   const configPath = `${rootDir}/conf/${NODE_ENV}.config.js`;
   let config = { ...req.body };
   try {
-    config = { ...require(configPath), ...config };
+    console.log(rootDir + '/conf');
+    await fs.mkdir(rootDir + '/conf', { recursive: true });
   } catch(e) {} // not a problem
   try {
     await fs.writeFile(configPath, `module.exports = ${JSON.stringify(config, null, 2)};`);

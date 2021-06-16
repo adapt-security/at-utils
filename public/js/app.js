@@ -112,8 +112,13 @@ class Form extends React.Component {
       console.log(e);
     }
   }
-  onSubmit() {
-    console.log('onSubmit', this);
+  async onSubmit({ formData }) {
+    const res = await fetch('/save', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if(res.status === 500) throw new Error(await res.text());
   }
   onError() {
     alert('There are errors on the page, please check before submitting again');
