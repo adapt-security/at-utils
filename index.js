@@ -21,16 +21,29 @@ async function getSchemas() {
         data.configSchemas = await Promise.all(files.map(async f => {
           const pkg = JSON.parse(await fs.readFile(f.replace('conf/config.schema.json', 'package.json')));
           return { 
-            name: pkg.name, 
+            name: pkg.name,
             description: pkg.description,
             version: pkg.version,
-            schema: JSON.parse(await fs.readFile(f)) 
+            schema: JSON.parse(await fs.readFile(f))
           };
         }));
       } catch(e) {
         reject(e);
       }
-      data.userSchema = JSON.parse(await fs.readFile(`${process.cwd()}/node_modules/adapt-authoring-localauth/schema/localauthuser.schema.json`)) ;
+      data.userSchema = {
+        properties: {
+          superUser: {
+            title: 'superuser',
+            type: 'object',
+            properties: {
+              email: {description: "Email address for the user", type: "string", format: "email"},
+              password: { description: 'Password for the user', type: 'string', format: 'password' },
+              confirmPassword: { description: 'Confirm for the user', type: 'string', format: 'password' }
+            },
+            required: ['email', 'password', 'confirmPassword']
+          }
+        }
+      };
       resolve();
     });
   });
@@ -40,8 +53,8 @@ async function registerUser(req, res) {
     await handleBodyData(req);
     const [localauth, roles] = await App.instance.waitForModule('localauth', 'roles');
     const [superuser] = await roles.find({ shortName: 'superuser' });
-    await localauth.register(Object.assign({}, req.body, { 
-      firstName: 'Super', 
+    await localauth.register(Object.assign({}, req.body, {
+      firstName: 'Super',
       lastName: 'User',
       roles: [superuser._id.toString()]
     }));
