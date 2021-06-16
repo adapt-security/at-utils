@@ -7,6 +7,7 @@ const path = require('path');
 const data = {};
 const installDir = path.resolve('..');
 const rootDir = path.resolve(installDir + '/adapt-authoring');
+const NODE_ENV = 'production';
 
 async function run() {
   try {
