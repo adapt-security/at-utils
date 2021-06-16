@@ -18,10 +18,9 @@ async function run() {
 async function cloneRepo(req, res) {
   try {
     await cmd('git clone https://github.com/adapt-security/adapt-authoring.git', installDir);
-    res.end();
+    sendResponse(res, 200, rootDir);
   } catch(e) {
-    res.statusCode = 500;
-    res.end(e.message);
+    sendResponse(res, 500, e.message);
   }
 }
 async function cmd(command, cwd) {
@@ -72,10 +71,9 @@ async function installDependencies(req, res) {
   try {
     await cmd('npm i --production', rootDir);
     data.schemas = await getSchemas();
-    res.end();
+    sendResponse(res, 200);
   } catch(e) {
-    res.statusCode = 500;
-    res.end(e.message);
+    sendResponse(res, 500, e.message);
   }
 }
 async function registerUser(req, res) {
