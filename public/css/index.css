@@ -1,0 +1,30 @@
+body {
+  margin: 0 auto;
+  padding: 30px 0;
+  max-width: 800px;
+}
+
+pre {
+  background-color: black;
+  color: white;
+  border-radius: 3px;
+  padding: 0 0 20px 20px;
+}
+
+form {
+  margin: 15px 0;
+}
+
+.install-step {
+  margin: 30px 0;
+}
+
+label.control-label {
+  font-weight: bold;
+}
+
+form > .form-group > #root > .form-group {
+  margin-bottom: 30px;
+  border-left: 3px solid #0dcaf0;
+  padding-left: 20px;
+}
