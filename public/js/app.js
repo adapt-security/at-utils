@@ -81,12 +81,14 @@ class Form extends React.Component {
   }
   filterOptional() {
     if(this.props.showOptional) {
-      return this.props.schema;
+      Object.values(this.props.schema.properties).forEach(v => {
+        Object.values(v.properties).forEach(v2 => {
+          if(Array.isArray(v2.type)) v2.type = v2.type[0];
+        });
+      });
+      return { ...this.props.schema, required: Object.keys(this.props.schema.properties) };
     } 
-    if(!this.props.schema.properties) {
-      return {};
-    }
-    const optionalSchema = { type: 'object', properties: {} };
+    const requiredSchema = { type: 'object', properties: {} };
     Object.entries(this.props.schema.properties).reduce((m,[k,v]) => {
       if(v.required) {
         v.required.forEach(r => {
@@ -96,10 +98,11 @@ class Form extends React.Component {
             m[k].properties[r].type = m[k].properties[r].type[0];
           }
         });
+        m[k].required = v.required;
       }
       return m;
-    }, optionalSchema.properties);
-    return optionalSchema;
+    }, requiredSchema.properties);
+    return requiredSchema;
   }
   render() {
     if(!this.props.schema) return '';
