@@ -4,15 +4,20 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { ...props, showAdvanced: false };
+    this.fetchSchemas();
   }
   render() {
     return (
       <div className="app-inner">
         <div className="install-step">
-          <h2>1. Configure your environment</h2>
+          <h2>1. Welcome to Adapt!</h2>
+          <p>You now need to enter the configuration settings relevant to your set-up.</p> 
+          <button className="btn btn-info" onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
+        </div>
+        <div className="install-step">
+          <h2>2. Configure your environment</h2>
           <p>You now need to enter the configuration settings relevant to your set-up.</p> 
           <p>Any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</p>
-          <button className="btn btn-dark" onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
           <div className="checkbox">
             <label className="control-label">
               <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
@@ -22,23 +27,20 @@ class App extends React.Component {
           <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
         </div>
         <div className="install-step">
-          <h2>2. Create a super admin account</h2>
+          <h2>3. Create a super admin account</h2>
           <p>You now need to create a 'super admin' user which will be used to administer the system</p>
           <p>It is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</p>
-          <button className="btn btn-dark" onClick={this.fetchUserSchema.bind(this)}>Get schema</button>
           <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} validate={this.validateUser} onSubmit={this.createUser.bind(this)}/>
-          <button className="btn btn-info" onClick={() => fetch('/start', { method: 'POST' })}>Start app</button>
         </div>
         <div className="install-step">
-          <h2>3. Start building with Adapt!</h2>
+          <h2>4. Start building with Adapt!</h2>
           <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
           <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:<br/><b>Make sure you also have MongoDB running!</b></p>
           <pre>{`
   cd ${this.state.dir}
-  NODE_ENV=production npm start
-  `}</pre>
-          <p>Click the button below to close this installer.</p>
-          <button className="btn btn-info" onClick={this.cleanUp.bind(this)}>Finish</button>
+  NODE_ENV=production npm start`}</pre>
+          <p>Click the button below to close this navigate to your Adapt authoring tool instance.</p>
+          <button className="btn btn-info" onClick={this.finish.bind(this)}>Finish</button>
         </div>
       </div>
     );
@@ -58,6 +60,14 @@ class App extends React.Component {
     });
     if(res.status === 500) throw new Error(await res.text());
     alert('Super admin user created successfully');
+  }
+  async fetchSchemas() {
+    try {
+      Promise.all([this.fetchConfigSchemas(), this.fetchUserSchema()]);
+    } catch(e) {
+      alert(e);
+    }
+    Promise.all([this.fetchConfigSchemas(), this.fetchUserSchema()]);
   }
   async fetchConfigSchemas() {
     const configSchemas = await (await fetch(`/schemas/config`)).json();
