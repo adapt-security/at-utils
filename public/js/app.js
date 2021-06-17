@@ -59,7 +59,7 @@ class App extends React.Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     });
-    if(res.status === 500) throw new Error(res.text());
+    if(res.status === 500) throw new Error(await res.text());
     alert('Super admin user created successfully');
   }
   async downloadApp() {
