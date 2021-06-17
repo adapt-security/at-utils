@@ -15,6 +15,11 @@ form {
   margin: 15px 0;
 }
 
+ol.breadcrumb > li.active {
+  color: #5bc0de;
+  font-weight: bold;
+}
+
 .install-step {
   margin: 30px 0;
 }

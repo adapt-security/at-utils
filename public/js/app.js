@@ -9,10 +9,22 @@ class App extends React.Component {
   render() {
     return (
       <div className="app-inner">
+        <ol className="breadcrumb">
+          <li className="active">1. Welcome</li>
+          <li>2. Configure</li>
+          <li>3. Create user</li>
+          <li>4. Finish</li>
+        </ol>
+        <div className={"loading" + (!this.state.showLoading ? " hide" : "")}>
+          <div className="text">{this.state.loadingText}</div>
+          <div className="progress">
+            <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
+          </div>
+        </div>
         <div className="install-step">
           <h2>1. Welcome to Adapt!</h2>
           <p>You now need to enter the configuration settings relevant to your set-up.</p> 
-          <button className="btn btn-info" onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
+          <button className="btn btn-info">Next</button>
         </div>
         <div className="install-step">
           <h2>2. Configure your environment</h2>
@@ -79,6 +91,7 @@ class App extends React.Component {
     this.setState({ userSchema: await (await fetch(`/schemas/user`)).json() });
   }
   async saveConfig({ formData }) {
+    this.showLoading('Saving configuration and starting the application...');
     const res = await fetch('/save', { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,6 +100,7 @@ class App extends React.Component {
     if(res.status === 500) throw new Error(await res.text());
     const res2 = await fetch('/start', { method: 'POST' });
     if(res2.status === 500) throw new Error(await res2.text());
+    this.hideLoading();
     alert('Configuration has been set, and application started');
   }
   validateUser({ superUser: { password, confirmPassword } }, errors) {
@@ -94,6 +108,12 @@ class App extends React.Component {
       errors.superUser.confirmPassword.addError("Passwords don't match");
     }
     return errors;
+  }
+  showLoading(text) {
+    this.setState({ showLoading: true, loadingText: text || '' });
+  }
+  hideLoading() {
+    this.setState({ showLoading: false });
   }
 }
 
@@ -125,7 +145,7 @@ class Form extends React.Component {
   }
   render() {
     if(!this.props.schema) return '';
-    const validate = this.props.validate || function() {};
+    const validate = this.props.validate || undefined;
     try {
       return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} validate={validate} onSubmit={this.props.onSubmit} onError={this.onError} />
     } catch(e) {
