@@ -17,13 +17,9 @@ class App extends React.Component {
         <div className="install-step">
           <h2>2. Configure your environment</h2>
           <p>You now need to enter the configuration settings relevant to your set-up.</p> 
-        <p>You now need to enter the configuration settings relevant to your set-up.</p> 
-          <p>You now need to enter the configuration settings relevant to your set-up.</p> 
           <p>Any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</p>
           <button className="btn btn-dark" onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
           <label>
-            <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
-          <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
             <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
             Show advanced settings
           </label>
