@@ -89,7 +89,6 @@ async function saveConfig(req, res) {
   const configPath = `${rootDir}/conf/${NODE_ENV}.config.js`;
   let config = { ...req.body };
   try {
-    console.log(rootDir + '/conf');
     await fs.mkdir(rootDir + '/conf', { recursive: true });
   } catch(e) {} // not a problem
   try {
@@ -112,13 +111,11 @@ async function serveFile(filePath, res) {
     sendResponse(res, 404, `Error, ${e}`);
   }
 }
-async function startApp() {
+async function startApp(req, res) {
   try {
     const { App } = require('adapt-authoring-core');
-    const app = App.instance;
     await App.instance.onReady();
-    console.log('ready');
-    console.log(app);
+    sendResponse(res, 200);
   } catch(e) {
     console.log(e);
   }
