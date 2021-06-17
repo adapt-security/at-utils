@@ -77,6 +77,12 @@ class App extends React.Component {
     if(res2.status === 500) throw new Error(await res2.text());
     alert('Configuration has been set, and application started');
   }
+  validateUser({ superUser: { password, confirmPassword } }, errors) {
+    if (password !== confirmPassword) {
+      errors.superUser.confirmPassword.addError("Passwords don't match");
+    }
+    return errors;
+  }
 }
 
 class Form extends React.Component {
@@ -107,8 +113,9 @@ class Form extends React.Component {
   }
   render() {
     if(!this.props.schema) return '';
+    const validate = this.props.validate || function() {};
     try {
-      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} onSubmit={this.props.onSubmit} onError={this.onError} />
+      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} validate={validate} onSubmit={this.props.onSubmit} onError={this.onError} />
     } catch(e) {
       console.log(e);
     }
