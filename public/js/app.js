@@ -57,6 +57,7 @@ class App extends React.Component {
       body: JSON.stringify(formData)
     });
     if(res.status === 500) throw new Error(res.text());
+    alert('Super admin user created successfully');
   }
   async downloadApp() {
     try {
@@ -96,6 +97,7 @@ class App extends React.Component {
       body: JSON.stringify(formData)
     });
     if(res2.status === 500) throw new Error(await res2.text());
+    alert('Configuration has been set, and application started');
   }
 }
 
