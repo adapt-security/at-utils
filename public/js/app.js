@@ -51,7 +51,10 @@ class App extends React.Component {
     const res = await fetch('/registeruser', { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+      body: JSON.stringify({ 
+        email: formData.superUser.email, 
+        password: formData.superUser.password 
+      })
     });
     if(res.status === 500) throw new Error(await res.text());
     alert('Super admin user created successfully');
