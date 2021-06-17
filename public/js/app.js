@@ -19,10 +19,14 @@ class App extends React.Component {
           <p>You now need to enter the configuration settings relevant to your set-up.</p> 
           <p>Any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</p>
           <button className="btn btn-dark" onClick={this.fetchConfigSchemas.bind(this)}>Get schema</button>
-          <label>
+          <div class="checkbox">
+            <label className="control-label">
+              <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
             <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
-            Show advanced settings
-          </label>
+              <input type="checkbox" checked={this.state.showAdvanced} onChange={() => this.setState({ showAdvanced: !this.state.showAdvanced })} /> 
+              Show advanced settings
+            </label>
+          </div>
           <Form liveValidate key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
         </div>
         <div className="install-step">
