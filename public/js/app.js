@@ -45,9 +45,8 @@ class App extends React.Component {
       </div>
     );
   }
-  async cleanUp() { 
-    const cloneRes = await fetch('/cleanup', { method: 'POST' });
-    // window.location = ;
+  async finish() { 
+    window.location = 'http://www.adaptlearning.org';
   }
   async createUser({ formData }) { 
     const res = await fetch('/registeruser', { 
