@@ -1,12 +1,10 @@
-const exec = require('child_process').exec;
 const fs = require('fs/promises');
 const glob = require('glob');
 const http = require('http');
 const path = require('path');
 
 const data = {};
-const installDir = path.resolve('..');
-const rootDir = path.resolve(installDir + '/adapt-authoring');
+const rootDir = path.resolve(`${path.resolve('..')}/adapt-authoring`);
 const NODE_ENV = 'production';
 
 async function run() {
@@ -15,22 +13,6 @@ async function run() {
   } catch(e) {
     console.log(e);
   }
-}
-async function cloneRepo(req, res) {
-  try {
-    await cmd('git clone https://github.com/adapt-security/adapt-authoring.git', installDir);
-    sendResponse(res, 200, rootDir);
-  } catch(e) {
-    sendResponse(res, 500, e.message);
-  }
-}
-async function cmd(command, cwd) {
-  return new Promise((resolve, reject) => {
-    exec(command, { cwd }, async (error, stdout) => {
-      if(error) return reject(error);
-      resolve(stdout);
-    });
-  });
 }
 async function getSchemas() {
   return new Promise((resolve, reject) => {
@@ -58,7 +40,7 @@ async function getSchemas() {
             properties: {
               email: {description: "Email address for the user", type: "string", format: "email"},
               password: { description: 'Password for the user', type: 'string', format: 'password' },
-              confirmPassword: { description: 'Confirm for the user', type: 'string', format: 'password' }
+              confirmPassword: { description: 'Re-enter password', type: 'string', format: 'password' }
             },
             required: ['email', 'password', 'confirmPassword']
           }
@@ -82,18 +64,10 @@ async function handleBodyData(req) {
     });
   });
 }
-async function installDependencies(req, res) {
-  try {
-    await cmd('npm i --production', rootDir);
-    data.schemas = await getSchemas();
-    sendResponse(res, 200);
-  } catch(e) {
-    sendResponse(res, 500, e.message);
-  }
-}
 async function registerUser(req, res) {
   try {
     await handleBodyData(req);
+    const { App } = require('adapt-authoring-core');
     const [localauth, roles] = await App.instance.waitForModule('localauth', 'roles');
     const [superuser] = await roles.find({ shortName: 'superuser' });
     await localauth.register(Object.assign({}, req.body, {
@@ -120,7 +94,6 @@ async function saveConfig(req, res) {
   } catch(e) {} // not a problem
   try {
     await fs.writeFile(configPath, `module.exports = ${JSON.stringify(config, null, 2)};`);
-    await App.instance.onReady();
     sendResponse(res, 200);
   } catch(e) {
     sendResponse(res, 500, `Error, ${e}`);
@@ -141,9 +114,9 @@ async function serveFile(filePath, res) {
 }
 async function startApp() {
   try {
-    // await cmd(`NODE_ENV=${NODE_ENV} npm start`, rootDir);
-    const { App } = require(`${rootDir}/node_modules/adapt-authoring-core`);
-    const app = await App.instance;
+    const { App } = require('adapt-authoring-core');
+    const app = App.instance;
+    await App.instance.onReady();
     console.log('ready');
     console.log(app);
   } catch(e) {
@@ -163,9 +136,6 @@ function startServer() {
       return serveFile(req.url, res);
     }
     if(isPOST) {
-      if(req.url === '/cleanup') return cloneRepo(req, res);
-      if(req.url === '/clone') return cloneRepo(req, res);
-      if(req.url === '/npmi') return installDependencies(req, res);
       if(req.url === '/registeruser') return registerUser(req, res);
       if(req.url === '/save') return saveConfig(req, res);
       if(req.url === '/start') return startApp(req, res);
