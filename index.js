@@ -139,8 +139,18 @@ async function serveFile(filePath, res) {
     sendResponse(res, 404, `Error, ${e}`);
   }
 }
+async function startApp() {
+  try {
+    // await cmd(`NODE_ENV=${NODE_ENV} npm start`, rootDir);
+    const { App } = require(`${rootDir}/node_modules/adapt-authoring-core`);
+    const app = await App.instance;
+    console.log('ready');
+    console.log(app);
+  } catch(e) {
+    console.log(e);
+  }
+}
 function startServer() {
-  // process.env.NODE_ENV = NODE_ENV;
   http.createServer(async (req, res) => {
     const isGET = req.method === 'GET';
     const isPOST = req.method === 'POST';
@@ -153,10 +163,12 @@ function startServer() {
       return serveFile(req.url, res);
     }
     if(isPOST) {
+      if(req.url === '/cleanup') return cloneRepo(req, res);
       if(req.url === '/clone') return cloneRepo(req, res);
       if(req.url === '/npmi') return installDependencies(req, res);
-      if(req.url === '/save') return saveConfig(req, res);
       if(req.url === '/registeruser') return registerUser(req, res);
+      if(req.url === '/save') return saveConfig(req, res);
+      if(req.url === '/start') return startApp(req, res);
     }
   }).listen(8080);
   console.log('\nInstaller running. Please visit http://localhost:8080 in your web browser.');
