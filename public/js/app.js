@@ -94,11 +94,7 @@ class App extends React.Component {
       body: JSON.stringify(formData)
     });
     if(res.status === 500) throw new Error(await res.text());
-    const res2 = await fetch('/start', { 
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
+    const res2 = await fetch('/start', { method: 'POST' });
     if(res2.status === 500) throw new Error(await res2.text());
     alert('Configuration has been set, and application started');
   }
