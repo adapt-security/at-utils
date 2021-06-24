@@ -1,35 +1,287 @@
+/** Open Sans for body */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap');
+/** Raleway for titles */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
+
+
 body {
-  margin: 0 auto;
-  padding: 30px 0;
-  max-width: 800px;
+  /* ! apply gradient bg with transition
+  background: linear-gradient(45deg, #34bee0, #00dd95, #b7e5f3, #34bee0);
+  background-size: 600% 100%;
+  animation: gradient 8s linear infinite;
+  animation-direction: alternate; */
+  font-size: 16px;
+  color: white;
+  background-color: #5bc0de;
+  background-image: url(adapt_bg.jpeg);
+  background-repeat: repeat-y; /*! temp style */
+  /*! styles taken from AT */
+  font-family: 'Open Sans', sans-serif;
+  /* font-size: 13px; */
+  font-weight: 400;
+  /* background-color: #f3fcfe; */
+  /* color: #263944; */
 }
 
+/* @keyframes gradient {
+    0% {background-position: 0%}
+    100% {background-position: 100%}
+} */
+
+/*! apply gradient overlay for contrast */
+/* body:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url(adapt_bg.jpeg);
+  opacity: .5;
+  z-index: -1;
+} */
+
 pre {
+  padding: 0 0 20px 20px;
+  margin-bottom: 30px;
   background-color: black;
   color: white;
   border-radius: 3px;
-  padding: 0 0 20px 20px;
+  border: none;
+}
+
+h1, h2, h3, h4 {
+  margin-bottom: 40px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+}
+
+p {
+  margin-bottom: 20px;
 }
 
 form {
+  width: 100%;
   margin: 15px 0;
 }
 
-ol.breadcrumb > li.active {
+/** breadcrumb */
+.breadcrumb>li+li:before {
+  padding: 0 7px;
+  color: inherit;
+  opacity: .35;
+  content: ">";
+  /* content: "\276F"; */
+}
+
+.breadcrumb-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background-color: #fff;
+  border-bottom: 1px solid rgba(52,190,224,0.2);  
+  background-image: url(adapt_logo.png);
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+
+.breadcrumb {
+  padding: 0;
+  max-width: 800px;
+  margin: auto;
+  background-color: inherit;
+}
+
+.breadcrumb > li {
+  color: #263944;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+}
+
+.breadcrumb > li.active {
   color: #5bc0de;
   font-weight: bold;
 }
 
+/** install steps */
+/*! only display active step */
+/* .install-step-container:not(.active) {
+  display: none;
+} */
+
+/*! prepare for transition when active */
+.install-step-container:not(.active) .install-step {
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 2000ms cubic-bezier(0.23, 1, 0.32, 1), visibility 0s linear 0s;
+}
+
+/*! transition step into view when active */
+.install-step-container.active .install-step {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/*! each step should fill the screen - one in view at a time */
+.install-step-container {
+  width: 100%;
+  min-height: calc(100vh - 63px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .install-step {
+  width: 800px;
+  margin: auto;
+  display: flex;
+  padding: 60px 40px;
+  flex-direction: column;
+  /* align-items: center; */
+  /* background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5); */
+  /* styles taken from AT */
+  /* padding: 20px;
+  border: 1px solid #D2E4E6;
+  border-radius: 3px;
+  box-shadow: 0 0 5px 2px #cbe1e6; */
+}
+
+/** first step */
+.install-step.center {
+  text-align: center;
+}
+
+.install-step.center h2 {
+  text-align: center;
+  font-size: 55px;
+}
+
+.install-step.center .btn {
+  margin: 20px auto 0;
+}
+
+
+.step-illustration {
   margin: 30px 0;
+  text-align: center;
+}
+.step-illustration img {
+  max-width: 300px;
+}
+
+/** UI bits */
+legend {
+  padding-bottom: 10px;
+  font-family: 'Raleway', sans-serif;
+  color: white;
 }
 
 label.control-label {
   font-weight: bold;
 }
 
-form > .form-group > #root > .form-group {
+/* form > .form-group > #root > .form-group {
   margin-bottom: 30px;
   border-left: 3px solid #0dcaf0;
   padding-left: 20px;
+} */
+
+.form-control {
+  padding: 11px 20px;
+  height: 40px;
+  background-color: rgba(255,255,255,0.4);
+  color: white;
+  border: 0;
 }
+
+.btn {
+  padding: 10px 12px;
+  width: 150px;
+  background-color: #00dd95;
+  color: #fff;
+  border-color: #00dd95;
+  border-radius: 5px;
+  font-weight: 700;
+  transition: all .3s;
+}
+
+.btn:hover {
+  background-color: #00ce8b;
+  border-color: #00ce8b;
+}
+
+/*! alert colors taken from AT */
+.alert {
+  padding: 20px;
+  border: none;
+  /* box-shadow: 0 7px 30px -10px rgb(150 170 180 / 50%); */
+}
+
+/*
+alert glyphicon suggestions:
+success - glyphicon glyphicon-ok / glyphicon glyphicon-thumbs-up
+info - glyphicon glyphicon-info-sign
+warning - glyphicon glyphicon-exclamation-sign
+danger - glyphicon glyphicon-alert
+*/
+.alert-success {
+  background-color: #d6f4ea;
+  color: #00ce8b;
+}
+
+.alert-info {
+  background-color: #e4f0f6;
+  color: #5bc0de;
+}
+
+.alert-warning,
+.alert-danger {
+  background-color: #fff3f1;
+  color: #ff765a;
+}
+
+/* 
+* AAT existing styles 
+
+/ fonts
+Raleway - titles
+Open Sans - body
+
+/ primary action btn
+background-color: #00dd95;
+color: #fff;
+border-color: #00dd95;
+border-radius: 5px
+on hover -     background-color: #00ce8b;
+
+/ secondary action btn
+background-color: transparent;
+color: #34bee0;
+border: 1px solid #34bee0;
+border-radius: 3px;
+on hover -     background-color: #34bee0;
+
+/ page elements
+border: 1px solid #D2E4E6;
+border-radius: 3px;
+padding: 20px;
+on hover - box-shadow: 0 0 5px 2px #cbe1e6;
+
+*/
+
+/*
+* gradient background animation 
+background: linear-gradient(45deg, #34bee0, #00dd95, #b7e5f3, #34bee0);
+background-size: 600% 100%;
+animation: gradient 8s linear infinite;
+animation-direction: alternate;
+}
+@keyframes gradient {
+    0% {background-position: 0%}
+    100% {background-position: 100%}
+}
+*/
