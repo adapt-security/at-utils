@@ -12,30 +12,34 @@ class App extends React.Component {
     };
     this.fetchSchemas();
   }
+  getActiveClass(id) {
+    return this.state.step === id ? 'active' : '';
+  }
   render() {
     return (
       <div className="app-inner">
         <div className="breadcrumb-container">
           <ol className="breadcrumb">
-            <li className={this.state.step === 1 ? 'active' : ''}>1. Welcome</li>
-            <li className={this.state.step === 2 ? 'active' : ''}>2. Configure</li>
-            <li className={this.state.step === 3 ? 'active' : ''}>3. Create user</li>
-            <li className={this.state.step === 4 ? 'active' : ''}>4. Finish</li>
+            <li className={this.getActiveClass(1)}>Welcome</li>
+            <li className={this.getActiveClass(2)}>Configure</li>
+            <li className={this.getActiveClass(3)}>Create user</li>
+            <li className={this.getActiveClass(4)}>Finish</li>
           </ol>
         </div>
-        <div className={`install-step-container ${this.state.step === 1 ? 'active' : ''}`}>
+        <div className={`install-step-container ${this.getActiveClass(1)}`}>
           <div className="install-step center">
             <div className="step-illustration"> 
               <img src="assets/responsive_blue_alt.png" />
             </div>
-            <h2>1. Welcome to Adapt!</h2>
-            <p>Thank you for downloading the Adapt authoring tool! You are only a few clicks away from building your own multi-device e-learning.</p> 
+            <h2>Welcome to Adapt</h2>
+            <p>Thank you for downloading the Adapt authoring tool!</p>
+            <p>You are only a few clicks away from building your own multi-device e-learning.</p> 
             <button className="btn btn-info" onClick={this.showNextStep.bind(this)}>Start</button>
           </div>
         </div>
-        <div className={`install-step-container ${this.state.step === 2 ? 'active' : ''}`}>
+        <div className={`install-step-container ${this.getActiveClass(2)}`}>
           <div className="install-step">
-            <h2>2. Configure your environment</h2>
+            <h2>Configure your environment</h2>
             <p>The first step is to configure the configuration settings relevant to your set-up.</p> 
             <div className="alert alert-info"><b>Tip</b>: any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</div>
             <div className="checkbox">
@@ -47,17 +51,17 @@ class App extends React.Component {
             <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
           </div>
         </div>
-        <div className={`install-step-container ${this.state.step === 3 ? 'active' : ''}`}>
+        <div className={`install-step-container ${this.getActiveClass(3)}`}>
           <div className="install-step">
-            <h2>3. Create a super admin account</h2>
+            <h2>Create a super admin account</h2>
             <p>You now need to create a 'super admin' user which will be used to administer the system</p>
             <div className="alert alert-info"><b>Tip</b>: it is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</div>
             <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} validate={this.validateUser} onSubmit={this.createUser.bind(this)}/>
           </div>
         </div>
-        <div className={`install-step-container ${this.state.step === 4 ? 'active' : ''}`}>
+        <div className={`install-step-container ${this.getActiveClass(4)}`}>
           <div className="install-step">
-            <h2>4. Start building with Adapt!</h2>
+            <h2>Start building with Adapt!</h2>
             <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
             <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:<br/><b>Make sure you also have MongoDB running!</b></p>
             <pre>{`
