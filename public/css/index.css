@@ -106,9 +106,9 @@ form {
 
 /** install steps */
 /*! only display active step */
-/* .install-step-container:not(.active) {
+.install-step-container:not(.active) {
   display: none;
-} */
+}
 
 /*! prepare for transition when active */
 .install-step-container:not(.active) .install-step {
