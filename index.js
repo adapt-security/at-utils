@@ -138,7 +138,8 @@ function startServer() {
       if(req.url === '/start') return startApp(req, res);
     }
   }).listen(8080);
-  console.log('\nInstaller running. Please visit http://localhost:8080 in your web browser.');
+  console.log(`\nInstaller running. \nIf the page doesn't open automatically, please visit http://localhost:8080 in your web browser.`);
+  open('http://localhost:8080')
 }
 
 module.exports = run();
