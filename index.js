@@ -10,6 +10,7 @@ const NODE_ENV = 'production';
 
 async function run() {
   try {
+    process.env.NODE_ENV = NODE_ENV;
     startServer();
   } catch(e) {
     console.log(e);
