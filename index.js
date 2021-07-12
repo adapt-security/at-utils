@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const glob = require('glob');
 const http = require('http');
+const open = require('open');
 const path = require('path');
 
 const data = {};
@@ -139,7 +140,7 @@ function startServer() {
     }
   }).listen(8080);
   console.log(`\nInstaller running. \nIf the page doesn't open automatically, please visit http://localhost:8080 in your web browser.`);
-  open('http://localhost:8080')
+  open('http://localhost:8080');
 }
 
 module.exports = run();
