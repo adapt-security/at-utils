@@ -10,6 +10,7 @@ class App extends React.Component {
       loadingText: 'Loading, please wait',
       step: 1
     };
+    this.appUrl = null;
     this.fetchSchemas();
   }
   getActiveClass(id) {
@@ -78,7 +79,7 @@ class App extends React.Component {
     this.setState({ step: this.state.step+1 });
   }
   async finish() { 
-    window.location = 'http://www.adaptlearning.org';
+    window.location = this.appUrl;
   }
   async createUser({ formData }) { 
     const res = await fetch('/registeruser', { 
@@ -118,6 +119,7 @@ class App extends React.Component {
       body: JSON.stringify(formData)
     });
     if(res.status === 500) throw new Error(await res.text());
+    this.appUrl = formData["adapt-authoring-server"].url;
     const res2 = await fetch('/start', { method: 'POST' });
     if(res2.status === 500) throw new Error(await res2.text());
     this.showNextStep();
