@@ -53,7 +53,7 @@ class App extends React.Component {
         </div>
         <div className={`install-step-container ${this.getActiveClass(3)}`}>
           <div className="install-step">
-            <h2>Initialise</h2>
+            <h2>Initialising</h2>
             <p>Please wait while the application finishes initialising.</p>
             <div className="progress">
               <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
