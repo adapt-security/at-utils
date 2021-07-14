@@ -21,8 +21,9 @@ class App extends React.Component {
           <ol className="breadcrumb">
             <li className={this.getActiveClass(1)}>Welcome</li>
             <li className={this.getActiveClass(2)}>Configure</li>
-            <li className={this.getActiveClass(3)}>Create user</li>
-            <li className={this.getActiveClass(4)}>Finish</li>
+            <li className={this.getActiveClass(3)}>Initialise</li>
+            <li className={this.getActiveClass(4)}>Create user</li>
+            <li className={this.getActiveClass(5)}>Finish</li>
           </ol>
         </div>
         <div className={`install-step-container ${this.getActiveClass(1)}`}>
@@ -52,13 +53,22 @@ class App extends React.Component {
         </div>
         <div className={`install-step-container ${this.getActiveClass(3)}`}>
           <div className="install-step">
+            <h2>Initialise</h2>
+            <p>Please wait while the application finishes initialising.</p>
+            <div className="progress">
+              <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
+            </div>
+          </div>
+        </div>
+        <div className={`install-step-container ${this.getActiveClass(4)}`}>
+          <div className="install-step">
             <h2>Create a super admin account</h2>
             <p>You now need to create a 'super admin' user which will be used to administer the system</p>
             <div className="alert alert-info"><b>Tip</b>: it is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</div>
             <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} validate={this.validateUser} onSubmit={this.createUser.bind(this)}/>
           </div>
         </div>
-        <div className={`install-step-container ${this.getActiveClass(4)}`}>
+        <div className={`install-step-container ${this.getActiveClass(5)}`}>
           <div className="install-step">
             <h2>Start building with Adapt!</h2>
             <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
@@ -115,6 +125,7 @@ class App extends React.Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     });
+    this.showNextStep();
     if(res.status === 500) throw new Error(await res.text());
     this.appUrl = formData["adapt-authoring-server"].url;
     const res2 = await fetch('/start', { method: 'POST' });
