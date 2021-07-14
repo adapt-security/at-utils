@@ -95,7 +95,7 @@ async function saveConfig(req, res) {
   } catch(e) {} // not a problem
   try {
     await fs.writeFile(configPath, `module.exports = ${JSON.stringify(config, null, 2)};`);
-    sendResponse(res, 200);
+    sendResponse(res, 200, JSON.stringify({ rootDir }));
   } catch(e) {
     sendResponse(res, 500, `Error, ${e}`);
   }

@@ -73,9 +73,7 @@ class App extends React.Component {
             <h2>Start building with Adapt!</h2>
             <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
             <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:<br/><b>Make sure you also have MongoDB running!</b></p>
-            <pre>{`
-    cd ${this.state.dir}
-    NODE_ENV=production npm start`}</pre>
+            <pre>{`cd ${this.state.rootDir} && npm start`}</pre>
             <p>Click the button below to close this navigate to your Adapt authoring tool instance.</p>
             <button className="btn btn-info" onClick={this.finish.bind(this)}>Finish</button>
           </div>
@@ -128,6 +126,7 @@ class App extends React.Component {
     this.showNextStep();
     if(res.status === 500) throw new Error(await res.text());
     this.appUrl = formData["adapt-authoring-server"].url;
+    this.setState({ rootDir: (await res.json()).rootDir });
     const res2 = await fetch('/start', { method: 'POST' });
     if(res2.status === 500) throw new Error(await res2.text());
     this.showNextStep();
