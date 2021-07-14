@@ -6,8 +6,6 @@ class App extends React.Component {
     this.state = { 
       ...props, 
       showAdvanced: false,
-      showLoading: true,
-      loadingText: 'Loading, please wait',
       step: 1
     };
     this.appUrl = null;
@@ -112,7 +110,6 @@ class App extends React.Component {
     this.setState({ userSchema: await (await fetch(`/schemas/user`)).json() });
   }
   async saveConfig({ formData }) {
-    this.showLoading('Saving configuration and starting the application...');
     const res = await fetch('/save', { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -129,12 +126,6 @@ class App extends React.Component {
       errors.superUser.confirmPassword.addError("Passwords don't match");
     }
     return errors;
-  }
-  showLoading(text) {
-    this.setState({ showLoading: true, loadingText: text || '' });
-  }
-  hideLoading() {
-    this.setState({ showLoading: false });
   }
 }
 
