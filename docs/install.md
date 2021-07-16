@@ -1,5 +1,9 @@
 # Installation
 
+This page will walk you through the installation of your own local instance of the Adapt authoring tool.
+
+_**Note**: prior knowledge of your command line interface (or the ability to use Google!) is recommended, as things can get technical when errors occur._
+
 ## 1. Install prerequisites
 The first step is to make sure you have the required prerequisites installed, and are using the correct versions of these.
 
