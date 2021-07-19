@@ -20,7 +20,7 @@ mongod --version
 db version v3+
 ```
 
-If any of these return errors, please look up the relevant documentation for installing:
+If any of these return errors, or the installed versions don't match the requirements above, please look up the relevant documentation for installing/upgrading:
 - [Node.js](https://nodejs.org/en/download/)
 - [git](https://git-scm.com/downloads)
 - [MongoDB](https://www.mongodb.com/try/download/community)
