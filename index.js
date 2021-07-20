@@ -125,7 +125,7 @@ async function startApp(req, res) {
 async function exit(res) {
   res.end();
   const { App } = require('adapt-authoring-core');
-  console.log(`To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start`);
+  console.log(`\nTo start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start\n`);
   process.exit();
 }
 function startServer() {
