@@ -72,9 +72,9 @@ class App extends React.Component {
           <div className="install-step">
             <h2>Start building with Adapt!</h2>
             <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
-            <p>To run this install of the authoring tool in the future, you can run the following commands in a terminal:<br/><b>Make sure you also have MongoDB running!</b></p>
+            <p>To start the application, you must run the start script from the source code's root folder:</p>
             <pre>{`cd ${this.state.rootDir} && npm start`}</pre>
-            <p>Click the button below to close this navigate to your Adapt authoring tool instance.</p>
+            <p>Click the button below to close the installer.</p>
             <button className="btn btn-info" onClick={this.finish.bind(this)}>Finish</button>
           </div>
         </div>
@@ -85,7 +85,7 @@ class App extends React.Component {
     this.setState({ step: this.state.step+1 });
   }
   async finish() { 
-    window.location = this.appUrl;
+    window.close();
   }
   async createUser({ formData }) { 
     const res = await fetch('/registeruser', { 

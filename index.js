@@ -122,6 +122,11 @@ async function startApp(req, res) {
     console.log(e);
   }
 }
+async function exit() {
+  const { App } = require('adapt-authoring-core');
+  console.log(`To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start`);
+  process.exit();
+}
 function startServer() {
   http.createServer(async (req, res) => {
     const isGET = req.method === 'GET';
