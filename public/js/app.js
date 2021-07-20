@@ -85,6 +85,7 @@ class App extends React.Component {
     this.setState({ step: this.state.step+1 });
   }
   async finish() { 
+    await fetch('/exit', { method: 'POST' });
     window.close();
   }
   async createUser({ formData }) { 
