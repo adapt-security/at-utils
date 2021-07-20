@@ -122,7 +122,8 @@ async function startApp(req, res) {
     console.log(e);
   }
 }
-async function exit() {
+async function exit(res) {
+  res.end();
   const { App } = require('adapt-authoring-core');
   console.log(`To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start`);
   process.exit();
@@ -143,6 +144,7 @@ function startServer() {
       if(req.url === '/registeruser') return registerUser(req, res);
       if(req.url === '/save') return saveConfig(req, res);
       if(req.url === '/start') return startApp(req, res);
+      if(req.url === '/exit') return exit(res);
     }
   }).listen(8080);
   console.log(`\nInstaller running. \nIf the page doesn't open automatically, please visit http://localhost:8080 in your web browser.`);
