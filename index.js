@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs/promises');
 const glob = require('glob');
 const http = require('http');
