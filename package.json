@@ -7,8 +7,8 @@
     "type": "git",
     "url": "git+ssh://git@github.com/taylortom/adapt-authoring-installer.git"
   },
-  "scripts": {
-    "start": "node index"
+  "bin": {
+    "install-adapt-authoring": "./index.js"
   },
   "keywords": [
     "Adapt"
