@@ -43,7 +43,7 @@ npm install
 ## 4. Run the installer
 The authoring tool comes bundled with a user-friendly installer which will walk you through the remaining steps of the install. To run the installer, execute the following command in a terminal:
 ```
-npx install-adapt-authoring
+npx install-aat
 ```
 The installer should automatically open in your default web browser, and will guide you through the rest of the process.
 
