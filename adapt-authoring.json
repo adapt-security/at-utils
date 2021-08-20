@@ -2,7 +2,7 @@
   "documentation": {
     "enable": true,
     "manualSections": {
-      "install.md": "gettings-started"
+      "install.md": "getting-started"
     }
   },
   "module": false
