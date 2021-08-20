@@ -2,7 +2,8 @@
   "documentation": {
     "enable": true,
     "manualSections": {
-      "install.md": "getting-started"
+      "install.md": "getting-started",
+      "install-dev.md": "advanced"
     }
   },
   "module": false
