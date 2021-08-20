@@ -1,6 +1,9 @@
 {
   "documentation": {
-    "enable": true
+    "enable": true,
+    "manualSections": {
+      "install.md": "gettings-started"
+    }
   },
   "module": false
 }
