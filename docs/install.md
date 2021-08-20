@@ -29,6 +29,8 @@ If any of these return errors, or the installed versions don't match the require
 The next step is to get your hands on the code. The best way to do this is via git:
 ```
 git clone https://github.com/adaptlearning/adapt-authoring
+```
+```
 cd adapt-authoring
 ```
 
