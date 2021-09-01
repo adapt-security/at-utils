@@ -7,6 +7,7 @@
  const http = require('http');
  const open = require('open');
  const path = require('path');
+ const yargs = require('yargs');
  
  const data = {};
  const rootDir = path.resolve(`${path.resolve('..')}/adapt-authoring`);
@@ -71,21 +72,24 @@
      });
    });
  }
- async function registerUser(req, res) {
+ async function registerUserHandler(req, res) {
    try {
      await handleBodyData(req);
-     const { App } = require('adapt-authoring-core');
-     const [localauth, roles] = await App.instance.waitForModule('localauth', 'roles');
-     const [superuser] = await roles.find({ shortName: 'superuser' });
-     await localauth.register(Object.assign({}, req.body, {
-       firstName: 'Super',
-       lastName: 'User',
-       roles: [superuser._id.toString()]
-     }));
+     await registerUser(req.body);
      sendResponse(res, 201);
    } catch(e) {
      sendResponse(res, 500, `Error, ${e}`);
    }
+ }
+ async function registerUser(data) {
+   const { App } = require('adapt-authoring-core');
+   const [localauth, roles] = await App.instance.waitForModule('localauth', 'roles');
+   const [superuser] = await roles.find({ shortName: 'superuser' });
+   await localauth.register(Object.assign({}, data, {
+     firstName: 'Super',
+     lastName: 'User',
+     roles: [superuser._id.toString()]
+   }));
  }
  async function saveConfig(req, res) {
    try {
@@ -122,7 +126,8 @@
    try {
      const { App } = require('adapt-authoring-core');
      await App.instance.onReady();
-     sendResponse(res, 200);
+     if(res) sendResponse(res, 200);
+     return App.instance;
    } catch(e) {
      console.log(e);
    }
@@ -133,7 +138,7 @@
    console.log(`\nTo start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start\n`);
    process.exit();
  }
- function startServer() {
+ async function startServer() {
    http.createServer(async (req, res) => {
      const isGET = req.method === 'GET';
      const isPOST = req.method === 'POST';
@@ -143,17 +148,26 @@
        }
        if(req.url === '/schemas/config') return sendResponse(res, 200, JSON.stringify(data.configSchemas));
        if(req.url === '/schemas/user') return sendResponse(res, 200, JSON.stringify(data.userSchema));
-       return serveFile(req.url, res);
+
+       if(yargs.argv.ui === true) return serveFile(req.url, res);
      }
      if(isPOST) {
-       if(req.url === '/registeruser') return registerUser(req, res);
+       if(req.url === '/registeruser') return registerUserHandler(req, res);
        if(req.url === '/save') return saveConfig(req, res);
        if(req.url === '/start') return startApp(req, res);
        if(req.url === '/exit') return exit(res);
      }
    }).listen(8080);
-   console.log(`\nInstaller running. \nIf the page doesn't open automatically, please visit http://localhost:8080 in your web browser.`);
-   open('http://localhost:8080');
+   if(yargs.argv.ui === true) {
+     console.log(`\nInstaller running. \nIf the page doesn't open automatically, please visit http://localhost:8080 in your web browser.`);
+     open('http://localhost:8080');
+   } else {
+     try {
+      await registerUser({ email: yargs.argv.email, password: yargs.argv.password });
+    } catch(e) {
+      console.log(e);
+    }
+   }
  }
  
  module.exports = run();
