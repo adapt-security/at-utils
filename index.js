@@ -14,7 +14,7 @@
  
  async function run() {
    try {
-     process.env.NODE_PATH = `${process.cwd()}/node_modules`;
+     module.paths.splice(0, 0, `${process.cwd()}/node_modules`);
      process.env.NODE_ENV = NODE_ENV;
      startServer();
    } catch(e) {
