@@ -149,7 +149,7 @@
        if(req.url === '/schemas/config') return sendResponse(res, 200, JSON.stringify(data.configSchemas));
        if(req.url === '/schemas/user') return sendResponse(res, 200, JSON.stringify(data.userSchema));
 
-       if(yargs.argv.ui === true) return serveFile(req.url, res);
+       if(yargs.argv.ui !== false) return serveFile(req.url, res);
      }
      if(isPOST) {
        if(req.url === '/registeruser') return registerUserHandler(req, res);
@@ -158,7 +158,7 @@
        if(req.url === '/exit') return exit(res);
      }
    }).listen(8080);
-   if(yargs.argv.ui === true) {
+   if(yargs.argv.ui !== false) {
      console.log(`\nInstaller running. \nIf the page doesn't open automatically, please visit http://localhost:8080 in your web browser.`);
      open('http://localhost:8080');
    } else {
