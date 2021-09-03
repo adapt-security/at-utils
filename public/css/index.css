@@ -12,7 +12,6 @@ body {
   animation-direction: alternate; */
   font-size: 16px;
   color: white;
-  background-color: #5bc0de;
   /* background-image: url(adapt_bg.jpeg); */
   background-repeat: repeat-y; /*! temp style */
   /*! styles taken from AT */
@@ -21,6 +20,26 @@ body {
   font-weight: 400;
   /* background-color: #f3fcfe; */
   /* color: #263944; */
+}
+
+}
+body.install { 
+  background-color: #5bc0de; 
+}
+
+body.update { 
+  background-color: #00ce8b; 
+}
+body.update .breadcrumb > li.active {
+  color: #00ce8b;
+}
+body.update .btn {
+  background-color: #00ce8b;
+  border-color: white;
+}
+body.update .btn:hover {
+  color: #00ce8b;
+  background-color: white;
 }
 
 /* @keyframes gradient {
