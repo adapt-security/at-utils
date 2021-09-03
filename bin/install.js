@@ -20,9 +20,8 @@ async function run(destination, _, command) {
     if(r.prerelease) await doPrereleaseCounter();
   }
   console.log(`Installing Adapt authoring tool ${name} in ${dest}`);
-  // await Utils.cloneRepo(name, dest);
+  await Utils.cloneRepo(name, dest);
   // add new clone dest to make sure modules are imported
-  
   Utils.addModulePath(`${dest}/node_modules`);
 
   try {
