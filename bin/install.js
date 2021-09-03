@@ -9,6 +9,8 @@ const Utils = require('../lib/Utils');
 async function run(destination, _, command) {
   const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
+  // add new clone dest to make sure modules are imported
+  Utils.addModulePath(`${dest}/node_modules`);
   if(ui) {
     return new UiServer(dest, command.name());
   }
@@ -20,8 +22,6 @@ async function run(destination, _, command) {
   }
   console.log(`Installing authoring tool version: ${name}`);
   // const dest = await Utils.cloneRepo(name, path.resolve(destination || process.cwd()));
-  // add new clone dest to make sure modules are imported
-  Utils.addModulePath(`${dest}/node_modules`);
   // TODO create user
   console.log('Application installed!');
 }
