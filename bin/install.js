@@ -31,7 +31,7 @@ async function run(destination, _, command) {
     return console.log(e);
   }
   await registerUser();
-  console.log(`Application successfully.`);
+  console.log(`Application installed successfully.`);
 }
 
 async function registerUser() {
