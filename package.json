@@ -26,6 +26,7 @@
     "comment-parser": "^1.2.4",
     "express": "^4.17.1",
     "glob": "^7.1.7",
+    "inquirer": "^8.1.2",
     "node-fetch": "^2.6.1",
     "open": "^8.2.1",
     "semver": "^7.3.5"

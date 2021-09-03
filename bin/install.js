@@ -2,6 +2,7 @@
  * Installs the application into destination drectory
  * @param {String} [destination]
  */
+const inquirer = require('inquirer');
 const path = require('path');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
@@ -9,8 +10,6 @@ const Utils = require('../lib/Utils');
 async function run(destination, _, command) {
   const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
-  // add new clone dest to make sure modules are imported
-  Utils.addModulePath(`${dest}/node_modules`);
   if(ui) {
     return new UiServer(dest, command.name());
   }
@@ -20,10 +19,48 @@ async function run(destination, _, command) {
     name = r.name;
     if(r.prerelease) await doPrereleaseCounter();
   }
-  console.log(`Installing authoring tool version: ${name}`);
-  // const dest = await Utils.cloneRepo(name, path.resolve(destination || process.cwd()));
-  // TODO create user
-  console.log('Application installed!');
+  console.log(`Installing Adapt authoring tool ${name} in ${dest}`);
+  // await Utils.cloneRepo(name, dest);
+  // add new clone dest to make sure modules are imported
+  
+  Utils.addModulePath(`${dest}/node_modules`);
+
+  try {
+    await Utils.startApp();
+  } catch(e) {
+    return console.log(e);
+  }
+  await registerUser();
+  console.log(`Application successfully.`);
+}
+
+async function registerUser() {
+  try {
+    const { email, password } = await inquirer.prompt([{
+      type: 'string',
+      name: 'email',
+      message: 'Enter an email address to be used as a login for the Super User account'
+    }, {
+      type: 'password',
+      name: 'password',
+      message: 'Enter a password for the Super User account'
+    }]);
+    await inquirer.prompt([{
+      type: 'password',
+      name: 'passwordMatch',
+      message: 'Please type the password again to confirm',
+      validate: val => {
+        if(password !== val) {
+          console.log(`\nPasswords don't match. Please try again`);
+          return false;
+        }
+        return true;
+      }
+    }]);
+    await Utils.registerUser({ email, password });
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 async function doPrereleaseCounter() {
