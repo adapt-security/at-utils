@@ -25,7 +25,7 @@ class Install extends React.Component {
         <div className={`install-step-container ${Utils.getActiveClass(1, this)}`}>
           <div className="install-step center">
             <div className="step-illustration"> 
-              <img src="assets/responsive_blue_alt.png" />
+              <img src="assets/responsive.png" />
             </div>
             <h2>Welcome to Adapt</h2>
             <p>Thank you for downloading the Adapt authoring tool!</p>

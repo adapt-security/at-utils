@@ -21,7 +21,7 @@ class Update extends React.Component {
         <div className={`install-step-container ${Utils.getActiveClass(1, this)}`}>
           <div className="install-step center">
             <div className="step-illustration"> 
-              <img src="assets/responsive_blue_alt.png" />
+              <img src="assets/responsive.png" />
             </div>
             <h2>Get the latest Adapt</h2>
             <p>You're only a few clicks away from getting the latest updates for your Adapt authoring tool install.</p> 
