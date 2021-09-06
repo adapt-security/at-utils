@@ -193,7 +193,9 @@ form {
 .install-step .instruction {
   font-weight: bold;
 }
-.install-step .version {
+.install-step a.version {
+  color: white;
+  text-decoration: underline;
   font-weight: bold;
 }
 .install-step button {

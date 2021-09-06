@@ -7,9 +7,15 @@ class Update extends React.Component {
       step: 1, 
       releaseData: { current: {}, latest: {}} };
   }
+  wrapVersion(version) {
+    const link = `https://github.com/adaptlearning/adapt_authoring/releases/tag/${version}`;
+    return <a class="version" href={link} target="_blank">{version}</a>;
+  }
   render() {
     const currentRelease = this.state.releaseData.current;
     const latestRelease = this.state.releaseData.latest || {};
+
+    
 
     return (
       <div>
@@ -35,7 +41,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Nothing to do!</h2>
-            <p>There are no updates to apply; you're using <span class="version">{currentRelease.version}</span>, which is the latest version!</p>
+            <p>There are no updates to apply; you're using {this.wrapVersion(currentRelease.version)}, which is the latest version!</p>
             <p class="instruction">You may now close this window.</p>
           </div>
         </div>
@@ -44,7 +50,7 @@ class Update extends React.Component {
             <div class="icon"><span class="lnr lnr-warning"></span></div>
             <h2>You're behind!</h2>
             <p>A newer version of the Adapt authoring tool exists.</p>
-            <p>You're using <span class="version">{currentRelease.version}</span>. The latest version <span class="version">{latestRelease.name}</span> was released on {new Date(latestRelease.date).toDateString()}.</p>
+            <p>You're using {this.wrapVersion(currentRelease.version)}. The latest version {this.wrapVersion(latestRelease.name)} was released on {new Date(latestRelease.date).toDateString()}.</p>
             <p class="instruction">Click the button below to update.</p>
             <button className="btn btn-info" onClick={this.performUpdate.bind(this)}>Update</button>
           </div>
@@ -63,7 +69,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Update complete!</h2>
-            <p>Congratulations, your authoring tool has been successfully updated to <span class="version">{latestRelease.name}</span>.</p>
+            <p>Congratulations, your authoring tool has been successfully updated to {this.wrapVersion(latestRelease.name)}.</p>
             <p class="instruction">You may now close this page.</p>
           </div>
         </div>
