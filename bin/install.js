@@ -10,8 +10,15 @@ const Utils = require('../lib/Utils');
 async function run(destination, _, command) {
   const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
+
   if(ui) {
     return new UiServer(dest, command.name());
+  }
+  try {
+    await Utils.checkPrerequisites();
+  } catch(e) {
+    console.log(`\n${e.errors.map(e2 => e2.message).join('\n')}\n`);
+    throw e;
   }
   let name = tag;
   if(!name) {
