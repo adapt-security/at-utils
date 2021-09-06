@@ -11,7 +11,7 @@ class Install extends React.Component {
   }
   render() {
     return (
-      <div className="app-inner">
+      <div>
         <div className="breadcrumb-container">
           <ol className="breadcrumb">
             <li className={Utils.getActiveClass(1, this)}>Welcome</li>
@@ -35,9 +35,9 @@ class Install extends React.Component {
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(2, this)}`}>
           <div className="install-step">
-            <h2>Please stand by</h2>
-            <p>Downloading the necessary files and installing required dependencies.</p> 
-            <p>Please wait patiently, this may take a while!</p> 
+            <div class="icon"><span class="lnr lnr-cloud-download"></span></div>
+            <h2>Downloading</h2>
+            <p>Now downloading the necessary files and installing required dependencies. Please wait, this may take a while!</p> 
             <div className="progress">
               <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
             </div>
@@ -45,6 +45,7 @@ class Install extends React.Component {
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(3, this)}`}>
           <div className="install-step">
+          <div class="icon small"><span class="lnr lnr-cog"></span></div>
             <h2>Configure your environment</h2>
             <p>The first step is to configure the configuration settings relevant to your set-up.</p> 
             <div className="alert alert-info"><b>Tip</b>: any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</div>
@@ -59,6 +60,7 @@ class Install extends React.Component {
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(4, this)}`}>
           <div className="install-step">
+            <div class="icon"><span class="lnr lnr-hourglass"></span></div>
             <h2>Initialising</h2>
             <p>Please wait while the application finishes initialising.</p>
             <div className="progress">
@@ -68,6 +70,7 @@ class Install extends React.Component {
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(5, this)}`}>
           <div className="install-step">
+            <div class="icon small"><span class="lnr lnr-user"></span></div>
             <h2>Create a super admin account</h2>
             <p>You now need to create a 'super admin' user which will be used to administer the system</p>
             <div className="alert alert-info"><b>Tip</b>: it is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</div>
@@ -76,11 +79,12 @@ class Install extends React.Component {
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(6, this)}`}>
           <div className="install-step">
+            <div class="icon"><span class="lnr lnr-rocket"></span></div>
             <h2>Start building with Adapt!</h2>
             <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
             <p>To start the application, you must run the start script from the source code's root folder:</p>
             <pre>{`cd ${this.state.rootDir} && npm start`}</pre>
-            <p>You may now close this window.</p>
+            <p class="instruction">You may now close this window.</p>
           </div>
         </div>
         {this.state.error ? this.state.error : ''}
@@ -154,7 +158,7 @@ class Install extends React.Component {
 
 async function run() {
   try {
-    ReactDOM.render(React.createElement(Install), document.querySelector('#app'));
+    ReactDOM.render(React.createElement(Install), document.querySelector('#content'));
   } catch(e) {
     console.error(e);
   }

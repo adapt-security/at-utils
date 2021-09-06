@@ -9,13 +9,13 @@ class Update extends React.Component {
   }
   render() {
     return (
-      <div className="app-inner">
+      <div>
         <div className="breadcrumb-container">
           <ol className="breadcrumb">
             <li className={Utils.getActiveClass(1, this)}>Check</li>
-            <li className={Utils.getActiveClass(2, this)}>Confirm</li>
-            <li className={Utils.getActiveClass(3, this)}>Update</li>
-            <li className={Utils.getActiveClass(4, this)}>Finish</li>
+            <li className={Utils.getActiveClass(3, this)}>Confirm</li>
+            <li className={Utils.getActiveClass(4, this)}>Update</li>
+            <li className={Utils.getActiveClass(5, this)}>Finish</li>
           </ol>
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(1, this)}`}>
@@ -30,23 +30,38 @@ class Update extends React.Component {
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(2, this)}`}>
           <div className="install-step">
-            {this.renderUpdateMessage()}
+            <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
+            <h2>Nothing to do!</h2>
+            <p>There are no updates to apply; you're using <span class="version">{this.state.releaseData.current.version}</span>, which is the latest version!</p>
+            <p class="instruction">You may now close this window.</p>
           </div>
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(3, this)}`}>
           <div className="install-step">
+            <div class="icon"><span class="lnr lnr-warning"></span></div>
+            <h2>You're behind!</h2>
+            <p>A newer version of the Adapt authoring tool exists.</p>
+            <p>You're using <span class="version">{this.state.releaseData.current.version}</span>. The latest version <span class="version">{this.state.releaseData.latest.name}</span> was released on {new Date(this.state.releaseData.latest.date).toDateString()}.</p>
+            <p class="instruction">Click the button below to update.</p>
+            <button className="btn btn-info" onClick={this.performUpdate.bind(this)}>Update</button>
+          </div>
+        </div>
+        <div className={`install-step-container ${Utils.getActiveClass(4, this)}`}>
+          <div className="install-step">
+            <div class="icon"><span class="lnr lnr-hourglass"></span></div>
             <h2>Updating</h2>
-            <p>Your application is being updated. Please wait.</p> 
+            <p>Your application is being updated to the latest version; this process may take a while.</p> 
             <div className="progress">
               <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
             </div>
           </div>
         </div>
-        <div className={`install-step-container ${Utils.getActiveClass(4, this)}`}>
+        <div className={`install-step-container ${Utils.getActiveClass(5, this)}`}>
           <div className="install-step">
-            <h2>Finish</h2>
-            <p>Congratulations! Your authoring tool has been successfully updated to <span class="version">{this.state.releaseData.latest && this.state.releaseData.latest.name}</span>.</p>
-            <p>You may now close this page.</p>
+            <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
+            <h2>Update complete!</h2>
+            <p>Congratulations, your authoring tool has been successfully updated to <span class="version">{this.state.releaseData.latest && this.state.releaseData.latest.name}</span>.</p>
+            <p class="instruction">You may now close this page.</p>
           </div>
         </div>
       </div>
@@ -58,25 +73,11 @@ class Update extends React.Component {
       return Utils.handleError(this, res.statusText);
     }
     try {
-      this.setState({ releaseData: await res.json() });
+      this.setState({ 
+        releaseData: await res.json(),
+        step: this.state.releaseData.latest ? 2 : 3
+      });
     } catch(e) {}
-    Utils.showNextStep(this);
-  }
-  renderUpdateMessage() { 
-    if(!this.state.releaseData.latest) {
-      return <div>
-        <h2>You're up-to-date</h2>
-        <p>You're using <span class="version">{this.state.releaseData.current.version}</span>, which is the latest version!</p>
-        <p>There are no updates to apply, so you may now close this window.</p>
-      </div>
-    }
-    return <div>
-      <h2>You're behind!</h2>
-      <p>A newer version of the Adapt authoring tool exists.</p>
-      <p>You're using <span class="version">{this.state.releaseData.current.version}</span>. The latest version <span class="version">{this.state.releaseData.latest.name}</span> was released on {new Date(this.state.releaseData.latest.date).toDateString()}.</p>
-      <p>Click the button below to update.</p>
-      <button className="btn btn-info" onClick={this.performUpdate.bind(this)}>Update</button>
-    </div>
   }
   async performUpdate() {
     Utils.showNextStep(this);
