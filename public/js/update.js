@@ -8,7 +8,7 @@ class Update extends React.Component {
       releaseData: { current: {}, latest: {}} };
   }
   wrapVersion(version) {
-    const link = `https://github.com/adaptlearning/adapt_authoring/releases/tag/${version}`;
+    const link = `https://github.com/adaptlearning/adapt-authoring/releases/tag/${version}`;
     return <a class="version" href={link} target="_blank">{version}</a>;
   }
   render() {
