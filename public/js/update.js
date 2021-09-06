@@ -8,6 +8,9 @@ class Update extends React.Component {
       releaseData: { current: {}, latest: {}} };
   }
   render() {
+    const currentRelease = this.state.releaseData.current;
+    const latestRelease = this.state.releaseData.latest || {};
+
     return (
       <div>
         <div className="breadcrumb-container">
@@ -32,7 +35,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Nothing to do!</h2>
-            <p>There are no updates to apply; you're using <span class="version">{this.state.releaseData.current.version}</span>, which is the latest version!</p>
+            <p>There are no updates to apply; you're using <span class="version">{currentRelease.version}</span>, which is the latest version!</p>
             <p class="instruction">You may now close this window.</p>
           </div>
         </div>
@@ -41,7 +44,7 @@ class Update extends React.Component {
             <div class="icon"><span class="lnr lnr-warning"></span></div>
             <h2>You're behind!</h2>
             <p>A newer version of the Adapt authoring tool exists.</p>
-            <p>You're using <span class="version">{this.state.releaseData.current.version}</span>. The latest version <span class="version">{this.state.releaseData.latest.name}</span> was released on {new Date(this.state.releaseData.latest.date).toDateString()}.</p>
+            <p>You're using <span class="version">{currentRelease.version}</span>. The latest version <span class="version">{latestRelease.name}</span> was released on {new Date(latestRelease.date).toDateString()}.</p>
             <p class="instruction">Click the button below to update.</p>
             <button className="btn btn-info" onClick={this.performUpdate.bind(this)}>Update</button>
           </div>
@@ -60,7 +63,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Update complete!</h2>
-            <p>Congratulations, your authoring tool has been successfully updated to <span class="version">{this.state.releaseData.latest && this.state.releaseData.latest.name}</span>.</p>
+            <p>Congratulations, your authoring tool has been successfully updated to <span class="version">{latestRelease.name}</span>.</p>
             <p class="instruction">You may now close this page.</p>
           </div>
         </div>
@@ -73,9 +76,10 @@ class Update extends React.Component {
       return Utils.handleError(this, res.statusText);
     }
     try {
+      const data = await res.json();
       this.setState({ 
-        releaseData: await res.json(),
-        step: this.state.releaseData.latest ? 2 : 3
+        releaseData: data,
+        step: !data.latest ? 2 : 3
       });
     } catch(e) {}
   }
