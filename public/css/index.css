@@ -181,6 +181,25 @@ form {
   border-radius: 3px;
   box-shadow: 0 0 5px 2px #cbe1e6; */
 }
+.install-step .icon {
+  font-size: 100px;
+  text-align: center;
+}
+.install-step h2 {
+  font-size: 45px;
+  text-align: center;
+  margin-top: 0;
+}
+.install-step .instruction {
+  font-weight: bold;
+}
+.install-step .version {
+  font-weight: bold;
+}
+.install-step button {
+  margin: 0 auto;
+  margin-top: 25px;
+}
 
 /** first step */
 .install-step.center {
