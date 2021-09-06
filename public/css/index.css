@@ -313,3 +313,13 @@ animation-direction: alternate;
     100% {background-position: 100%}
 }
 */
+
+/**
+ * Modal styling
+ */
+ .install-step-container.error .message {
+  background: rgba(255,255,255,0.2);
+  padding: 25px;
+  border-radius: 5px;
+  color: white;
+  }

@@ -83,13 +83,14 @@ class Install extends React.Component {
             <p>You may now close this window.</p>
           </div>
         </div>
+        {this.state.error ? this.state.error : ''}
       </div>
     );
   }
   async download() { 
     Utils.showNextStep(this);
     const res = await fetch('/download?prerelease=true', { method: 'POST' });
-    if(res.status > 299) return this.handleError(new Error(await res.text()));
+    if(res.status > 299) return Utils.handleError(this, new Error(await res.text()));
     Utils.showNextStep(this);
   }
   async createUser({ formData }) { 
@@ -108,7 +109,7 @@ class Install extends React.Component {
     try {
       await Promise.all([this.fetchConfigSchemas(), this.fetchUserSchema()]);
     } catch(e) {
-      this.handleError(e);
+      Utils.handleError(this, e);
     }
   }
   async fetchConfigSchemas() {
@@ -122,7 +123,7 @@ class Install extends React.Component {
     try {
       this.setState({ userSchema: await (await fetch(`/schemas/user`)).json() });
     } catch(e) {
-      this.handleError(e);
+      Utils.handleError(this, e);
     }
   }
   async saveConfig({ formData }) {
@@ -134,13 +135,13 @@ class Install extends React.Component {
         body: JSON.stringify(formData)
       });
     } catch(e) {
-      return this.handleError(e);
+      return Utils.handleError(this, e);
     }
     Utils.showNextStep(this);
-    if(res.status === 500) return this.handleError(new Error(await res.text()));
+    if(res.status === 500) return Utils.handleError(this, await res.text());
     this.setState({ rootDir: (await res.json()).rootDir });
     const res2 = await fetch('/start', { method: 'POST' });
-    if(res2.status === 500) return this.handleError(new Error(await res2.text()));
+    if(res2.status === 500) return Utils.handleError(this, await res2.text());
     Utils.showNextStep(this);
   }
   validateUser({ superUser: { password, confirmPassword } }, errors) {
@@ -148,9 +149,6 @@ class Install extends React.Component {
       errors.superUser.confirmPassword.addError("Passwords don't match");
     }
     return errors;
-  }
-  handleError(e) {
-    alert(e);
   }
 }
 

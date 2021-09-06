@@ -55,7 +55,7 @@ class Update extends React.Component {
   async checkForUpdates() {
     const res = await fetch('/getlatest?update=true&prerelease=true', { method: 'POST' });
     if(res.status > 299) {
-      return this.handleError(res.statusText);
+      return Utils.handleError(this, res.statusText);
     }
     try {
       this.setState({ releaseData: await res.json() });
@@ -81,11 +81,8 @@ class Update extends React.Component {
   async performUpdate() {
     Utils.showNextStep(this);
     const res = await fetch(`/update?version=${this.state.releaseData.latest.name}`, { method: 'POST' });
-    if(res.status > 299) return this.handleError(res.statusText);
+    if(res.status > 299) return Utils.handleError(this, res.statusText);
     Utils.showNextStep(this);
-  }
-  handleError(e) {
-    alert(e);
   }
 }
 
