@@ -3,7 +3,7 @@
  * @param {String} [destination]
  */
 const fs = require('fs/promises');
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 const semver = require('semver');
 const Utils = require('../lib/Utils');
 
@@ -24,11 +24,11 @@ async function run(destination, _, command) {
   if(!releases.length) {
     throw new Error('There are no releases waiting to be pushed');
   }
-  const { newVersion } = await inquirer.prompt([{
-    type: 'list',
+  const { newVersion } = await prompts([{
+    type: 'select',
     name: 'newVersion',
     message: 'Please confirm the release to publish',
-    choices: releases
+    choices: releases.map(r => Object.create({ title: r.name, value: r.name }))
   }]);
   if(!semver.valid(newVersion) || newVersion[0] !== 'v') {
     throw new Error(`Invalid version number used for release (${newVersion}). Please update the GitHub release and try again.`);

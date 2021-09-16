@@ -2,8 +2,9 @@
  * Installs the application into destination drectory
  * @param {String} [destination]
  */
-const inquirer = require('inquirer');
 const path = require('path');
+const prompts = require('prompts');
+const readline = require('readline');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
@@ -42,8 +43,8 @@ async function run(destination, _, command) {
 
 async function registerUser() {
   try {
-    const { email, password } = await inquirer.prompt([{
-      type: 'string',
+    const { email, password } = await prompts([{
+      type: 'text',
       name: 'email',
       message: 'Enter an email address to be used as a login for the Super User account'
     }, {
@@ -51,17 +52,11 @@ async function registerUser() {
       name: 'password',
       message: 'Enter a password for the Super User account'
     }]);
-    await inquirer.prompt([{
+    await prompts([{
       type: 'password',
       name: 'passwordMatch',
       message: 'Please type the password again to confirm',
-      validate: val => {
-        if(password !== val) {
-          console.log(`\nPasswords don't match. Please try again`);
-          return false;
-        }
-        return true;
-      }
+      validate: val => val !== password ? `Passwords don't match. Please try again` : true
     }]);
     await Utils.registerUser({ email, password });
   } catch(e) {

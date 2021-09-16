@@ -2,7 +2,7 @@
  * Updates the application in destination drectory
  * @param {String} [destination]
  */
-const inquirer = require('inquirer');
+const prompts = require('prompts');
 const semver = require('semver');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
@@ -29,7 +29,7 @@ async function run(destination, _, command) {
   }
   console.log(`A newer version is available (${name})`);
   try {
-    const { confirmed } = await inquirer.prompt([{
+    const { confirmed } = await prompts([{
       type: 'confirm',
       name: 'confirmed',
       message: 'Do you want to update'
