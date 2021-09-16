@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/taylortom/adapt-authoring-installer#readme",
   "dependencies": {
-    "@rjsf/core": "^3.0.0",
     "commander": "^8.1.0",
     "comment-parser": "^1.2.4",
     "glob": "^7.1.7",
