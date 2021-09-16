@@ -7,7 +7,6 @@ class Install extends React.Component {
       showAdvanced: false,
       step: 1
     };
-    this.fetchSchemas();
   }
   render() {
     return (
@@ -101,6 +100,9 @@ class Install extends React.Component {
     }
     const res2 = await fetch('/download?prerelease=true', { method: 'POST' });
     if(res2.status > 299) return Utils.handleError(this, new Error(await res2.text()));
+    
+    await this.fetchSchemas();
+
     Utils.showNextStep(this);
   }
   async createUser({ formData }) { 
