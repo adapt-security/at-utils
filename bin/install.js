@@ -2,6 +2,7 @@
  * Installs the application into destination drectory
  * @param {String} [destination]
  */
+const fs = require('fs/promises');
 const path = require('path');
 const prompts = require('prompts');
 const UiServer = require('../lib/UiServer');
@@ -27,7 +28,20 @@ async function run(destination, _, command) {
     if(r.prerelease) await doPrereleaseCounter();
   }
   console.log(`Installing Adapt authoring tool ${name} in ${dest}`);
+  
+  const configPath = path.resolve(dest, 'conf', `${process.env.NODE_ENV}.config.js`);
+  let configContents;
+  try {
+    configContents = await fs.readFile(configPath);
+  } catch(e) {
+    throw e.code === 'ENOENT' ? new Error(`Expected config file at '${configPath}'`) : e;
+  }
+  // remove config because git clone won't work
+  await fs.rm(path.dirname(configPath), { recursive: true });
   await Utils.cloneRepo(name, dest);
+  // reinstate config
+  await fs.mkdir(path.dirname(configPath));
+  await fs.writeFile(configPath, configContents);
   // add new clone dest to make sure modules are imported
   Utils.addModulePath(`${dest}/node_modules`);
 
