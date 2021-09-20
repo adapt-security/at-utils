@@ -4,7 +4,6 @@
  */
 const path = require('path');
 const prompts = require('prompts');
-const readline = require('readline');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
