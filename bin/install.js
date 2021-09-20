@@ -52,6 +52,7 @@ async function run(destination, _, command) {
   }
   await registerUser();
   console.log(`Application installed successfully.`);
+  process.exit();
 }
 
 async function registerUser() {
