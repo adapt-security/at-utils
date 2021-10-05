@@ -43,11 +43,13 @@ async function run() {
   process.env.NODE_ENV = 'production';
   // allow node to look for deps in the cwd to allow running using npx
   Utils.addModulePath(`${process.cwd()}/node_modules`);
-
+  
   await parseScripts();
+
+  const scriptName = require('./package.json').repository.url.match(/github.com\/(.+\/.+)\.git/)[1];
   
   program
-    .name('npx adapt-security/aat-utils')
+    .name(`npx ${scriptName}`)
     .parse();
 }
  
