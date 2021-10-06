@@ -1,24 +1,21 @@
 {
-  "name": "adapt-authoring-installer",
+  "name": "at-utils",
   "version": "0.0.1",
   "description": "Installer module for the Adapt authoring tool",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/taylortom/adapt-authoring-installer.git"
-  },
-  "bin": {
-    "aat-install": "./index.js"
-  },
   "keywords": [
     "Adapt"
   ],
-  "author": "Thomas Taylor <hello@tomtaylor.name>",
-  "license": "MIT",
+  "homepage": "https://github.com/adapt-security/at-utils#readme",
   "bugs": {
-    "url": "https://github.com/taylortom/adapt-authoring-installer/issues"
+    "url": "https://github.com/adapt-security/at-utils/issues"
   },
-  "homepage": "https://github.com/taylortom/adapt-authoring-installer#readme",
+  "license": "MIT",
+  "author": "Thomas Taylor <hello@tomtaylor.name>",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/adapt-security/at-utils.git"
+  },
   "dependencies": {
     "commander": "^8.1.0",
     "comment-parser": "^1.2.4",
