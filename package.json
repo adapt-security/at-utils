@@ -1,7 +1,7 @@
 {
   "name": "at-utils",
   "version": "0.0.1",
-  "description": "Installer module for the Adapt authoring tool",
+  "description": "A collection of CLI helper utilities for maintaining installations of the Adapt authoring tool.",
   "keywords": [
     "Adapt"
   ],
