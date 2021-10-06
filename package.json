@@ -12,6 +12,7 @@
   "license": "MIT",
   "author": "Thomas Taylor <hello@tomtaylor.name>",
   "main": "index.js",
+  "bin": "index.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/adapt-security/at-utils.git"
