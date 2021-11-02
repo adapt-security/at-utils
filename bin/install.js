@@ -4,7 +4,7 @@
  */
 const fs = require('fs/promises');
 const path = require('path');
-const prompts = require('prompts');
+const registerSuper = require('./register-super');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
@@ -50,32 +50,9 @@ async function run(destination, _, command) {
   } catch(e) {
     return console.log(e);
   }
-  await registerUser();
+  await registerSuper();
   console.log(`Application installed successfully.`);
   process.exit();
-}
-
-async function registerUser() {
-  try {
-    const { email, password } = await prompts([{
-      type: 'text',
-      name: 'email',
-      message: 'Enter an email address to be used as a login for the Super User account'
-    }, {
-      type: 'password',
-      name: 'password',
-      message: 'Enter a password for the Super User account'
-    }]);
-    await prompts([{
-      type: 'password',
-      name: 'passwordMatch',
-      message: 'Please type the password again to confirm',
-      validate: val => val !== password ? `Passwords don't match. Please try again` : true
-    }]);
-    await Utils.registerUser({ email, password });
-  } catch(e) {
-    console.log(e);
-  }
 }
 
 async function doPrereleaseCounter() {
