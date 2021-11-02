@@ -4,8 +4,12 @@
 const Utils = require('../lib/Utils');
 
 async function run() {
-  await Utils.registerSuperUserCmd();
-  console.log(`Super user registered successfully.`);
+  try {
+    await Utils.registerSuperUserCmd();
+    console.log(`Super user registered successfully.`);
+  } catch(e) {
+    console.log(`Super user registration failed, ${e}`);
+  }
   process.exit();
 }
  
