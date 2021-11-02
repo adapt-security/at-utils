@@ -4,7 +4,6 @@
  */
 const fs = require('fs/promises');
 const path = require('path');
-const registerSuper = require('./register-super');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
@@ -50,7 +49,7 @@ async function run(destination, _, command) {
   } catch(e) {
     return console.log(e);
   }
-  await registerSuper();
+  await Utils.registerSuperUserCmd();
   console.log(`Application installed successfully.`);
   process.exit();
 }
