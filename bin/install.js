@@ -1,5 +1,5 @@
 /**
- * Installs the application into destination drectory
+ * Installs the application into destination directory
  * @param {String} [destination]
  */
 const fs = require('fs/promises');
