@@ -92,6 +92,7 @@ class Update extends React.Component {
         releases, 
         step: !releases.length ? 2 : 3 
       });
+      if(!releases.length) this.exit();
     } catch(e) {}
   }
   async performUpdate() {
@@ -99,6 +100,11 @@ class Update extends React.Component {
     const res = await fetch(`/update?version=${this.state.newRelease}`, { method: 'POST' });
     if(res.status > 299) return Utils.handleError(this, res.statusText);
     Utils.showNextStep(this);
+    this.exit();
+  }
+  async exit() {
+    const res2 = await fetch('/exit', { method: 'POST' });
+    if(res2.status === 500) return Utils.handleError(this, await res2.text());
   }
 }
 
