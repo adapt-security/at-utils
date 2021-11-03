@@ -88,6 +88,7 @@ class Update extends React.Component {
       const { currentVersion, releases } = await res.json();
       this.setState({ 
         currentRelease: currentVersion, 
+        newRelease: releases[0].tag_name,
         releases, 
         step: !releases.length ? 2 : 3 
       });
