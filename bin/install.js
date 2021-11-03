@@ -53,12 +53,7 @@ async function doInstall(destination, command) {
   await fs.writeFile(configPath, configContents);
   // add new clone dest to make sure modules are imported
   Utils.addModulePath(`${dest}/node_modules`);
-
-  try {
-    await Utils.startApp();
-  } catch(e) {
-    return console.log(e);
-  }
+  await Utils.startApp();
   await Utils.registerSuperUserCmd();
 }
 
