@@ -9,7 +9,7 @@ const Utils = require('../lib/Utils');
 
 async function run(destination, _, command) {
   try {
-    await doInstall();
+    await doInstall(destination, command);
     console.log(`Application installed successfully.`);
   } catch(e) {
     return console.log(e);
