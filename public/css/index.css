@@ -90,6 +90,24 @@ form {
   margin: 15px 0;
 }
 
+select {
+  padding: 13px;
+  color: white;
+  background: transparent;
+  cursor: pointer;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+select:hover {
+  background: white;
+}
+body.install select:hover {
+  color: #5bc0de;
+}
+body.update select:hover {
+  color: #00ce8b;
+}
+
 .app-inner {
   z-index: 0;
 }
