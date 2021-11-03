@@ -12,7 +12,7 @@ async function run(destination, _, command) {
   const { prerelease, tag, ui } = command.opts();
   if(ui) {
     return new UiServer(dest, command.name())
-      .on('error', cleanUp);
+      .on('exit', cleanUp);
   }
   try {
     await doCLIInstall(dest, tag, prerelease);
