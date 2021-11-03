@@ -9,7 +9,16 @@ const Utils = require('../lib/Utils');
 
 async function run(destination, _, command) {  
   console.log(`This is the Adapt authoring tool automated releaser`);
-  
+  try {
+    await doRelease(destination);
+    console.log(`Successfully released ${newVersion}!`);
+  } catch(e) {
+    console.log(`Release tasks failed, ${e}!`);
+  }
+  process.exit();
+}
+
+async function doRelease(destination) {
   if(!process.env.GITHUB_USER || !process.env.GITHUB_TOKEN) {
     throw new Error('Missing GITHUB_USER or GITHUB_TOKEN environment variables. Please make sure that these are set and that you have push access to the Adapt authoring tool repo.');
   }
@@ -48,9 +57,8 @@ async function run(destination, _, command) {
   } catch(e) {}
 
   await Utils.githubRequest(`releases/${releaseData.id}`, { method: 'patch', body: JSON.stringify({ draft: false }) });
-
-  console.log(`Successfully released ${newVersion}!`);
 }
+
 async function updatePackage(dest, releaseData) {
   const fileDest = `${dest}/package.json`;
   let pkg;

@@ -8,6 +8,16 @@ const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
 async function run(destination, _, command) {
+  try {
+    await doUpdate(destination, command);
+    console.log(`Application updated successfully.`);
+  } catch(e) {
+    console.log(`Update failed, ${e}`);
+  }
+  process.exit();
+}
+
+async function doUpdate(destination, command) {
   const { ui, prerelease } = command.opts();
   const dest = destination || process.cwd();
   // add dest to make sure modules are imported
@@ -20,7 +30,7 @@ async function run(destination, _, command) {
   try {
     currentVersion = require(`${dest}/package.json`).version;
   } catch(e) {
-    return console.log(`Couldn't determine current version`);
+    throw new Error(`Couldn't determine current version`);
   }
   const [{ name }] = await Utils.getReleases(prerelease);
 
@@ -28,20 +38,16 @@ async function run(destination, _, command) {
     return console.log(`You are already using the latest version (${currentVersion}). Nothing to do`);
   }
   console.log(`A newer version is available (${name})`);
-  try {
-    const { confirmed } = await prompts([{
-      type: 'confirm',
-      name: 'confirmed',
-      message: 'Do you want to update'
-    }]);
-    if(!confirmed) {
-      return;
-    }
-    await Utils.updateRepo(name, dest);
-    console.log(`Application updated successfully.`);
-  } catch(e) {
-    console.log(e);
+  
+  const { confirmed } = await prompts([{
+    type: 'confirm',
+    name: 'confirmed',
+    message: 'Do you want to update'
+  }]);
+  if(!confirmed) {
+    return;
   }
+  await Utils.updateRepo(name, dest);
 }
  
 module.exports = run;

@@ -8,6 +8,16 @@ const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
 async function run(destination, _, command) {
+  try {
+    await doInstall();
+    console.log(`Application installed successfully.`);
+  } catch(e) {
+    return console.log(e);
+  }
+  process.exit();
+}
+
+async function doInstall(destination, command) {
   const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
 
@@ -50,8 +60,6 @@ async function run(destination, _, command) {
     return console.log(e);
   }
   await Utils.registerSuperUserCmd();
-  console.log(`Application installed successfully.`);
-  process.exit();
 }
 
 async function doPrereleaseCounter() {
