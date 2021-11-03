@@ -17,6 +17,7 @@ async function run(destination, _, command) {
     await doCLIInstall(dest, tag, prerelease);
     console.log(`Application installed successfully.`);
   } catch(e) {
+    await fs.rmdir(dest);
     return console.log(e);
   }
   process.exit();
