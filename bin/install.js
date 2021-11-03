@@ -26,7 +26,13 @@ async function run(destination, _, command) {
 async function cleanUp(error) {
   if(error) {
     console.trace(error);
-    fs.rm(dest, { recursive: true, force: true }).catch(console.log);
+    try { // for obvious reasons don't remove dest if git clone threw EEXIST
+      if(error.code !== 'GITCLONEEEXIST') {
+        await fs.rm(dest, { recursive: true, force: true });
+      }
+    } catch(e) {
+      console.trace(e);
+    }
   } else {
     const { App } = require('adapt-authoring-core');
     console.log(`\nApplication installed successfully. To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start\n`);
