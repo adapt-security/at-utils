@@ -116,6 +116,8 @@ class Install extends React.Component {
     });
     if(res.status === 500) throw new Error(await res.text());
     Utils.showNextStep(this);
+    const res2 = await fetch('/exit', { method: 'POST' });
+    if(res2.status === 500) return Utils.handleError(this, await res2.text());
   }
   async fetchSchemas() {
     try {
