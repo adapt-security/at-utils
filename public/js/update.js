@@ -92,6 +92,7 @@ class Update extends React.Component {
         releases, 
         step: !releases.length ? 2 : 3 
       });
+      Utils.showNextStep(this);
       if(!releases.length) this.exit();
     } catch(e) {}
   }
