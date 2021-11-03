@@ -61,7 +61,7 @@ class Install extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-hourglass"></span></div>
             <h2>Initialising</h2>
-            <p>Please wait while the application finishes initialising.</p>
+            <p>Please wait while the application checks your configuration settings and initialises.</p>
             <div className="progress">
               <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
             </div>
