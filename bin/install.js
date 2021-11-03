@@ -7,15 +7,17 @@ const path = require('path');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
+let dest;
+
 async function run(destination, _, command) {
-  const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
+  dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
   if(ui) {
     return new UiServer(dest, command.name())
       .on('exit', cleanUp);
   }
   try {
-    await doCLIInstall(dest, tag, prerelease);
+    await doCLIInstall(tag, prerelease);
   } catch(e) {
     cleanUp(e);
   }
@@ -33,7 +35,7 @@ async function cleanUp(error) {
   process.exit();
 }
 
-async function doCLIInstall(dest, tag, prerelease) {
+async function doCLIInstall(tag, prerelease) {
   try {
     await Utils.checkPrerequisites();
   } catch(e) {
