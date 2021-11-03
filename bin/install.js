@@ -13,7 +13,7 @@ async function run(destination, _, command) {
   dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
   if(ui) {
-    return new UiServer(dest, command.name())
+    return new UiServer({ cwd: dest, action: command.name(), includePrereleases: prerelease })
       .on('exit', cleanUp);
   }
   try {
@@ -41,7 +41,7 @@ async function cleanUp(error) {
   process.exit();
 }
 
-async function doCLIInstall(tag, prerelease) {
+async function doCLIInstall(tag, includePrereleases) {
   try {
     await Utils.checkPrerequisites();
   } catch(e) {
@@ -50,7 +50,7 @@ async function doCLIInstall(tag, prerelease) {
   }
   let name = tag;
   if(!name) {
-    const [r] = await Utils.getReleases(prerelease);
+    const [r] = await Utils.getReleases({ includePrereleases });
     name = r.name;
     if(r.prerelease) await doPrereleaseCounter();
   }

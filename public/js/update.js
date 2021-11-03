@@ -8,15 +8,13 @@ class Update extends React.Component {
       releaseData: { current: {}, latest: {}} };
   }
   wrapVersion(version) {
-    const link = `https://github.com/adaptlearning/adapt-authoring/releases/tag/${version}`;
+    const link = `https://github.com/adapt-security/adapt-authoring/releases/tag/${version}`;
     return <a class="version" href={link} target="_blank">{version}</a>;
   }
   render() {
-    const currentRelease = this.state.releaseData.current;
-    const latestRelease = this.state.releaseData.latest || {};
-
-    
-
+    const currentRelease = this.state.currentRelease || '';
+    const newRelease = this.state.newRelease || '';
+    const releases = this.state.releases || [];
     return (
       <div>
         <div className="breadcrumb-container">
@@ -41,7 +39,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Nothing to do!</h2>
-            <p>There are no updates to apply; you're using {this.wrapVersion(currentRelease.version)}, which is the latest version!</p>
+            <p>There are no updates to apply; you're using {this.wrapVersion(currentRelease)}, which is the latest version!</p>
             <p class="instruction">You may now close this window.</p>
           </div>
         </div>
@@ -49,8 +47,13 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-warning"></span></div>
             <h2>You're behind!</h2>
-            <p>A newer version of the Adapt authoring tool exists.</p>
-            <p>You're using {this.wrapVersion(currentRelease.version)}. The latest version {this.wrapVersion(latestRelease.name)} was released on {new Date(latestRelease.date).toDateString()}.</p>
+            <p>You're using {this.wrapVersion(currentRelease)}, and a newer version of the Adapt authoring tool exists.</p>
+            <p>The latest compatible release of the authoring tool has automatically been selected, but you can change this using the below dropdown.</p>
+            <p>
+              <select id="release" onChange={e => this.setState({ newRelease: e.target.value })}>
+                {releases.map(r => <option value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
+              </select>
+            </p>
             <p class="instruction">Click the button below to update.</p>
             <button className="btn btn-info" onClick={this.performUpdate.bind(this)}>Update</button>
           </div>
@@ -69,7 +72,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Update complete!</h2>
-            <p>Congratulations, your authoring tool has been successfully updated to {this.wrapVersion(latestRelease.name)}.</p>
+            <p>Congratulations, your authoring tool has been successfully updated to {this.wrapVersion(newRelease)}.</p>
             <p class="instruction">You may now close this page.</p>
           </div>
         </div>
@@ -77,21 +80,22 @@ class Update extends React.Component {
     );
   }
   async checkForUpdates() {
-    const res = await fetch('/getlatest?update=true&prerelease=true', { method: 'POST' });
+    const res = await fetch('/releases', { method: 'GET' });
     if(res.status > 299) {
       return Utils.handleError(this, res.statusText);
     }
     try {
-      const data = await res.json();
+      const { currentVersion, releases } = await res.json();
       this.setState({ 
-        releaseData: data,
-        step: !data.latest ? 2 : 3
+        currentRelease: currentVersion, 
+        releases, 
+        step: !releases.length ? 2 : 3 
       });
     } catch(e) {}
   }
   async performUpdate() {
     Utils.showNextStep(this);
-    const res = await fetch(`/update?version=${this.state.releaseData.latest.name}`, { method: 'POST' });
+    const res = await fetch(`/update?version=${this.state.newRelease}`, { method: 'POST' });
     if(res.status > 299) return Utils.handleError(this, res.statusText);
     Utils.showNextStep(this);
   }

@@ -28,7 +28,7 @@ async function doRelease(destination) {
     throw new Error('You do not have the required permissions to do a release.');
   }
   const dest = destination || process.cwd();
-  const releases = (await Utils.getReleases(true, true)).filter(r => r.draft);
+  const releases = (await Utils.getReleases({ includePrereleases: true, includeDrafts: true })).filter(r => r.draft);
 
   if(!releases.length) {
     throw new Error('There are no releases waiting to be pushed');
