@@ -92,9 +92,10 @@ class Update extends React.Component {
         releases, 
         step: !releases.length ? 2 : 3 
       });
-      Utils.showNextStep(this);
       if(!releases.length) this.exit();
-    } catch(e) {}
+    } catch(e) {
+      return Utils.handleError(this, e.message);
+    }
   }
   async performUpdate() {
     Utils.showNextStep(this);
