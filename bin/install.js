@@ -11,14 +11,24 @@ async function run(destination, _, command) {
   const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
   const { prerelease, tag, ui } = command.opts();
   if(ui) {
-    return new UiServer(dest, command.name());
+    return new UiServer(dest, command.name())
+      .on('error', cleanUp);
   }
   try {
     await doCLIInstall(dest, tag, prerelease);
-    console.log(`Application installed successfully.`);
   } catch(e) {
-    await fs.rmdir(dest);
-    return console.log(e);
+    cleanUp(e);
+  }
+}
+
+async function cleanUp(error) {
+  if(error) {
+    console.log(e);
+    fs.rm(dest, { recursive: true, force: true }).catch(console.log);
+  } else {
+    const { App } = require('adapt-authoring-core');
+    console.log(`\nApplication installed successfully. To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start\n`);
+    process.exit();
   }
   process.exit();
 }
