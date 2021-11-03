@@ -9,7 +9,12 @@ const Utils = require('../lib/Utils');
 
 async function run(destination, _, command) {
   try {
-    await doInstall(destination, command);
+    const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
+    const { prerelease, tag, ui } = command.opts();
+    if(ui) {
+      return new UiServer(dest, command.name());
+    }
+    await doCLIInstall(dest, tag, prerelease);
     console.log(`Application installed successfully.`);
   } catch(e) {
     return console.log(e);
@@ -17,13 +22,7 @@ async function run(destination, _, command) {
   process.exit();
 }
 
-async function doInstall(destination, command) {
-  const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
-  const { prerelease, tag, ui } = command.opts();
-
-  if(ui) {
-    return new UiServer(dest, command.name());
-  }
+async function doCLIInstall(dest, tag, prerelease) {
   try {
     await Utils.checkPrerequisites();
   } catch(e) {
