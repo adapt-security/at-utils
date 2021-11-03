@@ -62,7 +62,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-hourglass"></span></div>
             <h2>Updating</h2>
-            <p>Your application is being updated to the latest version; this process may take a while.</p> 
+            <p>Your application is being updated to {this.wrapVersion(newRelease)}; this process may take a while.</p> 
             <div className="progress">
               <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
             </div>
