@@ -8,12 +8,12 @@ const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
 async function run(destination, _, command) {
+  const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
+  const { prerelease, tag, ui } = command.opts();
+  if(ui) {
+    return new UiServer(dest, command.name());
+  }
   try {
-    const dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
-    const { prerelease, tag, ui } = command.opts();
-    if(ui) {
-      return new UiServer(dest, command.name());
-    }
     await doCLIInstall(dest, tag, prerelease);
     console.log(`Application installed successfully.`);
   } catch(e) {
