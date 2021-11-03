@@ -125,29 +125,26 @@ class Install extends React.Component {
     }
   }
   async fetchConfigSchemas() {
-    const configSchemas = await (await fetch(`/schemas/config`)).json();
+    const res = await fetch(`/schemas/config`);
+    if(res.status === 500) throw new Error(await res.text());
     const configSchema = { 
-      properties: Object.values(configSchemas).reduce((m,s) => Object.assign(m, { [s.name]: { title: s.name, ...s.schema } }), {}) 
+      properties: Object.values(await res.json()).reduce((m,s) => Object.assign(m, { [s.name]: { title: s.name, ...s.schema } }), {}) 
     };
     this.setState({ configSchema });
   }
   async fetchUserSchema() {
-    try {
-      this.setState({ userSchema: await (await fetch(`/schemas/user`)).json() });
-    } catch(e) {
-      Utils.handleError(this, e);
-    }
+    const res = await fetch(`/schemas/user`);
+    if(res.status === 500) throw new Error(await res.text());
+    this.setState({ userSchema: await res.json() });
   }
   async saveConfig({ formData }) {
-    let res;
-    try {
-      res = await fetch('/save', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-    } catch(e) {
-      return Utils.handleError(this, e);
+    const res = await fetch('/save', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if(res.status === 500) {
+      return Utils.handleError(this, new Error(await res.text()));
     }
     Utils.showNextStep(this);
     if(res.status === 500) return Utils.handleError(this, await res.text());
