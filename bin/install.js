@@ -23,7 +23,7 @@ async function run(destination, _, command) {
 
 async function cleanUp(error) {
   if(error) {
-    console.trace(e);
+    console.trace(error);
     fs.rm(dest, { recursive: true, force: true }).catch(console.log);
   } else {
     const { App } = require('adapt-authoring-core');
