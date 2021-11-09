@@ -7,7 +7,7 @@ const prompts = require('prompts');
 const semver = require('semver');
 const Utils = require('../lib/Utils');
 
-async function run(destination, _, command) {  
+async function run(destination, opts, command) {  
   console.log(`This is the Adapt authoring tool automated releaser`);
   try {
     await doRelease(destination);

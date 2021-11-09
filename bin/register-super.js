@@ -3,7 +3,7 @@
  */
 const Utils = require('../lib/Utils');
 
-async function run() {
+async function run(opts, command) {
   try {
     await Utils.registerSuperUserCmd();
     console.log(`Super user registered successfully.`);

@@ -9,9 +9,9 @@ const Utils = require('../lib/Utils');
 
 let dest;
 
-async function run(destination, _, command) {
+async function run(destination, opts, command) {
   dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
-  const { prerelease, tag, ui } = command.opts();
+  const { prerelease, tag, ui } = opts;
   if(ui) {
     return new UiServer({ cwd: dest, action: command.name(), includePrereleases: prerelease })
       .on('exit', cleanUp);

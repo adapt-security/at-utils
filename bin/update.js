@@ -7,8 +7,8 @@ const semver = require('semver');
 const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
-async function run(destination, _, command) {
-  const { ui, prerelease } = command.opts();
+async function run(destination, opts, command) {
+  const { ui, prerelease } = opts;
   const dest = destination || process.cwd();
   // add dest to make sure modules are imported
   Utils.addModulePath(`${dest}/node_modules`);
