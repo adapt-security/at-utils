@@ -1,7 +1,3 @@
-/**
- * Updates the application in destination drectory
- * @param {String} [destination]
- */
 const prompts = require('prompts');
 const semver = require('semver');
 const UiServer = require('../lib/UiServer');
@@ -59,4 +55,8 @@ function cleanUp(error) {
   process.exit();
 }
  
-module.exports = run;
+module.exports = {
+  action: run,
+  description: 'Updates the application in destination drectory',
+  params: { destination: 'Directory of the Adapt authoring install' }
+};

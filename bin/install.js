@@ -1,7 +1,3 @@
-/**
- * Installs the application into destination directory
- * @param {String} [destination]
- */
 const fs = require('fs/promises');
 const path = require('path');
 const UiServer = require('../lib/UiServer');
@@ -103,4 +99,8 @@ async function doPrereleaseCounter() {
   });
 }
  
-module.exports = run;
+module.exports = {
+  action: run,
+  description: 'Installs the application into destination directory',
+  params: { destination: 'The destination folder for the install' }
+};

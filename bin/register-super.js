@@ -1,6 +1,3 @@
-/**
- * Registers a super user account
- */
 const Utils = require('../lib/Utils');
 
 async function run(opts, command) {
@@ -13,4 +10,7 @@ async function run(opts, command) {
   process.exit();
 }
  
-module.exports = run;
+module.exports = {
+  action: run,
+  description: 'Registers a super user account'
+};

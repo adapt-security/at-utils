@@ -1,7 +1,3 @@
-/**
- * Performs relevant release tasks
- * @param {String} [destination]
- */
 const fs = require('fs/promises');
 const prompts = require('prompts');
 const semver = require('semver');
@@ -100,4 +96,8 @@ function formatDate(dateObj) {
   return `${year}/${month}/${date}`;
 }
 
-module.exports = run;
+module.exports = {
+  action: run,
+  description: 'Performs relevant release tasks',
+  params: { destination: 'Directory of the Adapt authoring install' }
+};
