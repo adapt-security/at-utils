@@ -36,13 +36,8 @@ function wrapParam(p) {
 async function run() {
   process.env.NODE_ENV = 'production';
   // allow node to look for deps in the cwd to allow running using npx
-  const modulesDir = `${process.cwd()}/node_modules`;
-  try {
-    await fs.stat(modulesDir);
-    Utils.addModulePath(modulesDir);
-  } catch(e) {
-    if(e.code !== 'ENOENT') throw e;
-  }
+  await Utils.addModulePath(`${process.cwd()}/node_modules`);
+  
   await parseScripts();
 
   const scriptName = require('./package.json').repository.url.match(/github.com\/(.+\/.+)\.git/)[1];

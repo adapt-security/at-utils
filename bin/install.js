@@ -66,7 +66,7 @@ async function doCLIInstall(tag, includePrereleases) {
   await fs.mkdir(path.dirname(configPath));
   await fs.writeFile(configPath, configContents);
   // add new clone dest to make sure modules are imported
-  Utils.addModulePath(`${dest}/node_modules`);
+  await Utils.addModulePath(`${dest}/node_modules`);
   await Utils.startApp();
   await Utils.registerSuperUserCmd();
 }
