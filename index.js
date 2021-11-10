@@ -34,17 +34,21 @@ function wrapParam(p) {
 }
 
 async function run() {
-  process.env.NODE_ENV = 'production';
-  // allow node to look for deps in the cwd to allow running using npx
-  await Utils.addModulePath(process.cwd());
-  
-  await parseScripts();
+  try {
+    process.env.NODE_ENV = 'production';
+    // allow node to look for deps in the cwd to allow running using npx
+    await Utils.addModulePath(process.cwd());
+    
+    await parseScripts();
 
-  const scriptName = require('./package.json').repository.url.match(/github.com\/(.+\/.+)\.git/)[1];
-  
-  program
-    .name(`npx ${scriptName}`)
-    .parse();
+    const scriptName = require('./package.json').repository.url.match(/github.com\/(.+\/.+)\.git/)[1];
+    
+    program
+      .name(`npx ${scriptName}`)
+      .parse();
+  } catch(e) {
+    console.log(e);
+  }
 }
  
 module.exports = run();
