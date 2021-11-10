@@ -5,17 +5,19 @@ const path = require('path');
 
 const localModulesDir = path.resolve(process.argv[2]);
 
-if(!localModulesDir) {
-  console.log('adapt-authoring-core.localModulesDir must be set to use local modules');
-  process.exit();
+async function run(opts, command) {
+  if(!localModulesDir) {
+    console.log('adapt-authoring-core.localModulesDir must be set to use local modules');
+    process.exit();
+  }
+  getDeps(path.resolve(process.cwd(), 'node_modules')).then(async d => {
+    try {
+      await globalLink(d);
+      await localLink(d);
+      console.log(`Successfully linked '${d}'`);
+    } catch {}
+  });
 }
-getDeps(path.resolve(process.cwd(), 'node_modules')).then(async d => {
-  try {
-    await globalLink(d);
-    await localLink(d);
-    console.log(`Successfully linked '${d}'`);
-  } catch {}
-});
 
 function globalLink(name) {
   return new Promise((resolve, reject) => {
@@ -49,3 +51,8 @@ async function getDeps(dir) {
   }));
   return deps;
 }
+
+module.exports = {
+  action: run,
+  description: 'Initialises local dev environment'
+};
