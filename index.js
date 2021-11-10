@@ -36,7 +36,7 @@ function wrapParam(p) {
 async function run() {
   process.env.NODE_ENV = 'production';
   // allow node to look for deps in the cwd to allow running using npx
-  await Utils.addModulePath(`${process.cwd()}/node_modules`);
+  await Utils.addModulePath(process.cwd());
   
   await parseScripts();
 
