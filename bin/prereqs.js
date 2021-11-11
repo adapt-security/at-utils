@@ -13,5 +13,5 @@ async function run(opts, command) {
 module.exports = {
   action: run,
   description: 'Lists the prerequisites required for install',
-  options: { check: 'Whether prerequisites should be checked' }
+  options: [['-c', '--check', 'Whether prerequisites should be checked']]
 };
