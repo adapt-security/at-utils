@@ -7,10 +7,6 @@ class Update extends React.Component {
       step: 1, 
       releaseData: { current: {}, latest: {}} };
   }
-  wrapVersion(version) {
-    const link = `https://github.com/adapt-security/adapt-authoring/releases/tag/${version}`;
-    return <a class="version" href={link} target="_blank">{version}</a>;
-  }
   render() {
     const currentRelease = this.state.currentRelease || '';
     const newRelease = this.state.newRelease || '';
@@ -39,7 +35,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Nothing to do!</h2>
-            <p>There are no updates to apply; you're using {this.wrapVersion(currentRelease)}, which is the latest version!</p>
+            <p>There are no updates to apply; you're using {Utils.wrapVersion(currentRelease)}, which is the latest version!</p>
             <p class="instruction">You may now close this window.</p>
           </div>
         </div>
@@ -47,13 +43,9 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-warning"></span></div>
             <h2>You're behind!</h2>
-            <p>You're using {this.wrapVersion(currentRelease)}, and a newer version of the Adapt authoring tool exists.</p>
+            <p>You're using {Utils.wrapVersion(currentRelease)}, and a newer version of the Adapt authoring tool exists.</p>
             <p>The latest compatible release of the authoring tool has automatically been selected, but you can change this using the below dropdown.</p>
-            <p>
-              <select id="release" onChange={e => this.setState({ newRelease: e.target.value })}>
-                {releases.map(r => <option value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
-              </select>
-            </p>
+            <p>{Utils.renderReleaseSelect(releases).bind(this)}</p>
             <p class="instruction">Click the button below to update.</p>
             <button className="btn btn-info" onClick={this.performUpdate.bind(this)}>Update</button>
           </div>
@@ -62,7 +54,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-hourglass"></span></div>
             <h2>Updating</h2>
-            <p>Your application is being updated to {this.wrapVersion(newRelease)}; this process may take a while.</p> 
+            <p>Your application is being updated to {Utils.wrapVersion(newRelease)}; this process may take a while.</p> 
             <div className="progress">
               <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
             </div>
@@ -72,7 +64,7 @@ class Update extends React.Component {
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-checkmark-circle"></span></div>
             <h2>Update complete!</h2>
-            <p>Congratulations, your authoring tool has been successfully updated to {this.wrapVersion(newRelease)}.</p>
+            <p>Congratulations, your authoring tool has been successfully updated to {Utils.wrapVersion(newRelease)}.</p>
             <p class="instruction">You may now close this page.</p>
           </div>
         </div>
@@ -88,7 +80,7 @@ class Update extends React.Component {
       const { currentVersion, releases } = await res.json();
       this.setState({ 
         currentRelease: currentVersion, 
-        newRelease: releases[0]?.tag_name,
+        newRelease: releases.find(r => r.url).tag_name,
         releases, 
         step: !releases.length ? 2 : 3 
       });

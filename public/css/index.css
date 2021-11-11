@@ -211,9 +211,8 @@ body.update select:hover {
 .install-step .instruction {
   font-weight: bold;
 }
-.install-step a.version {
+.install-step span.version {
   color: white;
-  text-decoration: underline;
   font-weight: bold;
 }
 .install-step button {

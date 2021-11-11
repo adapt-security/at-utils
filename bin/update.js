@@ -4,23 +4,27 @@ const UiServer = require('../lib/UiServer');
 const Utils = require('../lib/Utils');
 
 async function run(destination, opts, command) {
-  const { ui, prerelease } = opts;
+  const { ui, prerelease, branches } = opts;
   const dest = destination || process.cwd();
   // add dest to make sure modules are imported
   await Utils.addModulePath(dest);
   if(ui) {
-    return new UiServer({ cwd: dest, action: command.name(), includePrereleases: prerelease })
-      .on('exit', cleanUp);
+    return new UiServer({ 
+      cwd: dest, 
+      action: command.name(), 
+      includeBranches: branches,
+      includePrereleases: prerelease 
+    }).on('exit', cleanUp);
   }
   console.log(`Updating Adapt authoring tool in ${dest}`);
   try {
-    await doCLIUpdate(dest, prerelease);
+    await doCLIUpdate(dest, branches, prerelease);
   } catch(e) {
     cleanUp(e);
   }
 }
 
-async function doCLIUpdate(dest, includePrereleases) {
+async function doCLIUpdate(dest, includeBranches, includePrereleases) {
   let currentVersion;
   try {
     currentVersion = require(`${dest}/package.json`).version;
@@ -28,7 +32,7 @@ async function doCLIUpdate(dest, includePrereleases) {
     throw new Error(`Couldn't determine current version`);
   }
   let defaultVersion;
-  const newerVersions = (await Utils.getReleases({ includePrereleases, currentVersion })).map((r,i) => {
+  const newerVersions = (await Utils.getReleases({ includeBranches, includePrereleases, currentVersion })).map((r,i) => {
     if(semver.satisfies(`^${currentVersion}`, r.tag_name)) defaultVersion = i;
     return { title: r.name, value: r.tag_name };
   });

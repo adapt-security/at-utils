@@ -5,20 +5,24 @@ class Install extends React.Component {
     super(props);
     this.state = { 
       showAdvanced: false,
-      step: 1
+      step: 0
     };
+    this.fetchReleases();
   }
   render() {
+    const latestRelease = this.state.newRelease || '';
+    const releases = this.state.releases || [];
     return (
       <div>
         <div className="breadcrumb-container">
           <ol className="breadcrumb">
             <li className={Utils.getActiveClass(1, this)}>Welcome</li>
-            <li className={Utils.getActiveClass(2, this)}>Download</li>
-            <li className={Utils.getActiveClass(3, this)}>Configure</li>
-            <li className={Utils.getActiveClass(4, this)}>Initialise</li>
-            <li className={Utils.getActiveClass(5, this)}>Create user</li>
-            <li className={Utils.getActiveClass(6, this)}>Finish</li>
+            <li className={Utils.getActiveClass(2, this)}>Select version</li>
+            <li className={Utils.getActiveClass(3, this)}>Download</li>
+            <li className={Utils.getActiveClass(4, this)}>Configure</li>
+            <li className={Utils.getActiveClass(5, this)}>Initialise</li>
+            <li className={Utils.getActiveClass(6, this)}>Create user</li>
+            <li className={Utils.getActiveClass(7, this)}>Finish</li>
           </ol>
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(1, this)}`}>
@@ -29,10 +33,20 @@ class Install extends React.Component {
             <h2>Welcome to Adapt</h2>
             <p>Thank you for downloading the Adapt authoring tool!</p>
             <p>You are only a few clicks away from building your own multi-device e-learning.</p> 
-            <button className="btn btn-info" onClick={this.download.bind(this)}>Start</button>
+            <button className="btn btn-info" onClick={() => this.setState({ step: this.state.step+1 })}>Start</button>
           </div>
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(2, this)}`}>
+          <div className="install-step">
+            <div class="icon"><span class="lnr lnr-cloud-download"></span></div>
+            <h2>Select version</h2>
+            <p>The latest release is {Utils.wrapVersion(latestRelease)}, and is the version we recommend you download, but you can select another using the dropdown below.</p>
+            <p>{Utils.renderReleaseSelect.call(this, releases, latestRelease)}</p>
+            <p>Click the button below to start the download.</p>
+            <button className="btn btn-info" onClick={this.download.bind(this)}>Download</button>
+          </div>
+        </div>
+        <div className={`install-step-container ${Utils.getActiveClass(3, this)}`}>
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-cloud-download"></span></div>
             <h2>Downloading</h2>
@@ -42,7 +56,7 @@ class Install extends React.Component {
             </div>
           </div>
         </div>
-        <div className={`install-step-container ${Utils.getActiveClass(3, this)}`}>
+        <div className={`install-step-container ${Utils.getActiveClass(4, this)}`}>
           <div className="install-step">
           <div class="icon small"><span class="lnr lnr-cog"></span></div>
             <h2>Configure your environment</h2>
@@ -57,7 +71,7 @@ class Install extends React.Component {
             <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
           </div>
         </div>
-        <div className={`install-step-container ${Utils.getActiveClass(4, this)}`}>
+        <div className={`install-step-container ${Utils.getActiveClass(5, this)}`}>
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-hourglass"></span></div>
             <h2>Initialising</h2>
@@ -67,7 +81,7 @@ class Install extends React.Component {
             </div>
           </div>
         </div>
-        <div className={`install-step-container ${Utils.getActiveClass(5, this)}`}>
+        <div className={`install-step-container ${Utils.getActiveClass(6, this)}`}>
           <div className="install-step">
             <div class="icon small"><span class="lnr lnr-user"></span></div>
             <h2>Create a super admin account</h2>
@@ -76,7 +90,7 @@ class Install extends React.Component {
             <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} validate={this.validateUser} onSubmit={this.createUser.bind(this)}/>
           </div>
         </div>
-        <div className={`install-step-container ${Utils.getActiveClass(6, this)}`}>
+        <div className={`install-step-container ${Utils.getActiveClass(7, this)}`}>
           <div className="install-step">
             <div class="icon"><span class="lnr lnr-rocket"></span></div>
             <h2>Start building with Adapt!</h2>
@@ -89,6 +103,24 @@ class Install extends React.Component {
         {this.state.error ? this.state.error : ''}
       </div>
     );
+  }
+  async fetchReleases() { 
+    const res = await fetch('/releases', { method: 'GET' });
+    if(res.status > 299) {
+      return Utils.handleError(this, res.statusText);
+    }
+    try {
+      const { currentVersion, releases } = await res.json();
+      this.setState({ 
+        currentRelease: currentVersion, 
+        newRelease: releases.find(r => r.url).tag_name,
+        releases, 
+        step: 1
+      });
+      if(!releases.length) this.exit();
+    } catch(e) {
+      return Utils.handleError(this, e.message);
+    }
   }
   async download() { 
     Utils.showNextStep(this);

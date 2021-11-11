@@ -7,9 +7,14 @@ let dest;
 
 async function run(destination, opts, command) {
   dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
-  const { prerelease, tag, ui } = opts;
+  const { branches, prerelease, tag, ui } = opts;
   if(ui) {
-    return new UiServer({ cwd: dest, action: command.name(), includePrereleases: prerelease })
+    return new UiServer({ 
+      cwd: dest, 
+      action: command.name(), 
+      includeBranches: branches,
+      includePrereleases: prerelease
+    })
       .on('exit', cleanUp);
   }
   try {
