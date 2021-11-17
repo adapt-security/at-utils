@@ -18,7 +18,7 @@ async function run(destination, opts, command) {
       .on('exit', cleanUp);
   }
   try {
-    await doCLIInstall(tag, prerelease);
+    await doCLIInstall(tag, prerelease, branches);
   } catch(e) {
     cleanUp(e);
   }
@@ -42,7 +42,7 @@ async function cleanUp(error) {
   process.exit();
 }
 
-async function doCLIInstall(tag, includePrereleases) {
+async function doCLIInstall(tag, includePrereleases, includeBranches) {
   try {
     await Utils.checkPrerequisites();
   } catch(e) {
@@ -51,7 +51,7 @@ async function doCLIInstall(tag, includePrereleases) {
   }
   let name = tag;
   if(!name) {
-    const [r] = await Utils.getReleases({ includePrereleases });
+    const [r] = await Utils.getReleases({ includePrereleases, includeBranches });
     name = r.name;
     if(r.prerelease) await doPrereleaseCounter();
   }
