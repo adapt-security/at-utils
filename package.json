@@ -13,10 +13,7 @@
   "author": "Thomas Taylor <hello@tomtaylor.name>",
   "main": "index.js",
   "bin": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/adapt-security/at-utils.git"
-  },
+  "repository": "github:adapt-security/at-utils",
   "dependencies": {
     "commander": "^8.3.0",
     "node-fetch": "^2.6.1",
