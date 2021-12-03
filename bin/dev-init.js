@@ -1,7 +1,7 @@
 /* eslint no-console: 0 */
-const { exec } = require('child_process');
-const fs = require('fs/promises');
-const path = require('path');
+import { exec } from'child_process';
+import fs from'fs/promises';
+import path from'path';
 
 const localModulesDir = path.resolve(process.argv[2]);
 
@@ -52,7 +52,7 @@ async function getDeps(dir) {
   return deps;
 }
 
-module.exports = {
+export default {
   action: run,
   description: 'Initialises local dev environment'
 };

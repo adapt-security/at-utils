@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-const fs = require('fs/promises');
-const path = require('path');
-const { Command, program } = require('commander');
-const Utils = require('./lib/Utils');
+import fs from 'fs/promises';
+import path from 'path';
+import { Command, program } from 'commander';
+import Utils from './lib/Utils.js';
 
 async function parseScripts() {
-  const scriptsDir = `${__dirname}/bin`;
+  const scriptsDir = path.resolve(new URL(import.meta.url).pathname, '../bin');
 
   return Promise.all((await fs.readdir(scriptsDir)).map(async f => {
-    const { action, description, options = [], params = {} } = require(`${scriptsDir}/${f}`);
+    const { action, description, options = [], params = {} } = (await import(`${scriptsDir}/${f}`)).default;
     // assign default options
     options.push(
       ['-b, --branches', 'Whether to include git branches THIS COULD BE DANGEROUS'],
@@ -38,13 +38,11 @@ function wrapParam(p) {
 
 async function run() {
   try {
-    const { repository, version } = require(`${__dirname}/package.json`);
+    const { repository, version } = await Utils.loadPackage(import.meta.url);
     const repoName = repository.replace('github:', '');
     console.log(`\nRunning ${repoName}@${version}\n`);
 
     process.env.NODE_ENV = 'production';
-    // allow node to look for deps in the cwd to allow running using npx
-    await Utils.addModulePath(process.cwd());
     
     await parseScripts();
     
@@ -56,4 +54,4 @@ async function run() {
   }
 }
  
-module.exports = run();
+export default run();

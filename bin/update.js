@@ -1,7 +1,7 @@
-const prompts = require('prompts');
-const semver = require('semver');
-const UiServer = require('../lib/UiServer');
-const Utils = require('../lib/Utils');
+import prompts from 'prompts';
+import semver from 'semver';
+import UiServer from '../lib/UiServer.js';
+import Utils from '../lib/Utils.js';
 
 let dest;
 let includeBranches;
@@ -11,8 +11,6 @@ async function run(destination, opts, command) {
   dest = destination || process.cwd();
   includeBranches = opts.branches;
   includePrereleases = opts.prerelease;
-  // add dest to make sure modules are imported
-  await Utils.addModulePath(dest);
   if(opts.ui) {
     return new UiServer({ cwd: dest, action: command.name(), includeBranches, includePrereleases })
       .on('exit', cleanUp);
@@ -37,7 +35,7 @@ async function run(destination, opts, command) {
 async function getVersions() {
   const data = {};
   try {
-    data.currentVersion = require(`${dest}/package.json`).version;
+    data.currentVersion = (await Utils.loadPackage(dest)).version;
   } catch(e) {
     throw new Error(`Couldn't determine current version`);
   }
@@ -71,7 +69,7 @@ function cleanUp(error) {
   process.exit();
 }
  
-module.exports = {
+export default {
   action: run,
   description: 'Updates the application in destination drectory',
   params: { destination: 'Directory of the Adapt authoring install' },

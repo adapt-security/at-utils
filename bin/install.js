@@ -1,7 +1,7 @@
-const fs = require('fs/promises');
-const path = require('path');
-const UiServer = require('../lib/UiServer');
-const Utils = require('../lib/Utils');
+import fs from 'fs/promises';
+import path from 'path';
+import UiServer from '../lib/UiServer.js';
+import Utils from '../lib/Utils.js';
 
 let dest;
 
@@ -35,7 +35,7 @@ async function cleanUp(error) {
       console.trace(e);
     }
   } else {
-    const { App } = require('adapt-authoring-core');
+    const { App } = await Utils.importCore(dest);
     console.log(`\nApplication installed successfully. To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start\n`);
     process.exit();
   }
@@ -70,10 +70,9 @@ async function doCLIInstall(tag, includePrereleases, includeBranches) {
   // reinstate config
   await fs.mkdir(path.dirname(configPath));
   await fs.writeFile(configPath, configContents);
-  // add new clone dest to make sure modules are imported
-  await Utils.addModulePath(dest);
-  await Utils.startApp();
-  await Utils.registerSuperUserCmd();
+
+  await Utils.startApp(dest);
+  await Utils.registerSuperUserCmd(dest);
 }
 
 async function doPrereleaseCounter() {
@@ -104,7 +103,7 @@ async function doPrereleaseCounter() {
   });
 }
  
-module.exports = {
+export default {
   action: run,
   description: 'Installs the application into destination directory',
   params: { destination: 'The destination folder for the install' }

@@ -10,6 +10,7 @@
     "url": "https://github.com/adapt-security/at-utils/issues"
   },
   "license": "MIT",
+  "type": "module",
   "author": "Thomas Taylor <hello@tomtaylor.name>",
   "main": "index.js",
   "bin": "index.js",
@@ -23,7 +24,7 @@
   },
   "prerequisites": {
     "git": "2.x",
-    "node": "14.x || 16.X",
-    "npm": "6.x || 8.X"
+    "node": "16.X",
+    "npm": "8.X"
   }
 }

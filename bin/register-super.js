@@ -1,4 +1,4 @@
-const Utils = require('../lib/Utils');
+import Utils from '../lib/Utils.js';
 
 async function run(opts, command) {
   try {
@@ -10,7 +10,7 @@ async function run(opts, command) {
   process.exit();
 }
  
-module.exports = {
+export default {
   action: run,
   description: 'Registers a super user account'
 };

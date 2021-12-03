@@ -1,7 +1,7 @@
-const fs = require('fs/promises');
-const prompts = require('prompts');
-const semver = require('semver');
-const Utils = require('../lib/Utils');
+import fs from 'fs/promises';
+import prompts from 'prompts';
+import semver from 'semver';
+import Utils from '../lib/Utils.js';
 
 async function run(destination, opts, command) {  
   console.log(`This is the Adapt authoring tool automated releaser`);
@@ -56,13 +56,13 @@ async function doRelease(destination) {
 }
 
 async function updatePackage(dest, releaseData) {
-  const fileDest = `${dest}/package.json`;
   let pkg;
   try {
-    pkg = require(fileDest);
+    pkg = await Utils.loadPackage(dest);
   } catch(e) {
     throw new Error(`Couldn't find installation in ${dest}`);
   }
+  const fileDest = `${dest}/package.json`;
   const contents = (await fs.readFile(fileDest)).toString().replace(pkg.version, releaseData.name.slice(1));
   return fs.writeFile(fileDest, contents);
 }
@@ -96,7 +96,7 @@ function formatDate(dateObj) {
   return `${year}/${month}/${date}`;
 }
 
-module.exports = {
+export default {
   action: run,
   description: 'Performs relevant release tasks',
   params: { destination: 'Directory of the Adapt authoring install' }

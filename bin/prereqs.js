@@ -1,8 +1,8 @@
-const Utils = require("../lib/Utils");
+import Utils from "../lib/Utils.js";
 
 async function run(opts, command) {
   try {
-    const prereqs = require(`${__dirname}/../package.json`).prerequisites;
+    const { prerequisites: prereqs } = await Utils.loadPackage(import.meta.url, '..');
     Object.entries(prereqs).forEach(p => console.log(`${p[0]}: ${p[1]}`));
     if(opts.check) await Utils.checkPrerequisites();
   } catch(e) {
@@ -10,7 +10,7 @@ async function run(opts, command) {
   }
 }
  
-module.exports = {
+export default {
   action: run,
   description: 'Lists the prerequisites required for install',
   options: [['-c', '--check', 'Whether prerequisites should be checked']]
