@@ -114,11 +114,11 @@ class Install extends React.Component {
       const { currentVersion, releases } = await res.json();
       this.setState({ 
         currentRelease: currentVersion, 
-        newRelease: releases.find(r => r.url).tag_name,
+        newRelease: releases.find(r => r.url)?.tag_name,
         releases, 
         step: 1
       });
-      if(!releases.length) this.exit();
+      if(!releases.length) throw new Error('No releases were found!\nYou can try including the --prereleases flag to install a pre-release version (caution: may contain bugs).');
     } catch(e) {
       return Utils.handleError(this, e.message);
     }
