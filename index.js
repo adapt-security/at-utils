@@ -40,8 +40,8 @@ async function run() {
   try {
     const { repository, version } = require(`${__dirname}/package.json`);
     const repoName = repository.replace('github:', '');
-    console.log(`\nRunning ${repoName}@${version}\n`);
-    
+    console.log(`\nRunning ${repoName}@${version}`);
+
     process.env.NODE_ENV = 'production';
     // allow node to look for deps in the cwd to allow running using npx
     await Utils.addModulePath(process.cwd());
