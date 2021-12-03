@@ -40,7 +40,7 @@ async function run() {
   try {
     const { repository, version } = require(`${__dirname}/package.json`);
     const repoName = repository.replace('github:', '');
-    console.log(`\nRunning ${repoName}@${version}`);
+    console.log(`\nRunning ${repoName}@${version}\n`);
 
     process.env.NODE_ENV = 'production';
     // allow node to look for deps in the cwd to allow running using npx
