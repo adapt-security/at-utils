@@ -33,6 +33,7 @@ class Install extends React.Component {
             <h2>Welcome to Adapt</h2>
             <p>Thank you for downloading the Adapt authoring tool!</p>
             <p>You are only a few clicks away from building your own multi-device e-learning.</p> 
+            <p><b>Latest version</b>: {Utils.wrapVersion(latestRelease)}</p> 
             <button className="btn btn-info" onClick={() => this.setState({ step: this.state.step+1 })}>Start</button>
           </div>
         </div>
