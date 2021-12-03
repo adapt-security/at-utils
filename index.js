@@ -38,6 +38,7 @@ function wrapParam(p) {
 
 async function run() {
   try {
+    console.log(`Running at-utils@${require(`${__dirname}/package.json`).version}`);
     process.env.NODE_ENV = 'production';
     // allow node to look for deps in the cwd to allow running using npx
     await Utils.addModulePath(process.cwd());
