@@ -38,17 +38,18 @@ function wrapParam(p) {
 
 async function run() {
   try {
-    console.log(`Running at-utils@${require(`${__dirname}/package.json`).version}`);
+    const { repository, version } = require(`${__dirname}/package.json`);
+    const repoName = repository.replace('github:', '');
+    console.log(`\nRunning ${repoName}@${version}\n`);
+    
     process.env.NODE_ENV = 'production';
     // allow node to look for deps in the cwd to allow running using npx
     await Utils.addModulePath(process.cwd());
     
     await parseScripts();
-
-    const scriptName = require('./package.json').repository.url.match(/github.com\/(.+\/.+)\.git/)[1];
     
     program
-      .name(`npx ${scriptName}`)
+      .name(`npx ${repoName}`)
       .parse();
   } catch(e) {
     console.log(e);
