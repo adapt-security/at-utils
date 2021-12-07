@@ -5,7 +5,7 @@ import { Command, program } from 'commander';
 import Utils from './lib/Utils.js';
 
 async function parseScripts() {
-  const scriptsDir = path.resolve(new URL(import.meta.url).pathname, '../bin');
+  const scriptsDir = new URL('bin', import.meta.url);
 
   return Promise.all((await fs.readdir(scriptsDir)).map(async f => {
     const { action, description, options = [], params = {} } = (await import(`${scriptsDir}/${f}`)).default;
