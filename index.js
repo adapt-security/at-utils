@@ -39,7 +39,7 @@ function wrapParam(p) {
 async function run() {
   try {
     const { repository, version } = await Utils.loadPackage(import.meta.url);
-    const repoName = repository.replace('github:', '');
+    const repoName = repository.toString().replace('github:', '');
     console.log(`\nRunning ${repoName}@${version}\n`);
 
     process.env.NODE_ENV = 'production';
