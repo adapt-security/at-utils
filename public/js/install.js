@@ -112,9 +112,11 @@ class Install extends React.Component {
     }
     try {
       const { currentVersion, releases } = await res.json();
+      const latestRelease = releases.find(r => r.tag_name)?.tag_name;
       this.setState({ 
         currentRelease: currentVersion, 
-        newRelease: releases.find(r => r.url)?.tag_name,
+        newRelease: latestRelease,
+        selectedRelease: latestRelease,
         releases, 
         step: 1
       });
