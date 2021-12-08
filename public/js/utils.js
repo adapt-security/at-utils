@@ -16,7 +16,7 @@ class Utils {
     self.setState({ error: new ErrorDisplay(msg).render(), step: -1 });
   }
   static renderReleaseSelect(releases, selectedVersion) {
-    return (<select id="release" value={selectedVersion} onChange={e => this.setState({ newRelease: e.target.value })}>
+    return (<select id="release" value={selectedVersion} onChange={e => this.setState({ selectedRelease: e.target.value })}>
       {releases.map(r => <option value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
     </select>);
   }

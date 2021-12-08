@@ -131,7 +131,7 @@ class Install extends React.Component {
     if(res.status > 299) {
       return Utils.handleError(this, await res.text());
     }
-    const res2 = await fetch('/download', { method: 'POST' });
+    const res2 = await fetch(`/download?tag=${this.state.selectedRelease}`, { method: 'POST' });
     if(res2.status > 299) return Utils.handleError(this, new Error(await res2.text()));
     
     await this.fetchSchemas();
