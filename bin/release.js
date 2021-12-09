@@ -40,6 +40,9 @@ async function doRelease(destination) {
   }
   const releaseData = releases.find(r => r.name === newVersion);
   
+  if(!releaseData) {
+    throw new Error(`No release found matching '${newVersion}`);
+  }
   await updatePackage(dest, releaseData);
   await updateChangelog(dest, releaseData);
   await updateDocs();
