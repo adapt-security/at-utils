@@ -6,8 +6,8 @@ import Utils from '../lib/Utils.js';
 async function run(destination, opts, command) {  
   console.log(`This is the Adapt authoring tool automated releaser`);
   try {
-    await doRelease(destination);
-    console.log(`Successfully released ${newVersion}!`);
+    const { version } = await doRelease(destination);
+    console.log(`Successfully released ${version}!`);
   } catch(e) {
     console.log(`Release tasks failed, ${e}!`);
   }
@@ -53,6 +53,8 @@ async function doRelease(destination) {
   } catch(e) {}
 
   await Utils.githubRequest(`releases/${releaseData.id}`, { method: 'patch', body: JSON.stringify({ draft: false }) });
+
+  return { version: newVersion };
 }
 
 async function updatePackage(dest, releaseData) {
