@@ -19,7 +19,8 @@ async function doRelease(destination) {
     throw new Error('Missing GITHUB_USER or GITHUB_TOKEN environment variables. Please make sure that these are set and that you have push access to the Adapt authoring tool repo.');
   }
   try {
-    await Utils.githubRequest(`collaborators/${process.env.GITHUB_USER}`);
+    const perms = await Utils.githubRequest(`collaborators/${process.env.GITHUB_USER}/permission`);
+    if(perms !== 'admin') throw new Error();
   } catch(e) {
     throw new Error('You do not have the required permissions to do a release.');
   }
