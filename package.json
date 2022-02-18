@@ -17,7 +17,7 @@
   "repository": "github:adapt-security/at-utils",
   "dependencies": {
     "commander": "^8.3.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "open": "^8.4.0",
     "prompts": "^2.4.2",
     "semver": "^7.3.5"
