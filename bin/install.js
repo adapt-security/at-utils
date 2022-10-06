@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import readline from 'readline';
 import UiServer from '../lib/UiServer.js';
 import Utils from '../lib/Utils.js';
 
@@ -90,7 +91,7 @@ async function doPrereleaseCounter() {
         return;
       }
       i = 0;
-      process.stdout.cursorTo(msg.length);
+      readline.cursorTo(process.stdout, msg.length);
       process.stdout.write(countdown.toString());
       countdown--;
       if(countdown > 0) {
