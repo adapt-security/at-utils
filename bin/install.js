@@ -74,7 +74,7 @@ async function doCLIInstall(tag, includePrereleases, includeBranches) {
   // reinstate config
   await fs.mkdir(path.dirname(configPath));
   await fs.writeFile(configPath, configContents);
-
+  // create super admin
   await Utils.startApp(dest);
   await Utils.registerSuperUserCmd(dest);
 }
