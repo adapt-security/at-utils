@@ -268,6 +268,32 @@ label.control-label {
   border: 0;
 }
 
+form .panel.errors {
+  border: none;
+  box-shadow: none;
+  padding: 20px;
+  background-color: #ff765a;
+}
+form .panel.errors .panel-heading {
+  border-bottom: none;
+}
+form .panel.errors .panel-heading,
+form .panel.errors .list-group-item {
+  padding: 0;
+  background: transparent;
+  color: white;
+  font-weight: normal;
+}  
+form .panel.errors .panel-heading .panel-title {
+  font-weight: bold;
+}
+form .has-error .control-label {
+  color: inherit;
+}
+form .error-detail {
+  display: none;
+}
+
 .btn {
   padding: 10px 12px;
   width: 150px;

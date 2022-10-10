@@ -89,7 +89,7 @@ class Install extends React.Component {
             <h2>Create a super admin account</h2>
             <p>You now need to create a 'super admin' user which will be used to administer the system</p>
             <div className="alert alert-info"><b>Tip</b>: it is recommended that this account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</div>
-            <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} validate={this.validateUser} onSubmit={this.createUser.bind(this)}/>
+            <Form key={"user"} id={"user"} schema={this.state.userSchema} showOptional={this.state.showAdvanced} validate={this.validateUser} extraErrors={this.state.validationErrors} onSubmit={this.createUser.bind(this)}/>
           </div>
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(7, this)}`}>
@@ -156,7 +156,9 @@ class Install extends React.Component {
         password: formData.superUser.password 
       })
     });
-    if(res.status > 299) throw new Error(await res.text());
+    if(res.status === 400) return this.setState({ validationErrors: { superUser: { __errors: [await res.text()] } } });
+    if(res.status > 299) return Utils.handleError(this, new Error(await res.text()));
+    
     Utils.showNextStep(this);
     const res2 = await fetch('/exit', { method: 'POST' });
     if(res2.status === 500) return Utils.handleError(this, await res2.text());
