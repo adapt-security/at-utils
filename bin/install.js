@@ -5,6 +5,7 @@ import UiServer from '../lib/UiServer.js';
 import Utils from '../lib/Utils.js';
 
 let dest;
+let configContents;
 
 async function run(destination, opts, command) {
   dest = path.resolve(destination || `${process.cwd()}/adapt-authoring`);
@@ -31,6 +32,8 @@ async function cleanUp(error) {
     try { // for obvious reasons don't remove dest if git clone threw EEXIST
       if(error.code !== 'GITCLONEEEXIST') {
         await fs.rm(dest, { recursive: true, force: true });
+        // reinstate the config file
+        if(configContents) await Utils.saveConfig(dest, configContents);
       }
     } catch(e) {
       console.trace(e);
@@ -59,7 +62,6 @@ async function doCLIInstall(tag, includePrereleases, includeBranches) {
   console.log(`Installing Adapt authoring tool ${name} in ${dest}`);
   
   const configPath = path.resolve(dest, 'conf', `${process.env.NODE_ENV}.config.js`);
-  let configContents;
   try {
     configContents = await fs.readFile(configPath);
   } catch(e) {
