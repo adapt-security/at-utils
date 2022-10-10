@@ -53,7 +53,7 @@ async function doCLIInstall(tag, includePrereleases, includeBranches) {
   let name = tag;
   if(!name) {
     const [r] = await Utils.getReleases({ includePrereleases, includeBranches });
-    name = r.name;
+    name = r.name.replace('branch:', '');
     if(r.prerelease) await doPrereleaseCounter();
   }
   console.log(`Installing Adapt authoring tool ${name} in ${dest}`);
