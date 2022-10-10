@@ -21,6 +21,7 @@ async function run(destination, opts, command) {
   }
   try {
     await doCLIInstall(tag, prerelease, branches);
+    cleanUp();
   } catch(e) {
     cleanUp(e);
   }
