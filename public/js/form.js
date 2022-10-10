@@ -30,7 +30,7 @@ class Form extends React.Component {
     if(!this.props.schema) return null;
     const validate = this.props.validate || undefined;
     try {
-      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} validate={validate} onSubmit={this.props.onSubmit} onError={this.onError} />
+      return <JSONSchemaForm.default id={this.props.id} schema={this.filterOptional()} formData={this.props.formData} validate={validate} onSubmit={this.props.onSubmit} onError={this.onError} />
     } catch(e) {
       console.error(e);
       return null;

@@ -62,6 +62,7 @@ class Install extends React.Component {
           <div class="icon small"><span class="lnr lnr-cog"></span></div>
             <h2>Configure your environment</h2>
             <p>The first step is to configure the configuration settings relevant to your set-up.</p> 
+            <p><i><b>Note:</b> for convenience, all secrets have been pre-populated with randomly generated values, but feel free to change these to something else.</i></p>
             <div className="alert alert-info"><b>Tip</b>: any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</div>
             <div className="checkbox">
               <label className="control-label">
@@ -69,7 +70,7 @@ class Install extends React.Component {
                 Show advanced settings
               </label>
             </div>
-            <Form key={"config"} id={"config"} schema={this.state.configSchema} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
+            <Form key={"config"} id={"config"} schema={this.state.configSchema} formData={this.state.config} showOptional={this.state.showAdvanced} onSubmit={this.saveConfig.bind(this)}/>
           </div>
         </div>
         <div className={`install-step-container ${Utils.getActiveClass(5, this)}`}>
@@ -137,8 +138,14 @@ class Install extends React.Component {
     if(res2.status > 299) return Utils.handleError(this, new Error(await res2.text()));
     
     await this.fetchSchemas();
+    await this.generateSecrets();
 
     Utils.showNextStep(this);
+  }
+  async generateSecrets() { 
+    const res = await fetch('/secrets', { method: 'GET' });
+    if(res.status > 299) return Utils.handleError(this, await res.text());
+    this.setState({ config: await res.json() });
   }
   async createUser({ formData }) { 
     const res = await fetch('/registeruser', { 
