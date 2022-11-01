@@ -3,6 +3,32 @@
 /** Raleway for titles */
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
 
+body {
+  --dark-colour: #263944;
+  --alert-info-bg-colour: #e4f0f6;
+  --alert-info-colour: #5bc0de;
+  --form-text-colour: white;
+  --code-bg-colour: var(--dark-colour);
+  --button-hover-brightness: 0.95;
+}
+
+body.install {
+  --primary-colour: #5bc0de;
+  --secondary-colour: #00ce8b;
+}
+body.install-dev {
+  --primary-colour: var(--dark-colour);
+  --secondary-colour: #5bc0de;
+  --alert-info-bg-colour: rgba(0,0,0,0.2);
+  --alert-info-colour: white;
+  --form-text-colour: var(--dark-colour);
+  --code-bg-colour: #223038;
+}
+body.update {
+  --primary-colour: #00ce8b;
+  --secondary-colour: #5bc0de;
+}
+
 
 body {
   /* ! apply gradient bg with transition
@@ -20,6 +46,7 @@ body {
   font-weight: 400;
   /* background-color: #f3fcfe; */
   /* color: #263944; */
+  background-color: var(--primary-colour);
 }
 
 body.install { 
@@ -69,7 +96,7 @@ body.error {
 
 pre {
   margin-bottom: 30px;
-  background-color: black;
+  background-color: var(--code-bg-colour);
   color: white;
   border-radius: 3px;
   border: none;
@@ -100,12 +127,7 @@ select {
 }
 select:hover {
   background: white;
-}
-body.install select:hover {
-  color: #5bc0de;
-}
-body.update select:hover {
-  color: #00ce8b;
+  color: var(--primary-colour);
 }
 
 .app-inner {
@@ -148,7 +170,7 @@ body.update select:hover {
 }
 
 .breadcrumb > li.active {
-  color: #5bc0de;
+  color: var(--primary-colour);
   font-weight: bold;
 }
 
@@ -264,7 +286,7 @@ label.control-label {
   padding: 11px 20px;
   height: 40px;
   background-color: rgba(255,255,255,0.4);
-  color: white;
+  color: var(--form-text-colour);
   border: 0;
 }
 
@@ -297,7 +319,7 @@ form .error-detail {
 .btn {
   padding: 10px 12px;
   width: 150px;
-  background-color: #00dd95;
+  background-color: var(--secondary-colour);
   color: #fff;
   border-color: #00dd95;
   border-radius: 5px;
@@ -330,8 +352,8 @@ danger - glyphicon glyphicon-alert
 }
 
 .alert-info {
-  background-color: #e4f0f6;
-  color: #5bc0de;
+  background-color: var(--alert-info-bg-colour);
+  color: var(--alert-info-colour);
 }
 
 .alert-warning,
@@ -396,11 +418,8 @@ animation-direction: alternate;
   box-shadow: none;
   background-image: linear-gradient(45deg,rgba(255,255,255,.3) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.3) 75%,transparent 75%,transparent);
 }
-body.install .progress-bar {
-  background-color: #5bc0de;
-}
-body.update .progress-bar {
-  background-color: #00ce8b;
+body .progress-bar {
+  background-color: var(--primary-colour);
 }
 
 /**
