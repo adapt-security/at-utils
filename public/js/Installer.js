@@ -91,8 +91,10 @@ class Installer extends React.Component {
     await this.generateSecrets();
   }
 
-  async downloadModules() {
+  async getModules() {
     console.log(this.state.localModules);
+    const { adapt: dependencies } = await this.fetch('/modules');
+    this.setState({ dependencies });
   }
 
   async fetchReleases() { 

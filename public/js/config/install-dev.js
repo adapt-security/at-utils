@@ -27,7 +27,10 @@ const config = component => {
           <p>Now downloading the necessary files and installing required dependencies.</p>
           <p>Sit tight, this may take a while!</p>
         </div>,
-        actions: [component.download]
+        actions: [
+          component.download,
+          component.getModules
+        ]
       },
       {
         title: `Configure your environment`,
@@ -46,7 +49,7 @@ const config = component => {
         content: () => <div>
           <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_modules</em> folder in your authoring tool root.</p>
           <p>Please note that for obvious reasons, any modules that you download in this way will need to be updated individually using git.</p>
-          {component.state?.dependencies.map((d, i) => <Checkbox key={i} label={d} onChange={e => component.toggleLocalModule(d, e.target.checked)} />)}
+          {component.state?.dependencies?.map((d, i) => <Checkbox key={i} label={d} onChange={e => component.toggleLocalModule(d, e.target.checked)} />)}
         </div>,
         actions: [component.downloadModules],
         button: 'Init modules'
@@ -87,33 +90,6 @@ const config = component => {
         debugRequestTime: true,
         logStackOnError: true
       }
-    },
-    dependencies: [
-      "adapt-authoring-adaptframework",
-      "adapt-authoring-api",
-      "adapt-authoring-assets",
-      "adapt-authoring-auth",
-      "adapt-authoring-authored",
-      "adapt-authoring-config",
-      "adapt-authoring-core",
-      "adapt-authoring-defaultplugins",
-      "adapt-authoring-errors",
-      "adapt-authoring-jsonschema",
-      "adapt-authoring-lang",
-      "adapt-authoring-langpack-en",
-      "adapt-authoring-localauth",
-      "adapt-authoring-logger",
-      "adapt-authoring-mailer",
-      "adapt-authoring-middleware",
-      "adapt-authoring-mongodb",
-      "adapt-authoring-mongodblogger",
-      "adapt-authoring-roles",
-      "adapt-authoring-server",
-      "adapt-authoring-sessions",
-      "adapt-authoring-tags",
-      "adapt-authoring-ui",
-      "adapt-authoring-users",
-    ], 
-    localModules: []
+    }
   };
 };
