@@ -24,7 +24,9 @@ class Installer extends React.Component {
     return (
       <div>
         <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} />
-        {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
+        <div>
+          {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
+        </div>
       </div>
     );
   }

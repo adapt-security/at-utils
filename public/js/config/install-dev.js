@@ -46,7 +46,7 @@ const config = component => {
         content: () => <div>
           <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_modules</em> folder in your authoring tool root.</p>
           <p>Please note that for obvious reasons, any modules that you download in this way will need to be updated individually using git.</p>
-          {component.state?.dependencies.map(d => <Checkbox label={d} onChange={e => component.toggleLocalModule(d, e.target.checked)} />)}
+          {component.state?.dependencies.map((d, i) => <Checkbox key={i} label={d} onChange={e => component.toggleLocalModule(d, e.target.checked)} />)}
         </div>,
         actions: [component.downloadModules],
         button: 'Init modules'

@@ -7,7 +7,7 @@
 function Breadcrumbs(props) {
   return <div className="breadcrumb-container">
     <ol className="breadcrumb">
-      {props.steps.map((s, i) => <li className={i === props.activeStep ? 'active' : ''}>{s.breadcrumb || s.title}</li>)}
+      {props.steps.map((s, i) => <li key={i} className={i === props.activeStep ? 'active' : ''}>{s.breadcrumb || s.title}</li>)}
     </ol>
   </div>
 }
@@ -97,7 +97,7 @@ function ReleaseSelect({ component }) {
   const selected = component.state?.latestRelease;
   return <p>
     <select id="release" value={selected} onChange={e => component.setState({ selectedRelease: e.target.value })}>
-      {releases.map(r => <option value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
+      {releases.map((r, i) => <option key={i} value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
     </select>
   </p>;
 }
