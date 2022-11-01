@@ -1,0 +1,11 @@
+{
+  "module": false,
+  "documentation": {
+    "enable": true,
+    "manualPlugins": ["docs/plugins/install.js"],
+    "manualPages": {
+      "install.md": "getting-started",
+      "update.md": "getting-started"
+    }
+  }
+}
