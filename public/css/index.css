@@ -60,21 +60,6 @@ body.update {
 body.update .breadcrumb-container {
   background-image: url(/assets/adapt_logo_green.png);
 }
-body.update .breadcrumb > li.active {
-  color: #00ce8b;
-}
-body.update .btn {
-  background-color: #00ce8b;
-  border-color: white;
-}
-body.update .btn:hover {
-  color: #00ce8b;
-  background-color: white;
-}
-
-body.error { 
-  background-color: #ff765a; 
-}
 
 /* @keyframes gradient {
     0% {background-position: 0%}
@@ -321,15 +306,14 @@ form .error-detail {
   width: 150px;
   background-color: var(--secondary-colour);
   color: #fff;
-  border-color: #00dd95;
   border-radius: 5px;
   font-weight: 700;
   transition: all .3s;
 }
 
 .btn:hover {
-  background-color: #00ce8b;
-  border-color: #00ce8b;
+  background-color: white;
+  color: var(--primary-colour);
 }
 
 /*! alert colors taken from AT */
