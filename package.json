@@ -22,7 +22,7 @@
     "semver": "^7.3.5"
   },
   "prerequisites": {
-    "git": "2+",
+    "git": "2.x",
     "node": "18.x",
     "npm": "8.x"
   }
