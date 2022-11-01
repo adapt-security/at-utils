@@ -29,10 +29,9 @@
   <script type="text/babel" src="js/Installer.js"></script>
   <script type="text/babel">
     ReactDOM.render(React.createElement(Installer), document.querySelector('#content'));
-    document.on('error', event => {
-      alert('error');
+    document.addEventListener('error', event => {
       console.error(event.detail);
-      ReactDOM.render(ErrorDisplay(e), document.querySelector('#error'));
+      ReactDOM.render(ErrorDisplay(event.detail), document.querySelector('#error'));
     });
   </script>
   <!-- Theming imports -->

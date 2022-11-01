@@ -16,10 +16,11 @@ class Installer extends React.Component {
       step: 0,
       ...config
     };
-    this.fetchReleases().catch(this.onError);
+    this.fetchReleases()
+      .then(() => this.performStep())
+      .catch(e => this.onError(e));
   }
   render() {
-    this.performStep().catch(this.onError);
     return (
       <div>
         <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} />
@@ -32,6 +33,7 @@ class Installer extends React.Component {
     if(step.button) await this.awaitButtonPress();
     if(step.actions) for (const a of step.actions) await a.call(this);
     this.setState({ step: this.state.step+1 });
+    await this.performStep();
   }
 
   async awaitButtonPress(eventName = 'click-button') {
@@ -64,8 +66,8 @@ class Installer extends React.Component {
     return res;
   }
 
-  onError(e) {
-    document.getElementById('app').dispatchEvent(new CustomEvent('error', { detail: e }));
+  onError(error) {
+    document.dispatchEvent(new CustomEvent('error', { detail: error }));
   }
 
   /**
