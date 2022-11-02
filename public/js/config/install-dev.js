@@ -36,11 +36,13 @@ const config = component => {
         title: `Configure your environment`,
         breadcrumb: `Configure`,
         icon: 'lnr-cog',
+        stepAlignment: 'left',
         content: () => <div>
           <p>Add your configuration settings below. We've added some defaults, but feel free to change these to match your environment.</p> 
           <Checkbox label="Show advanced settings" checked={component.state?.showAdvanced} onChange={() => component.setState({ showAdvanced: !component.state?.showAdvanced })} />
           <Form key={"config"} id={"config"} schema={component.state?.configSchema} formData={component.state?.config} showOptional={component.state?.showAdvanced} onSubmit={component.saveConfig.bind(component)}/>
-        </div>
+        </div>,
+        actions: [component.waitForConfig]
       },
       {
         title: `Initialise local modules`,
@@ -49,9 +51,8 @@ const config = component => {
         content: () => <div>
           <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_modules</em> folder in your authoring tool root.</p>
           <p>Please note that for obvious reasons, any modules that you download in this way will need to be updated individually using git.</p>
-          {component.state?.dependencies?.map((d, i) => <Checkbox key={i} label={d} onChange={e => component.toggleLocalModule(d, e.target.checked)} />)}
+          <AdaptDependencies data={component.state.dependencies} checked={component.state.dependenciesChecked} onChange={component.toggleLocalModule.bind(component)}/>
         </div>,
-        actions: [component.downloadModules],
         button: 'Init modules'
       },
       {
@@ -59,7 +60,8 @@ const config = component => {
         breadcrumb: `Initialise`,
         icon: 'lnr-hourglass',
         showLoadingBar: true,
-        content: () => <p>Please wait while the application checks your configuration settings and initialises.</p>
+        content: () => <p>Please wait while the application checks your configuration settings and initialises.</p>,
+        actions: [component.downloadModules],
       },
       {
         title: `Let's get coding!`,
@@ -69,8 +71,8 @@ const config = component => {
           <p>You can start the application with:</p>
           <pre>{`cd ${component.state?.rootDir} && npm start`}</pre>
         </div>,
-        instruction: 'You may now close this window.',
-        breadcrumb: 'Finish'
+        breadcrumb: 'Finish',
+        button: 'Exit'
       }
     ],
     config: {

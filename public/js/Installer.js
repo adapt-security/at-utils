@@ -25,13 +25,17 @@ class Installer extends React.Component {
       <div>
         <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} />
         <div>
-          {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
+          {this.state.releases ? this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />) : ''}
         </div>
       </div>
     );
   }
   async performStep() {
     const step = this.state.steps[this.state.step];
+    if(!step) {
+      await this.post('/exit');
+      return window.close();
+    }
     if(step.button) await this.awaitButtonPress();
     if(step.actions) for (const a of step.actions) await a.call(this);
     this.setState({ step: this.state.step+1 });
@@ -81,7 +85,6 @@ class Installer extends React.Component {
     const res = await this.post('/registeruser', { email, password }, { handleErrors: false });
     if(res.status === 400) return this.setState({ validationErrors: { superUser: { __errors: [await res.text()] } } });
     if(res.status > 299) throw new Error(await res.text());
-    this.exit();
   }
 
   async download() { 
@@ -92,9 +95,15 @@ class Installer extends React.Component {
   }
 
   async getModules() {
-    console.log(this.state.localModules);
-    const { adapt: dependencies } = await this.fetch('/modules');
+    const dependencies = Object.keys(await (await this.fetch('/modules')).json());
     this.setState({ dependencies });
+  }
+  
+  async downloadModules() {
+    if(this.state?.dependenciesChecked?.length) {
+      return;
+    }
+    return this.post('/installmodules', this.state.dependenciesChecked);
   }
 
   async fetchReleases() { 
@@ -121,6 +130,10 @@ class Installer extends React.Component {
     this.setState({ config: { ...this.state.config, ...(await (await this.fetch('/secrets')).json()) } });
   }
 
+  async waitForConfig() {
+    return new Promise(resolve => document.addEventListener('form-submit', () => resolve()));
+  }
+
   async saveConfig({ formData }) {
     const res = await this.post('/save', formData);
     this.setState({ rootDir: (await res.json()).rootDir });
@@ -132,23 +145,19 @@ class Installer extends React.Component {
     this.exit();
   }
   
-  async exit() {
-    await this.post('/exit');
-  }
-
   /**
    * UI actions
    */
 
   toggleLocalModule(name, checked) {
-    const localModules = this.state.localModules;
+    const deps = this.state.dependenciesChecked || [];
     if(checked) {
-      localModules.push(name);
+      deps.push(name);
     } else {
-      const i = localModules.indexOf(name);
-      if(i > -1) localModules.splice(i, 1);
+      const i = deps.indexOf(name);
+      if(i > -1) deps.splice(i, 1);
     }
-    this.setState({ localModules });
+    this.setState({ dependenciesChecked: deps });
   }
 
   validateUser({ superUser: { password, confirmPassword } }, errors) {

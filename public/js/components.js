@@ -4,6 +4,14 @@
  * Reusable components used in installer pages
  */
 
+function AdaptDependencies(props) {
+  if(!props.data) return '';
+  const checked = props.checked || [];
+  return <div className="dependencies">
+    {props.data.map((d, i) => <Checkbox key={i} label={d} checked={checked.includes(d)} onChange={e => props.onChange(d, e.target.checked)} />)}
+  </div>;
+}
+
 function Breadcrumbs(props) {
   return <div className="breadcrumb-container">
     <ol className="breadcrumb">
@@ -13,7 +21,7 @@ function Breadcrumbs(props) {
 }
 
 function Checkbox(props) {
-  return <div className="checkbox">
+  return <div className={`checkbox ${props.checked ? 'checked' : ''}`}>
     <label className="control-label">
       <input type="checkbox" checked={props.checked} onChange={props.onChange} /> 
       {props.label}
@@ -76,7 +84,7 @@ class Form extends React.Component {
         formData={this.props.formData} 
         validate={validate} 
         extraErrors={this.props.extraErrors} 
-        onSubmit={this.props.onSubmit} 
+        onSubmit={(...args) => document.dispatchEvent(new Event('form-submit')) && this.props.onSubmit(...args)} 
         onError={this.onError} />
     } catch(e) {
       console.error(e);
@@ -104,7 +112,7 @@ function ReleaseSelect({ component }) {
 
 function StepItem(props) {
   return <div className={`install-step-container ${props.isActive ? 'active' : ''}`}>
-    <div className="install-step center">
+    <div className={`install-step ${props.stepAlignment || 'center'}`}>
       {props.data.icon ? 
         <div className="icon">
           <span className={`lnr ${props.data.icon}`}></span>
