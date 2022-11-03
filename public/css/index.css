@@ -153,6 +153,7 @@ select:hover {
   background-repeat: no-repeat;
   background-position: 10px center;
   z-index: 1;
+  text-align: center;
 }
 
 .breadcrumb {
@@ -451,6 +452,7 @@ body .progress-bar {
   padding: 25px;
   border-radius: 5px;
   color: white;
+  word-break: break-word;
 }
 
 
