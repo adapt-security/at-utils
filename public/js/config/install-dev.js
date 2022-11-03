@@ -1,4 +1,8 @@
 const config = component => { 
+  const superUser = {
+    email: 'dev@adapt.test',
+    password: 'password'
+  };
   return {
     steps: [
       {
@@ -6,17 +10,11 @@ const config = component => {
         breadcrumb: `Welcome`,
         icon: 'lnr-keyboard',
         content: () => <div>
-          <p>This installer will set up a development version of the Adapt authoring tool. <em>This is meant for developers only, here be dragons...</em></p> 
-          <p><b>Latest version</b>: <Version version={component.state?.newRelease} /></p>
+          <p>This installer will set up a development version of the Adapt authoring tool. <em>This is meant for developers only, here be dragons...</em></p>   
+          <ReleaseSelect component={component}/>
         </div>,
-        button: 'Start'
-      },
-      {
-        title: `Select version`,
-        icon: 'lnr-cloud-download',
-        content: () => <ReleaseSelect component={component}/>,
-        instruction: 'Click the button below to start the download.',
-        button: 'Download',
+        instruction: 'Choose your release and click the button below to start the download.',
+        button: `Let's go!`,
       },
       {
         title: `Downloading`,
@@ -35,7 +33,7 @@ const config = component => {
       {
         title: `Configure your environment`,
         breadcrumb: `Configure`,
-        icon: 'lnr-cog',
+        icon: 'lnr-cog small',
         stepAlignment: 'left',
         content: () => <div>
           <p>Add your configuration settings below. We've added some defaults, but feel free to change these to match your environment.</p> 
@@ -44,27 +42,32 @@ const config = component => {
         actions: [component.waitForConfig]
       },
       {
-        title: `Initialise local modules`,
+        title: `Download local modules`,
         breadcrumb: `Choose modules`,
         icon: 'lnr-cog',
         content: () => <div>
-          <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_modules</em> folder in your authoring tool root.</p>
+          <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_adapt_modules</em> folder in your authoring tool root.</p>
           <p>Please note that for obvious reasons, any modules that you download in this way will need to be updated individually using git.</p>
           <AdaptDependencies data={component.state.dependencies} checked={component.state.dependenciesChecked} onChange={component.toggleLocalModule.bind(component)}/>
         </div>,
-        button: 'Init modules'
+        button: 'Continue'
       },
       {
-        title: `Initialising`,
+        title: `Booting up`,
         breadcrumb: `Initialise`,
-        icon: 'lnr-hourglass',
+        icon: 'lnr-rocket',
         showLoadingBar: true,
-        content: () => <p>Please wait while the application checks your configuration settings and initialises.</p>,
-        actions: [component.downloadModules],
+        content: () => <p>Please wait while the application downloads any local modules and starts up.</p>,
+        actions: [
+          component.downloadModules,
+          component.startApp,
+          () => component.createUser(superUser),
+          component.getCwd
+        ]
       },
       {
         title: `Let's get coding!`,
-        icon: 'lnr-rocket',
+        icon: 'lnr-code',
         content: () => <div>
           <p>Your Adapt authoring tool environment has been set up successfully!</p>
           <AppStartInstructions cmds={component.state.cmds}/>
