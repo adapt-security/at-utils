@@ -3,14 +3,6 @@
 /** Raleway for titles */
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
 
-#error > .inner {
-  background-color: #ff765a;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-}
-
 body {
   --dark-colour: #263944;
   --alert-info-bg-colour: #e4f0f6;
@@ -18,6 +10,7 @@ body {
   --form-text-colour: white;
   --code-bg-colour: var(--dark-colour);
   --button-hover-brightness: 0.95;
+  --error-colour: #ff765a;
 }
 
 body.install {
@@ -37,6 +30,13 @@ body.update {
   --secondary-colour: #5bc0de;
 }
 
+#error > .inner {
+  background-color: var(--error-colour);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
 
 body {
   /* ! apply gradient bg with transition
