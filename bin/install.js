@@ -17,43 +17,20 @@ export default class Install extends CliCommand {
       return new UiServer(this.options)
         .on('exit', this.cleanUp);
     }
+    if(this.options.devMode) {
+      console.log('IMPORTANT: dev mode flag currently has no effect when running in headless mode\n');
+    }
     try {
-      try {
-        await Utils.checkPrerequisites();
-      } catch(e) {
-        console.log(`\n${e.errors.map(e2 => e2.message).join('\n')}\n`);
-        throw e;
-      }
-      if(!this.options.tag) {
-        const [r] = await Utils.getReleases(this.options);
-        this.options.tag = r.name.replace('branch:', '');
-        if(r.prerelease) {
-          const { value } = await this.getInput([{
-            type: 'confirm',
-            name: 'value',
-            message: `Would you like to continue?`,
-            initial: false
-          }], 'WARNING! YOU HAVE CHOSEN TO INCLUDE PRERELEASE VERSIONS WHICH ARE NOT SUITABLE FOR PRODUCTION. PLEASE PROCEED WITH CAUTION.');
-          if(!value) {
-            console.log('\nGoodbye.');
-            this.cleanUp(new Error('User cancelled install'));
-          }
-        }
-      }
+      await Utils.checkPrerequisites();
+    } catch(e) {
+      console.log(`\n${e.errors.map(e2 => e2.message).join('\n')}\n`);
+      throw e;
+    }
+    try {
+      if(!this.options.tag) this.options.tag = await this.getReleaseInput();
+
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`);
-      
-      const configPath = path.resolve(this.options.cwd, 'conf', `${process.env.NODE_ENV}.config.js`);
-      try {
-        this.configContents = await fs.readFile(configPath);
-      } catch(e) {
-        throw e.code === 'ENOENT' ? new Error(`Expected config file at '${configPath}'`) : e;
-      }
-      // remove config because git clone won't work
-      await fs.rm(path.dirname(configPath), { recursive: true });
       await this.cloneRepo();
-      // reinstate config
-      await fs.mkdir(path.dirname(configPath));
-      await fs.writeFile(configPath, this.configContents);
       // create super admin
       await Utils.startApp(this.options.cwd);
       await Utils.registerSuperUserCmd(this.options.cwd);
@@ -65,6 +42,7 @@ export default class Install extends CliCommand {
   }
   async cleanUp(error) {
     if(error) {
+      console.log('\n');
       console.trace(error);
       try { // for obvious reasons don't remove dest if git clone threw EEXIST
         if(error.code !== 'GITCLONEEEXIST') {
