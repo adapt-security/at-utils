@@ -68,9 +68,9 @@ export default class Install extends CliCommand {
       console.trace(error);
       try { // for obvious reasons don't remove dest if git clone threw EEXIST
         if(error.code !== 'GITCLONEEEXIST') {
-          await fs.rm(options.cwd, { recursive: true, force: true });
+          await fs.rm(this.options.cwd, { recursive: true, force: true });
           // reinstate the config file
-          if(this.configContents) await Utils.saveConfig(options.cwd, this.configContents);
+          if(this.configContents) await Utils.saveConfig(this.options.cwd, this.configContents);
         }
       } catch(e) {
         console.trace(e);
