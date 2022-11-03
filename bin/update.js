@@ -1,9 +1,6 @@
-import prompts from 'prompts';
-import semver from 'semver';
+import CliCommand from '../lib/CliCommand.js';
 import UiServer from '../lib/UiServer.js';
 import Utils from '../lib/Utils.js';
-
-import CliCommand from '../lib/CliCommand.js';
 
 export default class Update extends CliCommand {
   get config() {
@@ -19,44 +16,22 @@ export default class Update extends CliCommand {
       return new UiServer(this.options)
         .on('exit', this.cleanUp);
     }
-    const releaseData = await this.getVersions();
-    if(!releaseData.latestCompatibleVersion) {
-      return console.log(`You are already using the latest version (${releaseData.currentVersion}). Nothing to do`);
+    if(this.releaseData.releases[0].tag_name === this.releaseData.currentVersion) {
+      return console.log(`You are already using the latest version (${this.releaseData.currentVersion}). Nothing to do`);
     }
-    console.log(`You are using ${releaseData.currentVersion}, but ${releaseData.latestCompatibleVersion} is now available!`);
+    console.log(`You are using ${this.releaseData.currentVersion}, but ${this.releaseData.releases[0].tag_name} is now available!\n`);
     
     if(this.options.dryRun) {
       return;
     }
-    console.log(`Updating Adapt authoring tool in ${this.options.cwd}`);
+    console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`);
     try {
-      const { tag } = await prompts([{
-        type: 'select',
-        name: 'tag',
-        message: 'Choose a release to update to',
-        initial: latestCompatibleVersion,
-        choices: newerVersions
-      }]);
-      await Utils.updateRepo(tag, this.options.cwd);
+      if(!this.options.tag) this.options.tag = await this.getReleaseInput();
+      await Utils.updateRepo(this.options);
+      this.cleanUp();
     } catch(e) {
-      cleanUp(e);
+      this.cleanUp(e);
     }  
-  }
-  async getVersions() {
-    const data = {};
-    try {
-      data.currentVersion = (await Utils.loadPackage(this.options.cwd)).version;
-    } catch(e) {
-      throw new Error(`Couldn't determine current version`);
-    }
-    const releases = await Utils.getReleases({ ...this.options, currentVersion: data.currentVersion });
-    data.newerVersions = releases.map((r,i) => {
-      const isCompatible = semver.satisfies(`^${data.currentVersion}`, r.tag_name);
-      const isGreater = semver.gt(releases[data.latestCompatibleVersion].tag_name, r.tag_name);
-      if(isCompatible && isGreater) data.latestCompatibleVersion = i;
-      return { title: r.name, value: r.tag_name };
-    });
-    return data;
   }
   async cleanUp(error) {
     if(error) {
