@@ -94,6 +94,9 @@ pre {
   border-radius: 3px;
   border: none;
 }
+pre.command {
+  text-align: left;
+}
 
 h1, h2, h3, h4 {
   margin-bottom: 40px;
