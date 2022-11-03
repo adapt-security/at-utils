@@ -22,8 +22,8 @@
     "semver": "^7.3.5"
   },
   "prerequisites": {
-    "git": "2+",
-    "node": "18.x",
+    "git": ">=2",
+    "node": "16.x",
     "npm": "8.x"
   }
 }
