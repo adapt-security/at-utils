@@ -137,12 +137,15 @@ class Installer extends React.Component {
   async saveConfig({ formData }) {
     const res = await this.post('/save', formData);
     this.setState({ rootDir: (await res.json()).rootDir });
-    await this.post('/start');
   }
 
   async update() {
     await this.post(`/update?version=${this.state.newRelease}`);
     this.exit();
+  }
+  
+  async startApp() {
+    await this.post('/start');
   }
   
   async getCwd() {
