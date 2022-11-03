@@ -130,10 +130,10 @@ class Installer extends React.Component {
     this.setState({ config: { ...this.state.config, ...(await (await this.fetch('/secrets')).json()) } });
   }
 
-  async waitForConfig() {
+  async waitForForm() {
     return new Promise(resolve => document.addEventListener('form-submit', () => resolve()));
   }
-
+  
   async saveConfig({ formData }) {
     const res = await this.post('/save', formData);
     this.setState({ rootDir: (await res.json()).rootDir });

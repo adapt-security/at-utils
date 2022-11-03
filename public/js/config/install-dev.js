@@ -39,7 +39,7 @@ const config = component => {
           <p>Add your configuration settings below. We've added some defaults, but feel free to change these to match your environment.</p> 
           <ConfigForm component={component} />
         </div>,
-        actions: [component.waitForConfig]
+        actions: [component.waitForForm]
       },
       {
         title: `Download local modules`,
