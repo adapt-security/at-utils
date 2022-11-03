@@ -81,7 +81,7 @@ const config = component => {
       'adapt-authoring-core': {
         isProduction: false
       },
-      'adapt-authoring-mongodb': {
+      'adapt-authoring-logger': {
         levels: ["error", "warn", "success", "info", "debug"]
       },
       'adapt-authoring-mongodb': {
