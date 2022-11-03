@@ -54,7 +54,7 @@ const config = component => {
       },
       {
         title: `Booting up`,
-        breadcrumb: `Initialise`,
+        breadcrumb: `Boot`,
         icon: 'lnr-rocket',
         showLoadingBar: true,
         content: () => <p>Please wait while the application downloads any local modules and starts up.</p>,
@@ -67,13 +67,13 @@ const config = component => {
       },
       {
         title: `Let's get coding!`,
+        breadcrumb: 'Finish',
         icon: 'lnr-code',
         content: () => <div>
           <p>Your Adapt authoring tool environment has been set up successfully!</p>
           <AppStartInstructions cmds={component.state.cmds}/>
           <DocsLink />
         </div>,
-        breadcrumb: 'Finish',
         button: 'Exit'
       }
     ],
