@@ -10,36 +10,62 @@ class Installer extends React.Component {
     } catch(e) {
       return this.onError(e);
     } 
+    config.steps = [
+      {
+        title: `Checking releases`,
+        breadcrumb: false,
+        icon: 'lnr-hourglass',
+        showLoadingBar: true,
+        actions: [this.fetchReleases],
+        haltOnComplete: true
+      },
+      {
+        title: `No releases found`,
+        breadcrumb: false,
+        icon: `lnr-thumbs-${config.action === 'update' ? 'up' : 'down'}`,
+        content: () => <div>
+          <p>Sorry, no releases were found at this time.</p>
+          <p>You can try using the --prereleases flag to include pre-release versions (WARNING: may contain bugs).</p>
+        </div>,
+        button: 'Exit',
+        exit: true
+      },
+      ...config.steps
+    ];
     this.state = { 
       config: {},
       showAdvanced: false,
       step: 0,
       ...config
     };
-    this.fetchReleases()
-      .then(() => this.performStep())
-      .catch(e => this.onError(e));
+  }
+  async componentDidMount() {
+    try {
+      await this.performStep();
+    } catch(e) {
+      this.onError(e);
+    }
   }
   render() {
     return (
       <div>
-        <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} />
-        <div>
-          {this.state.releases ? this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />) : ''}
+        <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} onClose={this.exit.bind(this)}/>
+        <div className="install-steps-container">
+          {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
         </div>
       </div>
     );
   }
-  async performStep() {
-    const step = this.state.steps[this.state.step];
-    if(!step) {
-      await this.post('/exit');
-      return window.close();
+  async performStep(step = this.state.steps[this.state.step]) {
+    if(step?.button) await this.awaitButtonPress();
+    if(!step || step.exit) {
+      return this.exit();
     }
-    if(step.button) await this.awaitButtonPress();
     if(step.actions) for (const a of step.actions) await a.call(this);
-    this.setState({ step: this.state.step+1 });
-    await this.performStep();
+    if(!step.haltOnComplete) {
+      this.setState({ step: this.state.step+1 });
+      await this.performStep();
+    }
   }
 
   async awaitButtonPress(eventName = 'click-button') {
@@ -115,7 +141,8 @@ class Installer extends React.Component {
       selectedRelease: latestRelease,
       releases
     });
-    if(!releases.length) throw new Error('No releases were found!\nYou can try including the --prereleases flag to install a pre-release version (caution: may contain bugs).');
+    this.setState({ step: releases.length ? 2 : 1 });
+    await this.performStep();
   }
 
   async fetchSchemas() {
