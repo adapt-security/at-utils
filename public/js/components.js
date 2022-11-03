@@ -60,6 +60,10 @@ function ConfigForm(props) {
   </div>;
 }
 
+function DocsLink() {
+  return <p>Head over to the <a href="https://adapt-security.github.io/adapt-authoring-documentation/" target="_blank">Project documentation</a> for guides and API docs.</p>;
+}
+
 function ErrorDisplay(e) {
   console.error(e);
   const message = e.message ? e.message : e.toString ? e.toString() : e;

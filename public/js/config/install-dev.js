@@ -71,7 +71,7 @@ const config = component => {
         content: () => <div>
           <p>Your Adapt authoring tool environment has been set up successfully!</p>
           <AppStartInstructions cmds={component.state.cmds}/>
-          <p>Head over to the <a href="https://adapt-security.github.io/adapt-authoring-documentation/" target="_blank">Project documentation</a> for guides and API docs.</p>
+          <DocsLink />
         </div>,
         breadcrumb: 'Finish',
         button: 'Exit'
