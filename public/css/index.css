@@ -138,6 +138,9 @@ select:hover {
   content: ">";
   /* content: "\276F"; */
 }
+.breadcrumb>li.hidden+li:before {
+  content: "";
+}
 
 .breadcrumb-container {
   position: fixed;
