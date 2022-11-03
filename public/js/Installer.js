@@ -109,7 +109,7 @@ class Installer extends React.Component {
   async fetchReleases() { 
     const { currentVersion, releases } = await (await this.fetch('/releases')).json();
     const latestRelease = releases.find(r => r.tag_name)?.tag_name;
-    this.setState({ 
+    this.setState({
       currentRelease: currentVersion, 
       newRelease: latestRelease,
       selectedRelease: latestRelease,
