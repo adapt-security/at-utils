@@ -39,8 +39,7 @@ const config = component => {
         stepAlignment: 'left',
         content: () => <div>
           <p>Add your configuration settings below. We've added some defaults, but feel free to change these to match your environment.</p> 
-          <Checkbox label="Show advanced settings" checked={component.state?.showAdvanced} onChange={() => component.setState({ showAdvanced: !component.state?.showAdvanced })} />
-          <Form key={"config"} id={"config"} schema={component.state?.configSchema} formData={component.state?.config} showOptional={component.state?.showAdvanced} onSubmit={component.saveConfig.bind(component)}/>
+          <ConfigForm component={component} />
         </div>,
         actions: [component.waitForConfig]
       },

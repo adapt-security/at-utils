@@ -42,9 +42,7 @@ const config = component => {
         content: () => <div>
           <p>The first step is to configure the configuration settings relevant to your set-up.</p> 
           <p><i><b>Note:</b> for convenience, all secrets have been pre-populated with randomly generated values, but feel free to change these to something else.</i></p>
-          <div className="alert alert-info"><b>Tip</b>: any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</div>
-          <Checkbox label="Show advanced settings" checked={component.state.showAdvanced} onChange={() => component.setState({ showAdvanced: !component.state.showAdvanced })}/>
-          <Form key={"config"} id={"config"} schema={component.state.configSchema} formData={component.state.config} showOptional={component.state.showAdvanced} onSubmit={component.saveConfig.bind(component)}/>
+          <ConfigForm component={component} />
         </div>
       },
       {
