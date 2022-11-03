@@ -49,7 +49,7 @@ class Installer extends React.Component {
   render() {
     return (
       <div>
-        <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} onClose={this.exit.bind(this)}/>
+        <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} onClose={() => this.exit(true)}/>
         <div className="install-steps-container">
           {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
         </div>
@@ -179,8 +179,8 @@ class Installer extends React.Component {
     this.setState({ cmds: (await (await this.fetch('/commands')).json()) });
   }
 
-  async exit() {
-    await this.post('/exit');
+  async exit(quit) {
+    this.post('/exit', quit ? 'User cancelled the install' : undefined);
     return window.close();
   }
   
