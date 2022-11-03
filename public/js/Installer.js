@@ -141,7 +141,7 @@ class Installer extends React.Component {
   }
 
   async update() {
-    this.post(`/update?version=${this.state.newRelease}`);
+    await this.post(`/update?version=${this.state.newRelease}`);
     this.exit();
   }
   
