@@ -31,7 +31,13 @@ function AppStartInstructions(props) {
 function Breadcrumbs(props) {
   return <div className="breadcrumb-container">
     <ol className="breadcrumb">
-      {props.steps.map((s, i) => <li key={i} className={i === props.activeStep ? 'active' : ''}>{s.breadcrumb || s.title}</li>)}
+      {props.steps
+        .map((s, i) => {
+          const activeClass = i === props.activeStep ? 'active' : '';
+          const hiddenClass = s.breadcrumb === false ? 'hidden' : '';
+          return <li key={i} className={`${activeClass} ${hiddenClass}`}>{s.breadcrumb || s.title}</li>;
+        })}
+        <button className="close" onClick={props.onClose}><span className="text">Close installer</span><span className="icon"><span className="lnr lnr-cross"></span></span></button>
     </ol>
   </div>
 }

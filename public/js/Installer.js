@@ -151,6 +151,11 @@ class Installer extends React.Component {
   async getCwd() {
     this.setState({ cmds: (await (await this.fetch('/commands')).json()) });
   }
+
+  async exit() {
+    await this.post('/exit');
+    return window.close();
+  }
   
   /**
    * UI actions
