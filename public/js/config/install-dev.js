@@ -68,8 +68,8 @@ const config = component => {
         icon: 'lnr-rocket',
         content: () => <div>
           <p>Your Adapt authoring tool environment has been set up successfully!</p>
-          <p>You can start the application with:</p>
-          <pre>{`cd ${component.state?.rootDir} && npm start`}</pre>
+          <AppStartInstructions cmds={component.state.cmds}/>
+          <p>Head over to the <a href="https://adapt-security.github.io/adapt-authoring-documentation/" target="_blank">Project documentation</a> for guides and API docs.</p>
         </div>,
         breadcrumb: 'Finish',
         button: 'Exit'

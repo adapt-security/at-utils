@@ -76,9 +76,10 @@ export default class Install extends CliCommand {
         console.trace(e);
       }
     } else {
-      const { App } = await Utils.importCore(options.cwd);
-      console.log(`\nApplication installed successfully. To start the app, please run the following commands:\n\ncd ${App.instance.rootDir}\nnpm start\n`);
-      process.exit();
+      const cmds = Utils.getStartCommands(this.options.cwd);
+      let msg = '\nApplication installed successfully. To start the app, run the following commands:\n\n';
+      Object.entries(cmds).forEach(([platform, cmd]) => msg += `${platform}:\n${cmd}\n\n`);
+      console.log(msg);
     }
     process.exit();
   }

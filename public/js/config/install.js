@@ -70,8 +70,7 @@ const config = component => {
         icon: 'lnr-rocket',
         content: () => <div>
           <p>Congratulations, your Adapt authoring tool has been installed successfully!</p>
-          <p>To start the application, you must run the start script from the source code's root folder:</p>
-          <pre>{`cd ${component.state.rootDir} && npm start`}</pre>
+          <AppStartInstructions dirs={component.state.cmds}/>
         </div>,
         instruction: 'You may now close component window.'
       }

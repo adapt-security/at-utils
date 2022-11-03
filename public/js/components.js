@@ -12,6 +12,22 @@ function AdaptDependencies(props) {
   </div>;
 }
 
+function AppStartInstructions(props) {
+  if(!props.cmds) {
+    return '';
+  }
+  const { windows, bash } = props.cmds;
+  return <div className="start-instructions">
+    <p>To start the application, run the following commands in your favourite terminal application:</p>
+    {windows ? <div>
+      Windows Command Prompt/PowerShell:
+      <pre className="command">{windows}</pre>
+    </div> : ''}
+    {windows ? 'Git bash' : 'bash/Mac Terminal'}:
+    <pre className="command">{bash}</pre>
+  </div>;
+}
+
 function Breadcrumbs(props) {
   return <div className="breadcrumb-container">
     <ol className="breadcrumb">
