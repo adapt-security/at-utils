@@ -80,8 +80,8 @@ class Installer extends React.Component {
    * API calls
    */
 
-  async createUser({ formData }) { 
-    const { email, password } = formData.superUser;
+  async createUser(userData) { 
+    const { email, password } = userData;
     const res = await this.post('/registeruser', { email, password }, { handleErrors: false });
     if(res.status === 400) return this.setState({ validationErrors: { superUser: { __errors: [await res.text()] } } });
     if(res.status > 299) throw new Error(await res.text());

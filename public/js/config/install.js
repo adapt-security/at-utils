@@ -59,7 +59,7 @@ const config = component => {
         content: () => <div>
           <p>You now need to create a 'super admin' user which will be used to administer the system</p>
           <div className="alert alert-info"><b>Tip</b>: it is recommended that component account is reserved for admin tasks only, and that you create extra users for daily use via the authoring tool interface.</div>
-          <Form key={"user"} id={"user"} schema={component.state.userSchema} showOptional={component.state.showAdvanced} validate={component.validateUser} extraErrors={component.state.validationErrors} onSubmit={component.createUser.bind(component)}/>
+          <Form key={"user"} id={"user"} schema={component.state.userSchema} showOptional={component.state.showAdvanced} validate={component.validateUser} extraErrors={component.state.validationErrors} onSubmit={d => component.createUser(d.formData.superUser)}/>
         </div>
       },
       {
