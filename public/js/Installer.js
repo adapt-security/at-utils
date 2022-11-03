@@ -100,7 +100,7 @@ class Installer extends React.Component {
   }
   
   async downloadModules() {
-    if(this.state?.dependenciesChecked?.length) {
+    if(!this.state?.dependenciesChecked?.length) {
       return;
     }
     return this.post('/installmodules', this.state.dependenciesChecked);
