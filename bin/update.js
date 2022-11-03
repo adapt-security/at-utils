@@ -17,7 +17,7 @@ export default class Update extends CliCommand {
   async runTask() {
     if(this.options.ui) {
       return new UiServer(this.options)
-        .on('exit', cleanUp);
+        .on('exit', this.cleanUp);
     }
     const releaseData = await this.getVersions();
     if(!releaseData.latestCompatibleVersion) {
