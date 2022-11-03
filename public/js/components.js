@@ -148,12 +148,9 @@ function ReleaseSelect({ component }) {
 function StepItem(props) {
   return <div className={`install-step-container ${props.isActive ? 'active' : ''}`}>
     <div className={`install-step ${props.stepAlignment || 'center'}`}>
-      {props.data.icon ? 
-        <div className="icon">
-          <span className={`lnr ${props.data.icon}`}></span>
-        </div> : ''}
-      <h2>{props.data.title}</h2>
-      {props.data.content()}
+      {props.data.icon ? <div className="icon"><span className={`lnr ${props.data.icon}`}></span></div> : ''}
+      {props.data.title ? <h2>{props.data.title}</h2> : ''}
+      {props.data.content ? props.data.content() : ''}
       {props.data.showLoadingBar ? 
         <div className="progress">
           <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
