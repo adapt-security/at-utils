@@ -1,6 +1,5 @@
 import CliCommand from '../lib/CliCommand.js';
 import fs from 'fs/promises';
-import path from 'path';
 import UiServer from '../lib/UiServer.js';
 import Utils from '../lib/Utils.js';
 
@@ -42,23 +41,19 @@ export default class Install extends CliCommand {
   }
   async cleanUp(error) {
     if(error) {
-      console.log('\n');
-      console.trace(error);
+      console.log('Install failed, performing cleanup operation');
       try { // for obvious reasons don't remove dest if git clone threw EEXIST
         if(error.code !== 'GITCLONEEEXIST') {
+          console.log('- Removing broken install files');
           await fs.rm(this.options.cwd, { recursive: true, force: true });
-          // reinstate the config file
+          console.log('- Reinstating original config file');
           if(this.configContents) await Utils.saveConfig(this.options.cwd, this.configContents);
         }
       } catch(e) {
+        console.log('Oh dear, cleanup failed.\n');
         console.trace(e);
       }
-    } else {
-      const cmds = Utils.getStartCommands(this.options.cwd);
-      let msg = '\nApplication installed successfully. To start the app, run the following commands:\n\n';
-      Object.entries(cmds).forEach(([platform, cmd]) => msg += `${platform}:\n${cmd}\n\n`);
-      console.log(msg);
     }
-    process.exit();
+    super.cleanUp(error);
   }
 }

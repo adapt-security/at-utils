@@ -33,12 +33,4 @@ export default class Update extends CliCommand {
       this.cleanUp(e);
     }  
   }
-  async cleanUp(error) {
-    if(error) {
-      console.log(`Update failed, ${error}`);
-    } else {
-      console.log(`Application updated successfully.`);
-    }
-    process.exit();
-  }
 }
