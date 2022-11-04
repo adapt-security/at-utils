@@ -27,8 +27,8 @@ class Installer extends React.Component {
           <p>Sorry, no releases were found at this time.</p>
           <p>You can try using the --prereleases flag to include pre-release versions (WARNING: may contain bugs).</p>
         </div>,
+        actions: [() => this.exit('No releases found')],
         button: 'Exit',
-        exit: true
       },
       ...config.steps
     ];
@@ -49,7 +49,7 @@ class Installer extends React.Component {
   render() {
     return (
       <div>
-        <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} onClose={() => this.exit(true)}/>
+        <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} onClose={() => this.exit('User cancelled the install')}/>
         <div className="install-steps-container">
           {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
         </div>
@@ -57,10 +57,8 @@ class Installer extends React.Component {
     );
   }
   async performStep(step = this.state.steps[this.state.step]) {
-    if(step?.button) await this.awaitButtonPress();
-    if(!step || step.exit) {
-      return this.exit();
-    }
+    if(!step) return this.exit();
+    if(step.button) await this.awaitButtonPress();
     if(step.actions) for (const a of step.actions) await a.call(this);
     if(!step.haltOnComplete) {
       this.setState({ step: this.state.step+1 });
@@ -179,8 +177,8 @@ class Installer extends React.Component {
     this.setState({ cmds: (await (await this.fetch('/commands')).json()) });
   }
 
-  async exit(quit) {
-    this.post('/exit', quit ? 'User cancelled the install' : undefined);
+  async exit(errorMsg) {
+    this.post('/exit', errorMsg);
     return window.close();
   }
   
