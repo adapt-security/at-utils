@@ -12,6 +12,9 @@ export default class Update extends CliCommand {
     };
   }
   async runTask() {
+    if(!this.releaseData.currentVersion) {
+      throw new Error(`Adapt authoring tool install not found in ${this.options.cwd}`);
+    }
     if(this.options.ui) {
       return new UiServer(this.options)
         .on('exit', this.cleanUp);
