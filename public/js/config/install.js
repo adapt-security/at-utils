@@ -27,7 +27,7 @@ const config = component => {
         breadcrumb: 'Download',
         icon: 'lnr-cloud-download',
         showLoadingBar: true,
-        content: () => <p>Now downloading the necessary files and installing required dependencies. Please wait, component may take a while!</p>,
+        content: () => <p>Now downloading the necessary files and installing required dependencies. Please wait, this may take a while!</p>,
         actions: [component.download]
       },
       {
