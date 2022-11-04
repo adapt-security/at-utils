@@ -12,17 +12,17 @@ export default class Update extends CliCommand {
     };
   }
   async runTask() {
-    if(!this.releaseData.currentVersion) {
+    if(!this.options.releaseData.currentVersion) {
       throw new Error(`Adapt authoring tool install not found in ${this.options.cwd}`);
     }
     if(this.options.ui) {
       return new UiServer(this.options)
         .on('exit', this.cleanUp);
     }
-    if(this.releaseData.releases[0].tag_name === this.releaseData.currentVersion) {
-      return console.log(`You are already using the latest version (${this.releaseData.currentVersion}). Nothing to do`);
+    if(this.options.releaseData.releases[0].tag_name === this.options.releaseData.currentVersion) {
+      return console.log(`You are already using the latest version (${this.options.releaseData.currentVersion}). Nothing to do`);
     }
-    console.log(`You are using ${this.releaseData.currentVersion}, but ${this.releaseData.releases[0].tag_name} is now available!\n`);
+    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${this.options.releaseData.releases[0].tag_name} is now available!\n`);
     
     if(this.options.dryRun) {
       return;
