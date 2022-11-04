@@ -17,15 +17,15 @@ const config = component => {
         title: `Updating`,
         breadcrumb: `Update`,
         icon: 'lnr-hourglass',
-        showProgressBar: true,
-        content: () => <p>Your application is being updated to <Version version={component.state?.newRelease}/>; this process may take a while.</p>,
+        showLoadingBar: true,
+        content: () => <p>Your application is being updated to <Version version={component.state?.selectedRelease}/>; this process may take a while.</p>,
         actions: [component.update]
       },
       {
         title: `Update complete!`,
         breadcrumb: `Finish`,
         icon: 'lnr-checkmark-circle',
-        content: () => <p>Congratulations, your authoring tool has been successfully updated to <Version version={component.state?.newRelease}/>.</p>,
+        content: () => <p>Congratulations, your authoring tool has been successfully updated to <Version version={component.state?.selectedRelease}/>.</p>,
         instruction: 'You may now close this page.',
         button: 'Exit'
       },
