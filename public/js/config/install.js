@@ -46,7 +46,7 @@ const config = component => {
         breadcrumb: 'Initialise',
         icon: 'lnr-hourglass',
         showLoadingBar: true,
-        content: () => <p>Please wait while the application checks your configuration settings and starts up.</p>,
+        content: () => <p>Please wait while the application checks your configuration settings and starts up. This process can take a few minutes.</p>,
         actions: [component.startApp]
       },
       {
