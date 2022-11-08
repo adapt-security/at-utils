@@ -5,7 +5,8 @@ export default class Install extends CliCommand {
   get config() {
     return {
       ...super.config,
-      description: 'Registers a super user account'
+      description: 'Registers a super user account',
+      getReleaseData: false
     };
   }
   async runTask() {
