@@ -1,10 +1,13 @@
 # Updating
 
-Getting the latest version of the Adapt authoring tool is as simple as running the installer utility in a terminal with the following command:
+Getting the latest version of the Adapt authoring tool is as simple as running the following command in a terminal:
 
 ```
-npx adapt-security/at-utils update --prerelease [DIRECTORY]
+npx adapt-security/at-utils update [DIRECTORY]
 ```
-> If you don't pass the `[DIRECTORY]` param, the updater will use the current working directory.
 
-Once you run this command, the updater will automatically open in your default web browser, and guide you through the rest of the process.
+The update utility accepts the same parameters and flags as the installer, so see the [installation instructions](http://localhost:9003/#/install?id=installer-options) for information.
+
+> #### Updating a dev install
+>
+> If you installed the application with the `--dev` flag, make sure you also add this flag when updating. Otherwise your local modules won't be included and will need to be re-linked in your `package.json` manually.
