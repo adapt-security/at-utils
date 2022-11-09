@@ -78,8 +78,6 @@ npx adapt-security/at-utils install --no-ui [DIRECTORY]
 
 ## Developer installation
 
-> ## NOT YET IMPLEMENTED
-
 If you're a developer working on the Adapt authoring tool codebase, you can run the installer in 'dev' mode which will give you the following advantages over a standard install:
 
 - Ability to install code from git branches
