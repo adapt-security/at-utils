@@ -78,6 +78,9 @@ const config = component => {
       }
     ],
     config: {
+      'adapt-authoring-auth': {
+        defaultTokenLifespan: '99y'
+      },
       'adapt-authoring-core': {
         isProduction: false
       },
@@ -93,6 +96,9 @@ const config = component => {
         url: 'http://localhost:5678',
         debugRequestTime: true,
         logStackOnError: true
+      },
+      'adapt-authoring-sessions': {
+        lifespan: '99y'
       }
     }
   };
