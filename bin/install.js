@@ -32,7 +32,7 @@ export default class Install extends CliCommand {
       await this.cloneRepo();
       // create super admin
       await Utils.startApp(this.options.cwd);
-      await Utils.registerSuperUserCmd(this.options.cwd);
+      await Utils.registerSuperUserCmd(this.options);
 
       this.cleanUp();
     } catch(e) {
