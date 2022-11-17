@@ -8,7 +8,11 @@ export default class Install extends CliCommand {
     return {
       ...super.config,
       description: 'Installs the application into destination directory',
-      params: { destination: 'The destination folder for the install' }
+      params: { destination: 'The destination folder for the install' },
+      options: [
+        ['--se --super-email <email>', 'The admin user email address'],
+        ['--pp --pipe-passwd', 'Whether the admin password will be piped into the script']
+      ]
     };
   }
   async runTask() {
