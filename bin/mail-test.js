@@ -5,15 +5,14 @@ export default class MailTest extends CliCommand {
   get config() {
     return {
       ...super.config,
-      description: 'Registers a super user account',
+      description: 'Sends a test email',
       params: { email: 'Recipient email address for the test' },
       getReleaseData: false
     };
   }
   async runTask() {
     try {
-      await Utils.internalApiRequest(`auth/local/registersuper`, { email: this.options.email });
-      console.log(this.options);
+      await Utils.internalApiRequest(`auth/mailer/test`, { email: this.options.email });
       console.log(`Email test successful`);
       process.exitCode = 0;
     } catch(e) {
