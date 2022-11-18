@@ -4,8 +4,6 @@ import { pathToFileURL } from 'url';
 
 export default class Install {
   async run() {
-    const defaultOptions = await import(pathToFileURL(path.resolve(this.config.srcDir, '../../lib/DEFAULT_OPTIONS.js')));
-    console.log(defaultOptions);
     const scriptData = await this.loadScriptData();
     this.manualFile = 'at-utils.md';
     this.contents = scriptData.map(s => s.name);
