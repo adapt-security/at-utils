@@ -12,7 +12,7 @@ export default class MailTest extends CliCommand {
   }
   async runTask() {
     try {
-      await Utils.internalApiRequest(`auth/mailer/test`, { email: this.options.email });
+      await Utils.internalApiRequest(`mailer/test`, { email: this.options.email });
       console.log(`Email test successful`);
       process.exitCode = 0;
     } catch(e) {
