@@ -10,7 +10,7 @@ export default class Install {
       ...Object.entries(this.prerequisites).reduce((m, [name, version]) => Object.assign(m, { [name]: version }), {})
     };
   }
-  async generateMd() {
+  generateMd() {
     return Object.entries(this.prerequisites).reduce((s, [name]) => `${s}\`\`\`\n${name} --version\n\`\`\`\n`, '');
   }
 }
