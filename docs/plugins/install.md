@@ -31,32 +31,13 @@ If any of these return errors, or the installed versions don't match the require
 > #### Important note on `node-gyp`
 > Node and npm have a core dependency on the [`node-gyp`](https://github.com/nodejs/node-gyp) module, which requires a current version of Python and a C++ compiler to run. Depending on your system, you may need to intall these manually. Please see the [`node-gyp` installation instructions](https://github.com/nodejs/node-gyp#installation) for more details, including specific instructions for various OSes.
 
-## Installer options
+## Installation methods
 
-See below for a list of arguments and flags which can be passed to the installer.
+See below for a quick guide on the different installation methods available.
 
-> #### Arguments and flags
-> A command line 'argument' is essentially anything that comes after the original command (the 'command' when discussing the installer is always `npx adapt-security/at-utils install`), and flags are an optional type of argument, often prefixed with `--` which alter the behaviour of the command. So for the following command:
-> ```bash
-> npx adapt-security/at-utils install --no-ui --prerelease /home/user/adapt
-> ```
-> The value `/home/user/adapt` is considered an argument (note that arguments are not wrapped in square brackets when typed, this is simply for emphasis in the documentation), and `--no-ui` and `--prerelease` are optional flags.
+> For full details on the options and parameters accepted by the install script, please see the [relevant section](at-utils?id=install) on the Utilities page.
 
-### Arguments
-
-The install script only requires a single argument:
-
-- `[DIRECTORY]` the directory in which to install the authoring tool (to specify the current directory, just use `.`)
-
-### Flags
-
-The installer supports the following flags:
-
-- `--no-ui` will run the installer in a streamlined headless-mode without the installer user interface
-- `--prerelease` will include prerelease versions when choosing which version of the authoring tool to install
-- `--dev` will install the authoring tool in 'dev' mode ([see below](#developer-installation))
-
-## Standard installation
+### Standard installation
 
 The standard installation method is recommended for general use when installing on a standalone computer as it guides you through the process of downloading and configuring the application. If you're installing on a server or want a quicker method, check out the [headless install instructions](#headless-installation).
 
@@ -65,7 +46,9 @@ When you run the installer, it will launch in your default web browser and walk 
 npx adapt-security/at-utils install [DIRECTORY]
 ```
 
-## Headless installation
+***
+
+### Headless installation
 
 If you're installing the authoring tool on a headless server or otherwise want a more streamlined install process without the installer UI, you can run the installer using the `--no-ui` flag.
 
@@ -76,7 +59,9 @@ Run the installer in headless mode with the following command:
 npx adapt-security/at-utils install --no-ui [DIRECTORY]
 ```
 
-## Developer installation
+***
+
+### Developer installation
 
 If you're a developer working on the Adapt authoring tool codebase, you can run the installer in 'dev' mode which will give you the following advantages over a standard install:
 
