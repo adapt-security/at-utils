@@ -14,7 +14,15 @@ export default class Install extends CliCommand {
     };
   }
   async runTask() {
-    await Utils.registerSuperUserCmd(this.options);
-    console.log(`Super user registered successfully.`);
+    try {
+      await Utils.registerSuperUserCmd(this.options);
+      console.log(`Super user registered successfully.`);
+      process.exitCode = 0;
+    } catch(e) {
+      console.log(`Super User registration failed with error code ${e.code} (${e.statusCode}):`);
+      console.log(`\n${e.message}`);
+      process.exitCode = 1;
+    }
+    
   }
 }
