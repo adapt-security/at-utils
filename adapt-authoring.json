@@ -2,8 +2,12 @@
   "module": false,
   "documentation": {
     "enable": true,
-    "manualPlugins": ["docs/plugins/install.js"],
+    "manualPlugins": [
+      "docs/plugins/at-utils.js",
+      "docs/plugins/install.js"
+    ],
     "manualPages": {
+      "at-utils.md": "getting-started",
       "install.md": "getting-started",
       "update.md": "getting-started"
     }
