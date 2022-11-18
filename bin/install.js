@@ -10,8 +10,8 @@ export default class Install extends CliCommand {
       description: 'Installs the application into destination directory',
       params: { destination: 'The destination folder for the install' },
       options: [
-        ['--se --super-email <email>', 'The admin user email address'],
-        ['--pp --pipe-passwd', 'Whether the admin password will be piped into the script']
+        ['-e --super-email <email>', 'The admin user email address'],
+        ['-p --pipe-passwd', 'Whether the admin password will be piped into the script']
       ]
     };
   }
