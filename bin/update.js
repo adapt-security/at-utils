@@ -1,4 +1,5 @@
 import CliCommand from '../lib/CliCommand.js';
+import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js';
 import UiServer from '../lib/UiServer.js';
 import Utils from '../lib/Utils.js';
 
@@ -8,7 +9,10 @@ export default class Update extends CliCommand {
       ...super.config,
       description: 'Updates the application in destination directory',
       params: { destination: 'The destination folder for the source code' },
-      options: [['-d --dry-run', 'Check for update without performing any update actions' ]]
+      options: [
+        ...DEFAULT_OPTIONS,
+        ['-d --dry-run', 'Check for update without performing any update actions' ]
+      ]
     };
   }
   async runTask() {

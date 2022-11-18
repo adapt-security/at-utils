@@ -4,24 +4,18 @@ import path from 'path';
 import { Command, program } from 'commander';
 import Utils from './lib/Utils.js';
 import CliCommand from './lib/CliCommand.js';
-import DEFAULT_OPTIONS from './lib/DEFAULT_OPTIONS.js'
 
 const scriptsDir = new URL('bin', import.meta.url);
 
 async function parseScripts() {
-
   return Promise.all((await fs.readdir(scriptsDir)).map(async f => {
     let localCommand = await loadCommand(f);
     if(!localCommand) return;
-    const options = [
-      ...localCommand.config.options,
-      ...DEFAULT_OPTIONS
-    ];
     const c = new Command(path.basename(f, path.extname(f)));
     
     c.description(localCommand.config.description || '');
     
-    options.forEach(args => c.option(...args));
+    localCommand.config.options.forEach(args => c.option(...args));
     Object.entries(localCommand.config.params).forEach(([p, desc]) => c.argument(wrapParam(p), desc));
     
     c.action((...args) => localCommand.run(...args).catch(e => console.log(`Command '${c.name()}' failed with error:\n\n${e}`)));
