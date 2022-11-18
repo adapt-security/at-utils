@@ -4,6 +4,7 @@ import path from 'path';
 import { Command, program } from 'commander';
 import Utils from './lib/Utils.js';
 import CliCommand from './lib/CliCommand.js';
+import DEFAULT_OPTIONS from './lib/DEFAULT_OPTIONS.js'
 
 const scriptsDir = new URL('bin', import.meta.url);
 
@@ -14,13 +15,7 @@ async function parseScripts() {
     if(!localCommand) return;
     const options = [
       ...localCommand.config.options,
-      // assign default options
-      ['--branches --include-branches', 'Whether to include git branches THIS COULD BE DANGEROUS'],
-      ['--dev --dev-mode', 'Developer installation NOT FOR PRODUCTION'],
-      ['--drafts --include-drafts', 'Whether to include draft releases THIS COULD BE DANGEROUS'],
-      ['--prerelease --include-prereleases', 'Whether to include prereleases THIS COULD BE DANGEROUS'],
-      ['--no-ui', 'Run in CLI-only mode'],
-      ['--tag <tag>', 'A specific git tag to use'],
+      ...DEFAULT_OPTIONS
     ];
     const c = new Command(path.basename(f, path.extname(f)));
     
