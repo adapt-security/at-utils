@@ -6,7 +6,6 @@ This page outlines the various ways to install the authoring tool depending on y
 > While the authoring tool v1.0.0 is in prerelease, you must pass the `--prerelease` flag or the installer will fail
 
 - [Prerequisites](#prerequisites)
-- [Installer options](#installer-options)
 - [Standard installation](#standard-installation)
 - [Headless (server) installation](#headless-installation)
 - [Developer installation](#developer-installation)
