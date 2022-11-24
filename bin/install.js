@@ -44,8 +44,10 @@ export default class Install extends CliCommand {
         if(error.code !== 'GITCLONEEEXIST') {
           console.log('- Removing broken install files');
           await fs.rm(this.options.cwd, { recursive: true, force: true });
-          console.log('- Reinstating original config file');
-          if(this.configContents) await fs.writeFile(path.resolve(this.options.cwd, `conf/${process.env.NODE_ENV}.config.js`), this.configContents);
+          if(this.configContents) {
+            console.log('- Reinstating original config file');
+            await fs.writeFile(path.resolve(this.options.cwd, `conf/${process.env.NODE_ENV}.config.js`), this.configContents);
+          }
         }
       } catch(e) {
         console.log('Oh dear, cleanup failed.\n');
