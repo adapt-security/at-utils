@@ -23,7 +23,7 @@
   },
   "prerequisites": {
     "git": ">=2",
-    "node": "16.x",
+    "node": "18.x",
     "npm": "8.x"
   }
 }
