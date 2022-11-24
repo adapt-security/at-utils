@@ -26,12 +26,6 @@ export default class Install extends CliCommand {
       console.log('IMPORTANT: dev mode flag currently has no effect when running in headless mode\n');
     }
     try {
-      await Utils.checkPrerequisites();
-    } catch(e) {
-      console.log(`\n${e.errors.map(e2 => e2.message).join('\n')}\n`);
-      throw e;
-    }
-    try {
       if(!this.options.tag) this.options.tag = await this.getReleaseInput();
 
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`);
