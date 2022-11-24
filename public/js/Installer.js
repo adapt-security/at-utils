@@ -111,7 +111,7 @@ class Installer extends React.Component {
     if(res.status > 299) throw new Error(await res.text());
   }
 
-  async download() { 
+  async download() {
     await this.post('/prereq');
     await this.post(`/download?tag=${this.state.selectedRelease}`);
     await this.fetchSchemas();
