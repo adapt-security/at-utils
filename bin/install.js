@@ -30,7 +30,7 @@ export default class Install extends CliCommand {
 
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`);
       await this.cloneRepo();
-      await Utils.registerSuperUserCmd(this.options);
+      await Utils.registerSuperUser(this.options);
 
       this.cleanUp();
     } catch(e) {
