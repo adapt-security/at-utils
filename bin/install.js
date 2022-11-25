@@ -44,7 +44,7 @@ export default class Install extends CliCommand {
     try {
       files = await fs.readdir(this.options.cwd);
     } catch(e) {}
-    if(files.some(f => f !== 'conf')) throw new Error('Install directory must be empty');
+    if(files?.some(f => f !== 'conf')) throw new Error('Install directory must be empty');
   }
   async cleanUp(error) {
     if(error) {
