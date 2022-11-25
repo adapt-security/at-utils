@@ -18,6 +18,8 @@ export default class Install extends CliCommand {
     };
   }
   async runTask() {
+    await this.checkNoInstallExists();
+
     if(this.options.ui) {
       return new UiServer(this.options)
         .on('exit', this.cleanUp);
@@ -36,6 +38,13 @@ export default class Install extends CliCommand {
     } catch(e) {
       this.cleanUp(e);
     }
+  }
+  async checkNoInstallExists() {
+    let files;
+    try {
+      files = await fs.readdir(this.options.cwd);
+    } catch(e) {}
+    if(files.some(f => f !== 'conf')) throw new Error('Install directory must be empty');
   }
   async cleanUp(error) {
     if(error) {
