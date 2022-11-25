@@ -56,7 +56,7 @@ function ConfigForm(props) {
   return <div>
     <div className="alert alert-info"><b>Tip</b>: any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</div>
     <Checkbox label="Show advanced settings" checked={component.state.showAdvanced} onChange={() => component.setState({ showAdvanced: !component.state.showAdvanced })}/>
-    <Form key={"config"} id={"config"} schema={component.state.configSchema} formData={component.state.config} showOptional={component.state.showAdvanced} onSubmit={component.saveConfig.bind(component)}/>
+    <Form key={"config"} id={"config"} schema={component.state.configSchema} formData={component.state.config} showOptional={component.state.showAdvanced} onChange={component.cacheConfig.bind(component)} onSubmit={component.saveConfig.bind(component)}/>
   </div>;
 }
 
@@ -119,6 +119,7 @@ class Form extends React.Component {
         formData={this.props.formData} 
         validate={validate} 
         extraErrors={this.props.extraErrors} 
+        onChange={this.props.onChange ? (...args) => this.props.onChange(...args) : () => {}} 
         onSubmit={(...args) => document.dispatchEvent(new Event('form-submit')) && this.props.onSubmit(...args)} 
         onError={this.onError} />
     } catch(e) {

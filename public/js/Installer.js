@@ -159,6 +159,10 @@ class Installer extends React.Component {
     return new Promise(resolve => document.addEventListener('form-submit', () => resolve()));
   }
   
+  async cacheConfig({ formData }) {
+    this.setState({ config: formData });
+  }
+  
   async saveConfig({ formData }) {
     const res = await this.post('/save', formData);
     this.setState({ rootDir: (await res.json()).rootDir });
