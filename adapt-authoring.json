@@ -7,7 +7,7 @@
       "docs/plugins/install.js"
     ],
     "manualPages": {
-      "at-utils.md": "getting-started",
+      "at-utils.md": "basics",
       "install.md": "getting-started",
       "update.md": "getting-started"
     }
