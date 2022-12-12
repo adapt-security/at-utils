@@ -88,7 +88,7 @@ const config = component => {
         levels: ["error", "warn", "success", "info", "debug"]
       },
       'adapt-authoring-mongodb': {
-        connectionUri: 'mongodb://localhost/adapt-authoring-dev'
+        connectionUri: 'mongodb://0.0.0.0/adapt-authoring-dev'
       },
       'adapt-authoring-server': {
         host: 'localhost',
