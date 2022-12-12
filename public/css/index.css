@@ -39,21 +39,13 @@ body.update {
 }
 
 body {
-  /* ! apply gradient bg with transition
-  background: linear-gradient(45deg, #34bee0, #00dd95, #b7e5f3, #34bee0);
-  background-size: 600% 100%;
-  animation: gradient 8s linear infinite;
-  animation-direction: alternate; */
+  /* ! apply gradient bg with transition */
   font-size: 16px;
   color: white;
-  /* background-image: url(adapt_bg.jpeg); */
   background-repeat: repeat-y; /*! temp style */
   /*! styles taken from AT */
   font-family: 'Open Sans', sans-serif;
-  /* font-size: 13px; */
   font-weight: 400;
-  /* background-color: #f3fcfe; */
-  /* color: #263944; */
   background-color: var(--primary-colour);
 }
 
@@ -136,7 +128,6 @@ select:hover {
   color: inherit;
   opacity: .35;
   content: ">";
-  /* content: "\276F"; */
 }
 .breadcrumb>li.hidden+li:before {
   content: "";
@@ -234,15 +225,6 @@ select:hover {
   display: flex;
   padding: 60px 40px;
   flex-direction: column;
-  /* align-items: center; */
-  /* background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5); */
-  /* styles taken from AT */
-  /* padding: 20px;
-  border: 1px solid #D2E4E6;
-  border-radius: 3px;
-  box-shadow: 0 0 5px 2px #cbe1e6; */
 }
 .install-step .icon {
   font-size: 150px;
@@ -299,12 +281,6 @@ label.control-label {
   font-weight: bold;
 }
 
-/* form > .form-group > #root > .form-group {
-  margin-bottom: 30px;
-  border-left: 3px solid #0dcaf0;
-  padding-left: 20px;
-} */
-
 .form-control {
   padding: 11px 20px;
   height: 40px;
@@ -358,7 +334,6 @@ form .error-detail {
 .alert {
   padding: 20px;
   border: none;
-  /* box-shadow: 0 7px 30px -10px rgb(150 170 180 / 50%); */
 }
 
 /*
@@ -383,48 +358,6 @@ danger - glyphicon glyphicon-alert
   background-color: #fff3f1;
   color: #ff765a;
 }
-
-/* 
-* AT existing styles 
-
-/ fonts
-Raleway - titles
-Open Sans - body
-
-/ primary action btn
-background-color: #00dd95;
-color: #fff;
-border-color: #00dd95;
-border-radius: 5px
-on hover -     background-color: #00ce8b;
-
-/ secondary action btn
-background-color: transparent;
-color: #34bee0;
-border: 1px solid #34bee0;
-border-radius: 3px;
-on hover -     background-color: #34bee0;
-
-/ page elements
-border: 1px solid #D2E4E6;
-border-radius: 3px;
-padding: 20px;
-on hover - box-shadow: 0 0 5px 2px #cbe1e6;
-
-*/
-
-/*
-* gradient background animation 
-background: linear-gradient(45deg, #34bee0, #00dd95, #b7e5f3, #34bee0);
-background-size: 600% 100%;
-animation: gradient 8s linear infinite;
-animation-direction: alternate;
-}
-@keyframes gradient {
-    0% {background-position: 0%}
-    100% {background-position: 100%}
-}
-*/
 
 /**
  * Progress bar styling
