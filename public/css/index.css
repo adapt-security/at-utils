@@ -464,13 +464,14 @@ body .progress-bar {
 }
 .dependencies .checkbox {
   background: rgba(0,0,0,0.2);
+  border: 1px solid transparent;
 }
 .dependencies .checkbox:hover {
   background: rgba(255,255,255,0.1);
 }
 .dependencies .checkbox.checked {
   background: rgba(255,255,255,0.2);
-  border: 1px solid white;
+  border-color: white;
 }
 .dependencies .checkbox input {
   visibility: hidden;
