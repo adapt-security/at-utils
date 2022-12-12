@@ -71,6 +71,11 @@ const config = component => {
         icon: 'lnr-code',
         content: () => <div>
           <p>Your Adapt authoring tool environment has been set up successfully!</p>
+          <p>You can log into the instance with the following credentials:</p>
+          <div className="user-credentials">
+            <div className="email">{superUser.email}</div>
+            <div className="password">{superUser.password}</div>
+          </div>
           <AppStartInstructions cmds={component.state.cmds}/>
           <DocsLink />
         </div>,

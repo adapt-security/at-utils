@@ -377,6 +377,19 @@ body .progress-bar {
   background-color: var(--primary-colour);
 }
 
+.user-credentials {
+  margin: 20px;
+  text-align: left;
+  border-left: 2px solid rgba(255,255,255,0.3);
+}
+.user-credentials > div > span {
+  padding-left: 10px;
+  padding-right: 15px;
+  color: inherit;
+  opacity: .35;
+  content: "&#xe80f;";
+}
+
 /**
  * Modal styling
  */
