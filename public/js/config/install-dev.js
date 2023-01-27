@@ -48,6 +48,7 @@ const config = component => {
         content: () => <div>
           <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_adapt_modules</em> folder in your authoring tool root.</p>
           <p>Please note that for obvious reasons, any modules that you download in this way will need to be updated individually using git.</p>
+          <p>To add additional non-core Adapt modules for local development, clone these into the <em>local_adapt_modules</em> and add the local path to the <em>workspaces</em> section of your local <em>package.json</em></p>
           <AdaptDependencies data={component.state.dependencies} checked={component.state.dependenciesChecked} onChange={component.toggleLocalModule.bind(component)}/>
         </div>,
         button: 'Continue'
