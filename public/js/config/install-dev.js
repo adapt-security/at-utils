@@ -8,7 +8,7 @@ const config = component => {
       {
         title: `Let's code Adapt!`,
         breadcrumb: `Welcome`,
-        icon: 'lnr-keyboard',
+        icon: 'lnr-code',
         content: () => <div>
           <p>This installer will set up a development version of the Adapt authoring tool. <em>This is meant for developers only, here be dragons...</em></p>   
           <ReleaseSelect component={component}/>
