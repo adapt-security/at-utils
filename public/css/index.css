@@ -379,16 +379,26 @@ body .progress-bar {
 }
 
 .user-credentials {
-  margin: 20px;
   text-align: left;
-  border-left: 2px solid rgba(255,255,255,0.3);
+  width: 300px;
+  margin: 0 auto;
+  margin-bottom: 30px
 }
-.user-credentials > div > span {
-  padding-left: 10px;
+.user-credentials > div {
+  --icon-colour: var(--secondary-colour);
+}
+.user-credentials > div:before {
+  font-family: Linearicons-Free;
+  margin-right: 15px;
   padding-right: 15px;
-  color: inherit;
-  opacity: .35;
-  content: "&#xe80f;";
+  border-right: 2px solid rgba(255,255,255,0.3);
+  color: var(--icon-colour);
+}
+.user-credentials > .email:before {
+  content: "\e818";
+}
+.user-credentials > .password:before {
+  content: "\e80f";
 }
 
 /**
