@@ -5,11 +5,12 @@
 
 body {
   --dark-colour: #263944;
-  --alert-info-bg-colour: #e4f0f6;
-  --alert-info-colour: #5bc0de;
+  --alert-bg-colour: #e4f0f6;
   --form-text-colour: white;
   --code-bg-colour: var(--dark-colour);
   --button-hover-brightness: 0.95;
+  --success-colour: #00ce8b;
+  --info-colour: #5bc0de;
   --error-colour: #ff765a;
 }
 
@@ -20,8 +21,8 @@ body.install {
 body.install-dev {
   --primary-colour: var(--dark-colour);
   --secondary-colour: #5bc0de;
-  --alert-info-bg-colour: rgba(0,0,0,0.2);
-  --alert-info-colour: white;
+  --alert-bg-colour: rgba(0,0,0,0.2);
+  --info-colour: white;
   --form-text-colour: var(--dark-colour);
   --code-bg-colour: #223038;
 }
@@ -344,19 +345,19 @@ warning - glyphicon glyphicon-exclamation-sign
 danger - glyphicon glyphicon-alert
 */
 .alert-success {
-  background-color: #d6f4ea;
-  color: #00ce8b;
+  background-color: var(--alert-bg-colour);
+  color: var(--error-colour);
 }
 
 .alert-info {
-  background-color: var(--alert-info-bg-colour);
-  color: var(--alert-info-colour);
+  background-color: var(--alert-bg-colour);
+  color: var(--info-colour);
 }
 
 .alert-warning,
 .alert-danger {
-  background-color: #fff3f1;
-  color: #ff765a;
+  background-color: var(--alert-bg-colour);
+  color: var(--error-colour);
 }
 
 /**
