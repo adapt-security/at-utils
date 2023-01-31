@@ -190,8 +190,11 @@ class Installer extends React.Component {
    */
 
   toggleLocalModule(name, checked) {
-    const deps = this.state.dependenciesChecked || [];
-    if(checked) {
+    let deps = this.state.dependenciesChecked || [];
+    if(name === "all") {
+      deps = this.state.dependencies;
+      document.dispatchEvent(new Event('click-button'));
+    } else if(checked) {
       deps.push(name);
     } else {
       const i = deps.indexOf(name);

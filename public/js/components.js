@@ -7,8 +7,13 @@
 function AdaptDependencies(props) {
   if(!props.data) return '';
   const checked = props.checked || [];
-  return <div className="dependencies">
-    {props.data.map((d, i) => <Checkbox key={i} label={d} checked={checked.includes(d)} onChange={e => props.onChange(d, e.target.checked)} />)}
+  return <div>
+    <div className="dependencies">
+      {props.data.map((d, i) => <Checkbox key={i} label={d} checked={checked.includes(d)} onChange={e => props.onChange(d, e.target.checked)} />)}
+    </div>
+    <div className="buttons">
+      <button className="btn btn-info select all" onClick={() => props.onChange("all")}>Download all</button>
+    </div>
   </div>;
 }
 
@@ -136,6 +141,12 @@ function Instruction(props) {
   return <p className="instruction">{props.text}</p>;
 }
 
+function NavButton(props) {
+  return <button className="btn btn-info" onClick={() => document.dispatchEvent(new Event('click-button'))}>
+    {props.label}
+  </button>;
+}
+
 function ReleaseSelect({ component }) {
   const releases = component.state?.releases || [];
   const selected = component.state?.latestRelease;
@@ -157,10 +168,7 @@ function StepItem(props) {
           <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
         </div> : ''}
       {props.data.instruction ? <p className="instruction">{props.data.instruction}</p> : ''}
-      {props.data.button ? 
-        <button className="btn btn-info" onClick={() => document.dispatchEvent(new Event('click-button'))}>
-          {props.data.button}
-        </button> : ''}
+      {props.data.button ? <NavButton label={props.data.button} /> : ''}
     </div>
   </div>
 }
