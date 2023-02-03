@@ -101,7 +101,7 @@ const config = component => {
         port: 5678,
         url: 'http://localhost:5678',
         debugRequestTime: true,
-        logStackOnError: true
+        verboseErrorLogging: true
       },
       'adapt-authoring-sessions': {
         lifespan: '99y'
