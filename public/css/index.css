@@ -285,7 +285,7 @@ label.control-label {
 .form-control {
   padding: 11px 20px;
   height: 40px;
-  background-color: rgba(255,255,255,0.4);
+  background-color: rgba(255,255,255,0.2);
   color: var(--form-text-colour);
   border: 0;
 }
