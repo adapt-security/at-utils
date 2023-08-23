@@ -25,7 +25,7 @@ class Installer extends React.Component {
         icon: `lnr-thumbs-${config.action === 'update' ? 'up' : 'down'}`,
         content: () => <div>
           <p>Sorry, no releases were found at this time.</p>
-          <p>You can try using the --prereleases flag to include pre-release versions (WARNING: may contain bugs).</p>
+          <p>You can try using the --prerelease flag to include pre-release versions (WARNING: may contain bugs).</p>
         </div>,
         actions: [() => this.exit('No releases found')],
         button: 'Exit',
