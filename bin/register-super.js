@@ -9,7 +9,8 @@ export default class Install extends CliCommand {
       options: [
         ['-e --super-email <email>', 'The admin user email address'],
         ['--ignore-prereqs', 'Whether to skip the prerequisites check. Warning this could result in expected errors'],
-        ['-p --pipe-passwd', 'Whether the admin password will be piped into the script']
+        ['-p --pipe-passwd', 'Whether the admin password will be piped into the script'],
+        ['--v --verbose', 'Include extra debug messages']
       ],
       getReleaseData: false
     }

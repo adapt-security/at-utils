@@ -7,6 +7,7 @@ export default class MailTest extends CliCommand {
       ...super.config,
       description: 'Sends a test email',
       params: { email: 'Recipient email address for the test' },
+      options: [['--v --verbose', 'Include extra debug messages']],
       getReleaseData: false
     }
   }
