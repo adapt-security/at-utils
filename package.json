@@ -23,8 +23,8 @@
   },
   "prerequisites": {
     "git": ">=2",
-    "node": "18.x",
-    "npm": "9.x"
+    "node": "18.x - 20.x",
+    "npm": "9.x - 10.x"
   },
   "devDependencies": {
     "eslint": "^8.36.0",
