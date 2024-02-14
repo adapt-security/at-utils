@@ -16,10 +16,10 @@
   "bin": "index.js",
   "repository": "github:adapt-security/at-utils",
   "dependencies": {
-    "commander": "^11.0.0",
+    "commander": "^11.1.0",
     "node-fetch": "^3.3.2",
     "prompts": "^2.4.2",
-    "semver": "^7.5.4"
+    "semver": "^7.6.0"
   },
   "prerequisites": {
     "git": ">=2",
@@ -27,7 +27,7 @@
     "npm": "8 - 10"
   },
   "devDependencies": {
-    "eslint": "^8.36.0",
-    "standard": "^17.0.0"
+    "eslint": "^8.56.0",
+    "standard": "^17.1.0"
   }
 }
