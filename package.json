@@ -1,6 +1,6 @@
 {
   "name": "at-utils",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "A collection of CLI helper utilities for maintaining installations of the Adapt authoring tool.",
   "keywords": [
     "Adapt"
@@ -23,8 +23,8 @@
   },
   "prerequisites": {
     "git": ">=2",
-    "node": "18 - 20",
-    "npm": "8 - 10"
+    "node": "20 - 22",
+    "npm": "10"
   },
   "devDependencies": {
     "eslint": "^9.14.0",
