@@ -24,10 +24,15 @@ export default class Update extends CliCommand {
       return new UiServer(this.options)
         .on('exit', this.cleanUp)
     }
-    if (this.options.releaseData.releases[0].tag_name === this.options.releaseData.currentVersion) {
+    if (!this.options.releaseData.releases.length) {
+      return this.cleanUp(`No release data was retrievable.`)
+    }
+    const latestRelease = this.options.releaseData.releases[0]
+
+    if (latestRelease.tag_name === this.options.releaseData.currentVersion) {
       return console.log(`You are already using the latest version (${this.options.releaseData.currentVersion}). Nothing to do`)
     }
-    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${this.options.releaseData.releases[0].tag_name} is now available!\n`)
+    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${latestRelease.tag_name} is now available!\n`)
 
     if (this.options.dryRun) {
       return
