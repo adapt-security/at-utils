@@ -11,6 +11,13 @@ const config = component => {
           <ReleaseSelect component={component}/>
         </div>,
         instruction: 'Click the button below to update.',
+        button: 'Select'
+      },
+      {
+        title: `Release notes`,
+        breadcrumb: `Summary`,
+        icon: 'lnr-book',
+        content: () => <div><p>See below for release notes on your chosen release.</p><p>Please read these carefully before continuing.</p><ReleaseNotes state={component.state}/></div>,
         button: 'Update'
       },
       {

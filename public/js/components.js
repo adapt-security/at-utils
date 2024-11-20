@@ -26,10 +26,10 @@ function AppStartInstructions(props) {
     <p>To start the application, run the following commands in your favourite terminal application:</p>
     {windows ? <div>
       Windows Command Prompt/PowerShell:
-      <pre className="command">{windows}</pre>
+      <pre className="left-align">{windows}</pre>
     </div> : ''}
     {windows ? 'Git bash' : 'bash/Mac Terminal'}:
-    <pre className="command">{bash}</pre>
+    <pre className="left-align">{bash}</pre>
   </div>;
 }
 
@@ -155,6 +155,20 @@ function ReleaseSelect({ component }) {
       {releases.map((r, i) => <option key={i} value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
     </select>
   </p>;
+}
+
+function ReleaseNotes({ state: { releases, selectedRelease }}) {
+  console.log(selectedRelease, releases);
+  
+  if(!releases) {
+    return '';
+  }
+  const release = releases.find(r => r.tag_name === selectedRelease)
+  console.log(release);
+  
+  return <div className="release-notes">
+    <pre className="left-align">{release.body}</pre>
+  </div>;
 }
 
 function StepItem(props) {

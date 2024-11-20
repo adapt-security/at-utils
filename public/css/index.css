@@ -87,7 +87,7 @@ pre {
   border-radius: 3px;
   border: none;
 }
-pre.command {
+pre.left-align {
   text-align: left;
 }
 
