@@ -27,7 +27,7 @@
     "npm": "10"
   },
   "devDependencies": {
-    "eslint": "^9.15.0",
+    "eslint": "^9.18.0",
     "standard": "^17.1.0"
   }
 }
