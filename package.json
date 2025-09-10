@@ -16,7 +16,7 @@
   "bin": "index.js",
   "repository": "github:adapt-security/at-utils",
   "dependencies": {
-    "commander": "^13.1.0",
+    "commander": "^14.0.0",
     "prompts": "^2.4.2",
     "semver": "^7.7.2"
   },
