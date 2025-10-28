@@ -25,7 +25,7 @@ export default class Update extends CliCommand {
         .on('exit', this.cleanUp)
     }
     if (!this.options.releaseData.releases.length) {
-      return this.cleanUp(`No release data was retrievable.`)
+      return this.cleanUp('No release data was retrievable.')
     }
     const latestRelease = this.options.releaseData.releases[0]
 
