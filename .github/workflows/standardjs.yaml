@@ -1,6 +1,6 @@
 name: Standard.js format check
 on:
-  pull_request:
+  push:
 
 jobs:
   standardjs:
