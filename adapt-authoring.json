@@ -8,7 +8,7 @@
     ],
     "manualPages": {
       "at-utils.md": "reference",
-      "install.md": "getting-started"
+      "install-update-run.md": "getting-started"
     }
   }
 }
