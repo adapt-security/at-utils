@@ -1,4 +1,6 @@
-# Installation
+# Installing and updating
+
+## Installation
 
 This page outlines the various ways to install the authoring tool depending on your needs. Use the quick links below to jump to your section of interest.
 
@@ -10,7 +12,7 @@ This page outlines the various ways to install the authoring tool depending on y
 - [Headless (server) installation](#headless-installation)
 - [Developer installation](#developer-installation)
 
-## Prerequisites
+### Prerequisites
 
 Regardless of which installation method you choose, the Adapt authoring tool has a number of prerequisites which will need to be installed up-front.
 
@@ -30,13 +32,13 @@ If any of these return errors, or the installed versions don't match the require
 > #### Important note on `node-gyp`
 > Node and npm have a core dependency on the [`node-gyp`](https://github.com/nodejs/node-gyp) module, which requires a current version of Python and a C++ compiler to run. Depending on your system, you may need to intall these manually. Please see the [`node-gyp` installation instructions](https://github.com/nodejs/node-gyp#installation) for more details, including specific instructions for various OSes.
 
-## Installation methods
+### Installation methods
 
 See below for a quick guide on the different installation methods available.
 
 > For full details on the options and parameters accepted by the install script, please see the [relevant section](at-utils?id=install) on the Utilities page.
 
-### Standard installation
+#### Standard installation
 
 The standard installation method is recommended for general use when installing on a standalone computer as it guides you through the process of downloading and configuring the application. If you're installing on a server or want a quicker method, check out the [headless install instructions](#headless-installation).
 
@@ -47,7 +49,7 @@ npx adapt-security/at-utils install [DIRECTORY]
 
 ***
 
-### Headless installation
+#### Headless installation
 
 If you're installing the authoring tool on a headless server or otherwise want a more streamlined install process without the installer UI, you can run the installer using the `--no-ui` flag.
 
@@ -60,7 +62,7 @@ npx adapt-security/at-utils install --no-ui [DIRECTORY]
 
 ***
 
-### Developer installation
+#### Developer installation
 
 If you're a developer working on the Adapt authoring tool codebase, you can run the installer in 'dev' mode which will give you the following advantages over a standard install:
 
@@ -73,3 +75,17 @@ You can start the installer in dev mode with the following command:
 npx adapt-security/at-utils install --dev [DIRECTORY]
 
 ```
+
+## Update
+
+Getting the latest version of the Adapt authoring tool is as simple as running the following command in a terminal:
+
+```
+npx adapt-security/at-utils update [DIRECTORY]
+```
+
+The update utility accepts the same parameters and flags as the installer, so see the [installation instructions](http://localhost:9003/#/install?id=installer-options) for information.
+
+> #### Updating a dev install
+>
+> If you installed the application with the `--dev` flag, make sure you also add this flag when updating. Otherwise your local modules won't be included and will need to be re-linked in your `package.json` manually.
