@@ -1,6 +1,6 @@
-# Installing and updating
+# Installing, updating, and running
 
-## Installation
+## Install
 
 This page outlines the various ways to install the authoring tool depending on your needs. Use the quick links below to jump to your section of interest.
 
@@ -89,3 +89,16 @@ The update utility accepts the same parameters and flags as the installer, so se
 > #### Updating a dev install
 >
 > If you installed the application with the `--dev` flag, make sure you also add this flag when updating. Otherwise your local modules won't be included and will need to be re-linked in your `package.json` manually.
+
+## Run
+> You can find developer-specific instructions in the [developer install instructions](install-dev).
+
+To run the application, simply use the npm start script:
+```
+npm start
+```
+
+> Advanced users may also use the `NODE_ENV` environment variable to specify which configuration file is loaded with the application. This value is `production` by default.
+> You can read more about configuring your environment on [this page](configure-environment).
+
+The application will take a while to start up on the first boot, as it has various initialisation tasks to perform. Subsequent boots will be much quicker.
