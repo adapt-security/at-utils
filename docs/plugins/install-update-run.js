@@ -3,7 +3,7 @@ import path from 'path'
 
 export default class Install {
   async run () {
-    this.manualFile = 'install.md'
+    this.manualFile = 'install-update-run.md'
     this.prerequisites = JSON.parse(fs.readFileSync(path.resolve(this.config.srcDir, '../../package.json')).toString()).prerequisites
     this.replace = {
       commands: this.generateMd(),
