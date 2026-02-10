@@ -1,5 +1,9 @@
 # Installing, updating, and running
 
+- [Install](#install)
+- [Update](#update)
+- [Run](#run)
+
 ## Install
 
 This page outlines the various ways to install the authoring tool depending on your needs. Use the quick links below to jump to your section of interest.
