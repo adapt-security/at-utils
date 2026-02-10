@@ -18,7 +18,7 @@
   "dependencies": {
     "commander": "^14.0.3",
     "prompts": "^2.4.2",
-    "semver": "^7.7.2"
+    "semver": "^7.7.4"
   },
   "prerequisites": {
     "git": ">=2",
