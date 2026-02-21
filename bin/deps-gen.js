@@ -144,14 +144,16 @@ export default class DepsGen extends SimpleCliCommand {
   writePackageJson (pkg, pkgPath, expectedDeps, peerDeps) {
     // Update adapt-authoring-* dependencies: preserve non-adapt deps, add expected ones
     const currentDeps = pkg.dependencies || {}
+    const currentPeerDeps = pkg.peerDependencies || {}
     const updatedDeps = {}
     for (const [dep, ver] of Object.entries(currentDeps)) {
       if (!dep.startsWith(PREFIX)) {
         updatedDeps[dep] = ver
       }
     }
+    // Add/keep expected adapt-authoring dependencies, preserving existing versions
     for (const [dep, ver] of Object.entries(expectedDeps)) {
-      updatedDeps[dep] = ver
+      updatedDeps[dep] = currentDeps[dep] || ver
     }
     const sortedDeps = {}
     for (const key of Object.keys(updatedDeps).sort()) {
@@ -159,7 +161,12 @@ export default class DepsGen extends SimpleCliCommand {
     }
     pkg.dependencies = sortedDeps
 
-    pkg.peerDependencies = peerDeps
+    // Update peerDependencies: add missing, preserve existing versions
+    const updatedPeerDeps = {}
+    for (const [dep, ver] of Object.entries(peerDeps)) {
+      updatedPeerDeps[dep] = currentPeerDeps[dep] || ver
+    }
+    pkg.peerDependencies = updatedPeerDeps
 
     const peerDepsMeta = {}
     for (const dep of Object.keys(peerDeps)) {
