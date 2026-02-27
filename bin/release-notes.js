@@ -30,57 +30,42 @@ export default class ReleaseNotes extends SimpleCliCommand {
       return
     }
 
-    const { tag, changes } = result
+    const { tag, recommendedVersion, changes } = result
 
     if (changes.length === 0) {
       console.log('No dependency changes detected.')
       return
     }
 
-    const deps = []
-
-    for (const change of changes) {
-      if (!change.newVer) continue
-
-      const repo = this.getRepo(cwd, change.name)
-      if (!repo) continue
-
-      const releases = await this.fetchReleases(repo, change.name)
-      if (!releases) continue
-
-      const filtered = this.filterReleases(releases, change.oldVer, change.newVer)
-      if (filtered.length === 0) continue
-
-      deps.push({
-        name: change.name,
-        oldVer: change.oldVer,
-        newVer: change.newVer,
-        releases: filtered.map(r => ({ tag: r.tag_name, body: r.body || '' }))
-      })
-    }
-
     if (this.options.json) {
+      const deps = []
+      for (const change of changes) {
+        if (!change.newVer) continue
+        const repo = this.getRepo(cwd, change.name)
+        if (!repo) continue
+        const releases = await this.fetchReleases(repo, change.name)
+        if (!releases) continue
+        const filtered = this.filterReleases(releases, change.oldVer, change.newVer)
+        if (filtered.length === 0) continue
+        deps.push({
+          name: change.name,
+          oldVer: change.oldVer,
+          newVer: change.newVer,
+          releases: filtered.map(r => ({ tag: r.tag_name, body: r.body || '' }))
+        })
+      }
       console.log(JSON.stringify({ tag, dependencies: deps }, null, 2))
       return
     }
 
-    console.log(`Release notes since ${tag}\n`)
+    console.log(`## ${recommendedVersion}\n`)
 
-    if (deps.length === 0) {
-      console.log('No release notes found for changed dependencies.')
-      return
-    }
-
-    for (const dep of deps) {
-      const from = dep.oldVer || '(new)'
-      console.log(`## ${dep.name}  ${from} → ${dep.newVer}\n`)
-
-      for (const release of dep.releases) {
-        console.log(`### ${release.tag}`)
-        const body = this.cleanBody(release.body)
-        if (body) console.log(body)
-        console.log()
-      }
+    for (const change of changes.sort((a, b) => a.name.localeCompare(b.name))) {
+      if (!change.newVer) continue
+      const from = change.oldVer || '(new)'
+      const repo = this.getRepo(cwd, change.name)
+      const link = repo ? ` [releases](https://github.com/${repo}/releases)` : ''
+      console.log(`* ${change.name} (${from} → ${change.newVer})${link}`)
     }
   }
 
@@ -144,12 +129,5 @@ export default class ReleaseNotes extends SimpleCliCommand {
         return semver.lte(v, newVer)
       })
       .sort((a, b) => semver.compare(semver.clean(a.tag_name), semver.clean(b.tag_name)))
-  }
-
-  cleanBody (body) {
-    if (!body) return ''
-    return body
-      .replace(/^#\s+\[.*?\]\(.*?\).*$/m, '')
-      .trim()
   }
 }
