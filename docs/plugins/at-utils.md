@@ -9,7 +9,7 @@ The `at-utils` package is a bundle of utilities which aim to make application in
 All of the commands listed below are run using **npx**, which is a task runner utility which comes bundled with **npm**.
 
 ```bash
-npx adapt-security/utils [COMMAND] [...OPTIONS] [ARGUMENTS]
+npx adapt-security/at-utils [COMMAND] [...OPTIONS] [ARGUMENTS]
 ```
 > #### Arguments, options and flags - oh my! :astonished:
 > There's a lot of terminology here which is confusing to anyone new to running commands in a command-line interface (CLI). If we look at the following as an example:

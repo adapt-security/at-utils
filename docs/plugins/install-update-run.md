@@ -88,7 +88,7 @@ Getting the latest version of the Adapt authoring tool is as simple as running t
 npx adapt-security/at-utils update [DIRECTORY]
 ```
 
-The update utility accepts the same parameters and flags as the installer, so see the [installation instructions](http://localhost:9003/#/install?id=installer-options) for information.
+The update utility accepts the same parameters and flags as the installer, so see the [installation instructions](#install) for information.
 
 > #### Updating a dev install
 >
