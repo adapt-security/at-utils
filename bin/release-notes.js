@@ -63,7 +63,6 @@ export default class ReleaseNotes extends SimpleCliCommand {
 
     const bumpEmoji = { major: '💥', minor: '✨', patch: '🔧' }
 
-    console.log(`## ${recommendedVersion}\n`)
     console.log('The following modules were updated in this release. Please see individual module release notes for specific changes and how they may affect your environment, particularly any breaking changes.\n')
 
     const skipped = []
