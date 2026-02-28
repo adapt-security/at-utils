@@ -42,7 +42,10 @@ export default class ReleaseNotes extends SimpleCliCommand {
       for (const change of changes) {
         if (!change.newVer) continue
         const repo = this.getRepo(cwd, change.name)
-        if (!repo) continue
+        if (!repo) {
+          console.warn(`Warning: could not resolve repository for ${change.name}, skipping.`)
+          continue
+        }
         const releases = await this.fetchReleases(repo, change.name)
         if (!releases) continue
         const filtered = this.filterReleases(releases, change.oldVer, change.newVer)
@@ -58,14 +61,23 @@ export default class ReleaseNotes extends SimpleCliCommand {
       return
     }
 
-    console.log(`## ${recommendedVersion}\n`)
+    const bumpEmoji = { major: '💥', minor: '✨', patch: '🔧' }
 
+    console.log(`## ${recommendedVersion}\n`)
+    console.log('The following modules were updated in this release. Please see individual module release notes for specific changes and how they may affect your environment, particularly any breaking changes.\n')
+
+    const skipped = []
     for (const change of changes.sort((a, b) => a.name.localeCompare(b.name))) {
       if (!change.newVer) continue
       const from = change.oldVer || '(new)'
+      const emoji = bumpEmoji[change.bump] || ''
       const repo = this.getRepo(cwd, change.name)
+      if (!repo) skipped.push(change.name)
       const link = repo ? ` [releases](https://github.com/${repo}/releases)` : ''
-      console.log(`* ${change.name} (${from} → ${change.newVer})${link}`)
+      console.log(`* ${emoji} ${change.name} (${from} → ${change.newVer})${link}`)
+    }
+    if (skipped.length) {
+      console.warn(`\nCould not resolve repository for: ${skipped.join(', ')}`)
     }
   }
 
@@ -74,15 +86,11 @@ export default class ReleaseNotes extends SimpleCliCommand {
     try {
       pkg = JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8'))
     } catch {
-      console.warn(`Warning: could not read package.json for ${name}, skipping.`)
       return null
     }
 
     const repo = pkg.repository
-    if (!repo) {
-      console.warn(`Warning: no repository field for ${name}, skipping.`)
-      return null
-    }
+    if (!repo) return null
 
     const repoStr = typeof repo === 'object' ? repo.url : repo
     const match = repoStr.match(/github[.:]([^/]+\/[^/.]+?)(?:\.git)?$/)
@@ -91,7 +99,6 @@ export default class ReleaseNotes extends SimpleCliCommand {
     const ghMatch = repoStr.match(/^github:(.+)$/)
     if (ghMatch) return ghMatch[1]
 
-    console.warn(`Warning: could not parse repository for ${name}: ${repoStr}, skipping.`)
     return null
   }
 
