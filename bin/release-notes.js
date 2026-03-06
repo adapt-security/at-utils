@@ -30,7 +30,7 @@ export default class ReleaseNotes extends SimpleCliCommand {
       return
     }
 
-    const { tag, recommendedVersion, changes } = result
+    const { tag, changes } = result
 
     if (changes.length === 0) {
       console.log('No dependency changes detected.')
