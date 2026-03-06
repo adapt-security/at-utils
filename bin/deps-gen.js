@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import SimpleCliCommand from '../lib/SimpleCliCommand.js'
 import Utils from '../lib/Utils.js'
-import { PREFIX, deriveExpectedPeerDeps, deriveExpectedDeps } from '../lib/peerDeps.js'
+import { PREFIX, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
 
 const CORE_PKG = 'adapt-authoring-core'
 
@@ -14,7 +14,8 @@ export default class DepsGen extends SimpleCliCommand {
       params: {},
       options: [
         ['--recursive', 'Process all AAT modules in child directories'],
-        ['--write', 'Write changes to package.json files']
+        ['--write', 'Write changes to package.json files'],
+        ['--versions-only', 'Only update dependency versions (skip code analysis)']
       ],
       getReleaseData: false
     }
@@ -32,7 +33,7 @@ export default class DepsGen extends SimpleCliCommand {
         return
       }
     } else {
-      if (!Utils.isModule(cwd)) {
+      if (!this.options.versionsOnly && !Utils.isModule(cwd)) {
         console.error(`Not a valid module directory (no adapt-authoring.json found in ${cwd})`)
         process.exitCode = 1
         return
@@ -74,6 +75,10 @@ export default class DepsGen extends SimpleCliCommand {
   }
 
   processModule (moduleDir, pkgIndex) {
+    if (this.options.versionsOnly) {
+      return this.processVersionsOnly(moduleDir, pkgIndex)
+    }
+
     let peerResult = deriveExpectedPeerDeps(moduleDir, pkgIndex)
     const depsResult = deriveExpectedDeps(moduleDir, pkgIndex)
 
@@ -136,6 +141,39 @@ export default class DepsGen extends SimpleCliCommand {
 
     if (this.options.write) {
       this.writePackageJson(pkg, pkgPath, expectedDeps, peerDeps)
+    }
+
+    return true
+  }
+
+  processVersionsOnly (moduleDir, pkgIndex) {
+    const pkgPath = join(moduleDir, 'package.json')
+    if (!existsSync(pkgPath)) return false
+
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
+    const moduleName = pkg.name
+    const updates = findOutdatedVersions(pkg, pkgIndex)
+
+    if (updates.length === 0) return false
+
+    console.log(`\n${moduleName}:`)
+    for (const { dep, current, expected, section } of updates) {
+      console.log(`  ${dep} (${section}): ${current} → ${expected}`)
+    }
+
+    if (this.options.write) {
+      for (const { dep, expected, section } of updates) {
+        pkg[section][dep] = expected
+      }
+      if (pkg.peerDependenciesMeta) {
+        for (const { dep, section } of updates) {
+          if (section === 'peerDependencies') {
+            pkg.peerDependenciesMeta[dep] = { optional: true }
+          }
+        }
+      }
+      writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+      console.log(`  ✓ written to ${pkgPath}`)
     }
 
     return true

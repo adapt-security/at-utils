@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import SimpleCliCommand from '../lib/SimpleCliCommand.js'
 import Utils from '../lib/Utils.js'
-import { PREFIX, deriveExpectedPeerDeps, deriveExpectedDeps } from '../lib/peerDeps.js'
+import { PREFIX, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
 
 const CORE_PKG = 'adapt-authoring-core'
 
@@ -12,7 +12,10 @@ export default class DepsCheck extends SimpleCliCommand {
       ...super.config,
       description: 'Checks dependencies and peerDependencies against source code analysis',
       params: {},
-      options: [['--recursive', 'Check all AAT modules in child directories']],
+      options: [
+        ['--recursive', 'Check all AAT modules in child directories'],
+        ['--versions-only', 'Only check dependency versions are up to date (skip code analysis)']
+      ],
       getReleaseData: false
     }
   }
@@ -29,7 +32,7 @@ export default class DepsCheck extends SimpleCliCommand {
         return
       }
     } else {
-      if (!Utils.isModule(cwd)) {
+      if (!this.options.versionsOnly && !Utils.isModule(cwd)) {
         console.error(`Not a valid module directory (no adapt-authoring.json found in ${cwd})`)
         process.exitCode = 1
         return
@@ -54,10 +57,15 @@ export default class DepsCheck extends SimpleCliCommand {
     const pkgPath = join(moduleDir, 'package.json')
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
     const moduleName = pkg.name
-    const declaredPeerDeps = new Set(Object.keys(pkg.peerDependencies || {}))
-    const declaredDeps = new Set(Object.keys(pkg.dependencies || {}).filter(n => n.startsWith(PREFIX)))
 
     console.log(`Checking ${moduleName}...`)
+
+    if (this.options.versionsOnly) {
+      return this.checkVersionsOnly(pkg, moduleName, pkgIndex)
+    }
+
+    const declaredPeerDeps = new Set(Object.keys(pkg.peerDependencies || {}))
+    const declaredDeps = new Set(Object.keys(pkg.dependencies || {}).filter(n => n.startsWith(PREFIX)))
 
     let peerResult = deriveExpectedPeerDeps(moduleDir, pkgIndex)
 
@@ -127,5 +135,23 @@ export default class DepsCheck extends SimpleCliCommand {
 
     console.log(`Found ${errors} error(s).`)
     return errors
+  }
+
+  checkVersionsOnly (pkg, moduleName, pkgIndex) {
+    const outdated = findOutdatedVersions(pkg, pkgIndex)
+
+    if (outdated.length === 0) {
+      console.log(`Checking ${moduleName}... ✓`)
+      return 0
+    }
+
+    console.log()
+    console.log('✗ Outdated dependency versions:')
+    for (const { dep, current, expected, section } of outdated) {
+      console.log(`  - ${dep} (${section}): ${current} → ${expected}`)
+    }
+    console.log()
+    console.log(`Found ${outdated.length} error(s).`)
+    return outdated.length
   }
 }
