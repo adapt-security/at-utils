@@ -60,6 +60,9 @@ class Installer extends React.Component {
     if(!step) return this.exit();
     if(step.button) await this.awaitButtonPress();
     if(step.actions) for (const a of step.actions) await a.call(this);
+    if(step.actions && this.state.action === 'install' && this.state.step > 1) {
+      await this.saveCheckpoint();
+    }
     if(!step.haltOnComplete) {
       this.setState({ step: this.state.step+1 });
       await this.performStep();
@@ -130,16 +133,37 @@ class Installer extends React.Component {
     return this.post('/installmodules', this.state.dependenciesChecked);
   }
 
-  async fetchReleases() { 
+  async fetchReleases() {
     const { currentVersion, releases } = await (await this.fetch('/releases')).json();
     const latestRelease = releases.find(r => r.tag_name)?.tag_name;
+
+    let checkpoint = null;
+    if(this.state.action === 'install') {
+      try {
+        const res = await this.fetch('/checkpoint', 'GET', { handleErrors: false });
+        if(res.status === 200) checkpoint = await res.json();
+      } catch(e) {}
+    }
+
     this.setState({
-      currentRelease: currentVersion, 
+      currentRelease: currentVersion,
       newRelease: latestRelease,
-      selectedRelease: latestRelease,
+      selectedRelease: checkpoint?.selectedRelease || latestRelease,
       releases
     });
-    this.setState({ step: releases.length ? 2 : 1 });
+
+    if(!releases.length) {
+      this.setState({ step: 1 });
+    } else if(checkpoint && checkpoint.step >= 2) {
+      const resumeStep = checkpoint.step + 1;
+      this.setState({ step: resumeStep });
+      if(resumeStep > this.state.downloadStep) {
+        await this.fetchSchemas();
+        await this.generateSecrets();
+      }
+    } else {
+      this.setState({ step: 2 });
+    }
     await this.performStep();
   }
 
@@ -166,6 +190,13 @@ class Installer extends React.Component {
   async saveConfig({ formData }) {
     const res = await this.post('/save', formData);
     this.setState({ rootDir: (await res.json()).rootDir });
+  }
+
+  async saveCheckpoint() {
+    await this.post('/checkpoint', {
+      step: this.state.step,
+      selectedRelease: this.state.selectedRelease
+    });
   }
 
   async update() {
