@@ -34,8 +34,7 @@ export default class Update extends CliCommand {
     if (latestRelease.tag_name === this.options.releaseData.currentVersion) {
       return console.log(`You are already using the latest version (${this.options.releaseData.currentVersion}). Nothing to do`)
     }
-    const bumpInfo = latestRelease.bump ? ` (${latestRelease.bump})` : ''
-    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${latestRelease.tag_name}${bumpInfo} is now available!\n`)
+    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${latestRelease.tag_name}${latestRelease.bump ? ` (${latestRelease.bump})` : ''} is now available!\n`)
 
     if (this.options.dryRun) {
       return
