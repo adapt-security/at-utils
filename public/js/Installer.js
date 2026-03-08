@@ -181,7 +181,7 @@ class Installer extends React.Component {
   }
 
   async exit(errorMsg) {
-    this.post('/exit', errorMsg);
+    await this.post('/exit', errorMsg);
     return window.close();
   }
   

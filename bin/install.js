@@ -24,7 +24,7 @@ export default class Install extends CliCommand {
 
     if (this.options.ui) {
       return new UiServer(this.options)
-        .on('exit', this.cleanUp)
+        .on('exit', e => this.cleanUp(e))
     }
     if (this.options.devMode) {
       console.log('IMPORTANT: dev mode flag currently has no effect when running in headless mode\n')
