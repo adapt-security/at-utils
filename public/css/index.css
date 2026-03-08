@@ -414,6 +414,16 @@ body .progress-bar {
 
 
 
+/** release notes bump type */
+.release-notes .bump-type {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.release-notes .alert {
+  margin-bottom: 20px;
+}
+
 .dependencies {
   text-align: left;
   margin: 0 auto;

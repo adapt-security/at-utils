@@ -11,7 +11,9 @@ export default class Update extends CliCommand {
       params: { destination: 'The destination folder for the source code' },
       options: [
         ...DEFAULT_OPTIONS,
-        ['-d --dry-run', 'Check for update without performing any update actions']
+        ['-d --dry-run', 'Check for update without performing any update actions'],
+        ['--patch-only', 'Only show patch releases'],
+        ['--minor-only', 'Only show patch and minor releases']
       ]
     }
   }
@@ -32,7 +34,8 @@ export default class Update extends CliCommand {
     if (latestRelease.tag_name === this.options.releaseData.currentVersion) {
       return console.log(`You are already using the latest version (${this.options.releaseData.currentVersion}). Nothing to do`)
     }
-    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${latestRelease.tag_name} is now available!\n`)
+    const bumpInfo = latestRelease.bump ? ` (${latestRelease.bump})` : ''
+    console.log(`You are using ${this.options.releaseData.currentVersion}, but ${latestRelease.tag_name}${bumpInfo} is now available!\n`)
 
     if (this.options.dryRun) {
       return
