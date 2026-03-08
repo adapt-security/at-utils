@@ -24,7 +24,7 @@ export default class Update extends CliCommand {
     }
     if (this.options.ui) {
       return new UiServer(this.options)
-        .on('exit', this.cleanUp)
+        .on('exit', e => this.cleanUp(e))
     }
     if (!this.options.releaseData.releases.length) {
       return this.cleanUp('No release data was retrievable.')
