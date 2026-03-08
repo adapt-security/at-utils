@@ -25,6 +25,9 @@
     "node": "24",
     "npm": "10"
   },
+  "scripts": {
+    "test": "node --test 'tests/**/*.spec.js'"
+  },
   "publishConfig": {
     "access": "public"
   },
