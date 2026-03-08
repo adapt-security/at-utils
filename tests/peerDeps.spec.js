@@ -72,6 +72,13 @@ describe('peerDeps', () => {
       assert.equal(result.size, 0)
     })
 
+    it('should extract module names with double quotes', () => {
+      const file = join(tmpDir, 'test-double.js')
+      writeFileSync(file, 'await app.waitForModule("core")')
+      const result = extractModuleNames([file])
+      assert.ok(result.has('core'))
+    })
+
     it('should deduplicate module names across files', () => {
       const file1 = join(tmpDir, 'dup1.js')
       const file2 = join(tmpDir, 'dup2.js')
