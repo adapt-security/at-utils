@@ -152,21 +152,25 @@ function ReleaseSelect({ component }) {
   const selected = component.state?.latestRelease;
   return <p>
     <select id="release" value={selected} onChange={e => component.setState({ selectedRelease: e.target.value })}>
-      {releases.map((r, i) => <option key={i} value={r.tag_name}>{r.name} ({new Date(r.date).toDateString()})</option>)}
+      {releases.map((r, i) => {
+        const bumpLabel = r.bump ? ` (${r.bump})` : '';
+        return <option key={i} value={r.tag_name}>{r.name}{bumpLabel} ({new Date(r.date).toDateString()})</option>;
+      })}
     </select>
   </p>;
 }
 
 function ReleaseNotes({ state: { releases, selectedRelease }}) {
-  console.log(selectedRelease, releases);
-  
   if(!releases) {
     return '';
   }
   const release = releases.find(r => r.tag_name === selectedRelease)
-  console.log(release);
-  
+
   return <div className="release-notes">
+    {release.bump && <p className="bump-type"><strong>Update type:</strong> {release.bump}</p>}
+    {release.bump === 'major' && <div className="alert alert-warning">
+      <strong>Warning!</strong> This is a <strong>major</strong> version update which may include breaking changes. Please review the release notes carefully and ensure you have a backup before proceeding.
+    </div>}
     <pre className="left-align">{release.body}</pre>
   </div>;
 }
