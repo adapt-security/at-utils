@@ -83,6 +83,7 @@ const config = component => {
         button: 'Exit'
       }
     ],
+    downloadStep: 3,
     config: {
       'adapt-authoring-auth': {
         defaultTokenLifespan: '99y'

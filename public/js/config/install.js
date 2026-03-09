@@ -76,5 +76,6 @@ const config = component => {
         button: 'Exit'
       }
     ],
+    downloadStep: 4,
   };
 };

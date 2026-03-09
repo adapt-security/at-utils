@@ -20,7 +20,7 @@ export default class Install extends CliCommand {
   }
 
   async runTask () {
-    await this.checkNoInstallExists()
+    await this.handleExistingInstall()
 
     if (this.options.ui) {
       return new UiServer(this.options)
@@ -35,6 +35,7 @@ export default class Install extends CliCommand {
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`)
       await this.cloneRepo()
       await Utils.registerSuperUser(this.options)
+      await Utils.clearInstallState(this.options.cwd)
 
       this.cleanUp()
     } catch (e) {
@@ -42,7 +43,24 @@ export default class Install extends CliCommand {
     }
   }
 
-  async checkNoInstallExists () {
+  async handleExistingInstall () {
+    const checkpoint = await Utils.getInstallState(this.options.cwd)
+    if (checkpoint) {
+      const { resume } = await this.getInput([{
+        type: 'confirm',
+        name: 'resume',
+        message: 'A previous install was interrupted. Resume from where you left off?',
+        initial: true
+      }])
+      if (resume) {
+        this.options.resumeStep = checkpoint.step
+        return
+      }
+      await Utils.clearInstallState(this.options.cwd)
+      await fs.rm(this.options.cwd, { recursive: true, force: true })
+      await fs.mkdir(this.options.cwd, { recursive: true })
+      return
+    }
     let files
     try {
       files = await fs.readdir(this.options.cwd)
