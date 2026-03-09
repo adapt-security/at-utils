@@ -22,9 +22,7 @@ describe('installState', () => {
     })
 
     it('should return parsed state when file exists', async () => {
-      const confDir = path.join(tmpDir, 'conf')
-      await fs.mkdir(confDir, { recursive: true })
-      await fs.writeFile(path.join(confDir, '.install-state.json'), JSON.stringify({ step: 4, selectedRelease: 'v1.0.0' }))
+      await fs.writeFile(path.join(tmpDir, '.install-state.json'), JSON.stringify({ step: 4, selectedRelease: 'v1.0.0' }))
       const state = await getInstallState(tmpDir)
       assert.equal(state.step, 4)
       assert.equal(state.selectedRelease, 'v1.0.0')
@@ -32,9 +30,9 @@ describe('installState', () => {
   })
 
   describe('#saveInstallState()', () => {
-    it('should create the conf directory and state file', async () => {
+    it('should create the state file in the root directory', async () => {
       await saveInstallState(tmpDir, { step: 3, selectedRelease: 'v2.0.0' })
-      const state = JSON.parse(await fs.readFile(path.join(tmpDir, 'conf', '.install-state.json'), 'utf8'))
+      const state = JSON.parse(await fs.readFile(path.join(tmpDir, '.install-state.json'), 'utf8'))
       assert.equal(state.step, 3)
       assert.equal(state.selectedRelease, 'v2.0.0')
       assert.ok(state.timestamp)
