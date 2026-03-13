@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import SimpleCliCommand from '../lib/SimpleCliCommand.js'
 import Utils from '../lib/Utils.js'
-import { PREFIX, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
+import { isAdaptModule, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
 
 const CORE_PKG = 'adapt-authoring-core'
 
@@ -185,7 +185,7 @@ export default class DepsGen extends SimpleCliCommand {
     const currentPeerDeps = pkg.peerDependencies || {}
     const updatedDeps = {}
     for (const [dep, ver] of Object.entries(currentDeps)) {
-      if (!dep.startsWith(PREFIX)) {
+      if (!isAdaptModule(dep)) {
         updatedDeps[dep] = ver
       }
     }

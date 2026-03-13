@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import SimpleCliCommand from '../lib/SimpleCliCommand.js'
 import Utils from '../lib/Utils.js'
-import { PREFIX, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
+import { isAdaptModule, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
 
 const CORE_PKG = 'adapt-authoring-core'
 
@@ -65,7 +65,7 @@ export default class DepsCheck extends SimpleCliCommand {
     }
 
     const declaredPeerDeps = new Set(Object.keys(pkg.peerDependencies || {}))
-    const declaredDeps = new Set(Object.keys(pkg.dependencies || {}).filter(n => n.startsWith(PREFIX)))
+    const declaredDeps = new Set(Object.keys(pkg.dependencies || {}).filter(isAdaptModule))
 
     let peerResult = deriveExpectedPeerDeps(moduleDir, pkgIndex)
 

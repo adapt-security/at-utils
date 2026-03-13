@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import {
   PREFIX,
+  isAdaptModule,
   extractModuleNames,
   extractImportedModules,
   toFullName,
@@ -15,6 +16,24 @@ describe('peerDeps', () => {
   describe('PREFIX', () => {
     it('should equal "adapt-authoring-"', () => {
       assert.equal(PREFIX, 'adapt-authoring-')
+    })
+  })
+
+  describe('#isAdaptModule()', () => {
+    it('should return true for unscoped adapt-authoring packages', () => {
+      assert.equal(isAdaptModule('adapt-authoring-core'), true)
+    })
+
+    it('should return true for scoped adapt-authoring packages', () => {
+      assert.equal(isAdaptModule('@acme/adapt-authoring-foo'), true)
+    })
+
+    it('should return false for non-adapt-authoring packages', () => {
+      assert.equal(isAdaptModule('lodash'), false)
+    })
+
+    it('should return false for scoped non-adapt-authoring packages', () => {
+      assert.equal(isAdaptModule('@babel/core'), false)
     })
   })
 
@@ -135,6 +154,28 @@ describe('peerDeps', () => {
       const result = extractImportedModules([file1, file2])
       assert.equal(result.size, 1)
     })
+
+    it('should extract scoped adapt-authoring-* names from ES imports', () => {
+      const file = join(tmpDir, 'scoped1.js')
+      writeFileSync(file, "import Foo from '@acme/adapt-authoring-foo'\nimport Bar from '@acme/adapt-authoring-bar/util'")
+      const result = extractImportedModules([file])
+      assert.ok(result.has('@acme/adapt-authoring-foo'))
+      assert.ok(result.has('@acme/adapt-authoring-bar'))
+    })
+
+    it('should extract scoped adapt-authoring-* names from require() calls', () => {
+      const file = join(tmpDir, 'scoped2.js')
+      writeFileSync(file, "const Foo = require('@acme/adapt-authoring-foo')")
+      const result = extractImportedModules([file])
+      assert.ok(result.has('@acme/adapt-authoring-foo'))
+    })
+
+    it('should ignore scoped non-adapt-authoring imports', () => {
+      const file = join(tmpDir, 'scoped3.js')
+      writeFileSync(file, "import Foo from '@babel/core'")
+      const result = extractImportedModules([file])
+      assert.equal(result.size, 0)
+    })
   })
 
   describe('#findOutdatedVersions()', () => {
@@ -176,6 +217,15 @@ describe('peerDeps', () => {
 
     it('should handle pkg with no dependencies or peerDependencies', () => {
       assert.deepEqual(findOutdatedVersions({}, new Map()), [])
+    })
+
+    it('should detect outdated scoped adapt-authoring dependency versions', () => {
+      const pkg = { dependencies: { '@acme/adapt-authoring-foo': '^0.1.0' } }
+      const pkgIndex = new Map([['@acme/adapt-authoring-foo', { version: '0.2.0' }]])
+      const result = findOutdatedVersions(pkg, pkgIndex)
+      assert.equal(result.length, 1)
+      assert.equal(result[0].dep, '@acme/adapt-authoring-foo')
+      assert.equal(result[0].expected, '^0.2.0')
     })
   })
 })
