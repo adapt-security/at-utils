@@ -69,6 +69,31 @@ describe('versionCompare', () => {
       }
       assert.deepEqual(extractVersions(lock), {})
     })
+
+    it('should extract scoped adapt-authoring-* package versions', () => {
+      const lock = {
+        packages: {
+          'node_modules/@acme/adapt-authoring-foo': { version: '0.5.0' },
+          'node_modules/adapt-authoring-core': { version: '1.0.0' }
+        }
+      }
+      assert.deepEqual(extractVersions(lock), {
+        '@acme/adapt-authoring-foo': '0.5.0',
+        'adapt-authoring-core': '1.0.0'
+      })
+    })
+
+    it('should skip scoped packages that are not adapt-authoring', () => {
+      const lock = {
+        packages: {
+          'node_modules/@babel/core': { version: '7.0.0' },
+          'node_modules/@acme/adapt-authoring-foo': { version: '0.5.0' }
+        }
+      }
+      const versions = extractVersions(lock)
+      assert.ok(!Object.hasOwn(versions, '@babel/core'))
+      assert.ok(Object.hasOwn(versions, '@acme/adapt-authoring-foo'))
+    })
   })
 
   describe('#normalizeBump()', () => {
