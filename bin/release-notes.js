@@ -61,22 +61,32 @@ export default class ReleaseNotes extends SimpleCliCommand {
       return
     }
 
-    const bumpEmoji = { major: '💥', minor: '✨', patch: '🔧' }
+    const bumpGroups = [
+      { key: 'major', heading: '## 💥 Breaking changes' },
+      { key: 'minor', heading: '## ✨ New features' },
+      { key: 'patch', heading: '## 🔧 Patches' }
+    ]
 
     console.log('The following modules were updated in this release. Please see individual module release notes for specific changes and how they may affect your environment, particularly any breaking changes.\n')
 
     const skipped = []
-    for (const change of changes.sort((a, b) => a.name.localeCompare(b.name))) {
-      if (!change.newVer) continue
-      const from = change.oldVer || '(new)'
-      const emoji = bumpEmoji[change.bump] || ''
-      const repo = this.getRepo(cwd, change.name)
-      if (!repo) skipped.push(change.name)
-      const link = repo ? ` [releases](https://github.com/${repo}/releases)` : ''
-      console.log(`* ${emoji} ${change.name} (${from} → ${change.newVer})${link}`)
+    const sorted = changes.filter(c => c.newVer).sort((a, b) => a.name.localeCompare(b.name))
+
+    for (const { key, heading } of bumpGroups) {
+      const group = sorted.filter(c => c.bump === key)
+      if (group.length === 0) continue
+      console.log(`${heading}\n`)
+      for (const change of group) {
+        const from = change.oldVer || '(new)'
+        const repo = this.getRepo(cwd, change.name)
+        if (!repo) skipped.push(change.name)
+        const link = repo ? ` [releases](https://github.com/${repo}/releases)` : ''
+        console.log(`* ${change.name} (${from} → ${change.newVer})${link}`)
+      }
+      console.log()
     }
     if (skipped.length) {
-      console.warn(`\nCould not resolve repository for: ${skipped.join(', ')}`)
+      console.warn(`Could not resolve repository for: ${skipped.join(', ')}`)
     }
   }
 
