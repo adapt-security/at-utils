@@ -32,11 +32,11 @@
     "access": "public"
   },
   "devDependencies": {
-    "@adapt-security/semantic-release-config": "^1.0.0",
+    "@adaptlearning/semantic-release-config": "^1.0.0",
     "standard": "^17.1.0"
   },
   "release": {
-    "extends": "@adapt-security/semantic-release-config"
+    "extends": "@adaptlearning/semantic-release-config"
   },
   "standard": {
     "ignore": [
