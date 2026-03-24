@@ -1,6 +1,6 @@
 {
   "name": "@adapt-security/at-utils",
-  "version": "0.20.0",
+  "version": "0.19.2",
   "description": "A collection of CLI helper utilities for maintaining installations of the Adapt authoring tool.",
   "keywords": [
     "Adapt"
@@ -32,29 +32,11 @@
     "access": "public"
   },
   "devDependencies": {
-    "@semantic-release/git": "^10.0.1",
-    "conventional-changelog-eslint": "^6.0.0",
-    "semantic-release": "^25.0.2",
+    "@adaptlearning/semantic-release-config": "^1.0.0",
     "standard": "^17.1.0"
   },
   "release": {
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "eslint"
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "eslint"
-        }
-      ],
-      "@semantic-release/npm",
-      "@semantic-release/github",
-      "@semantic-release/git"
-    ]
+    "extends": "@adaptlearning/semantic-release-config"
   },
   "standard": {
     "ignore": [
