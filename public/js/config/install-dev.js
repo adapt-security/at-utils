@@ -89,10 +89,8 @@ const config = component => {
         defaultTokenLifespan: '99y'
       },
       'adapt-authoring-core': {
-        isProduction: false
-      },
-      'adapt-authoring-logger': {
-        levels: ["error", "warn", "success", "info", "debug"]
+        isProduction: false,
+        logLevels: ["error", "warn", "success", "info", "debug", "verbose"]
       },
       'adapt-authoring-mongodb': {
         connectionUri: 'mongodb://0.0.0.0/adapt-authoring-dev'
