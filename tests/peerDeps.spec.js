@@ -10,7 +10,7 @@ import {
   extractImportedModules,
   toFullName,
   findOutdatedVersions
-} from '../lib/peerDeps.js'
+} from '../lib/utils/peerDeps.js'
 
 describe('peerDeps', () => {
   describe('PREFIX', () => {

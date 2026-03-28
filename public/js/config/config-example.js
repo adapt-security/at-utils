@@ -1,49 +1,47 @@
 /**
  * Example config file
+ *
+ * The config is a function passed the main Installer React component reference,
+ * allowing dynamic values via component.state.
  */
-const config = component => { 
-  /*
-   * Note that the config is a function, and is passed the main Installer React component reference to allow dynamic values
-   */
+const config = component => {
   return {
     steps: [
       {
-        /*
-         * The main title of the step
-         */
-        title: `Step main title`, 
-        /*
-         * Step title as rendered in the top breadcrumb bar. If not specified, the main step title is used
-         */
-        breadcrumb: `Step breadcrumb title`,
-        /*
-         * Linear icon name. See https://linearicons.com/free
-         */
+        /** The main title of the step */
+        title: 'Step title',
+        /** Title as rendered in the top breadcrumb bar (defaults to title) */
+        breadcrumb: 'Breadcrumb title',
+        /** Linear icon name. See https://linearicons.com/free */
         icon: 'lnr-smile',
-        /*
-         * Array of functions which are called in order. Once all functions are complete, the next step is shown
+        /** Main HTML content */
+        content: () => <div>HTML goes here</div>,
+        /** Instruction text shown at the bottom of the page */
+        instruction: 'Click the button',
+        /**
+         * Array of async functions called in order.
+         * Once all resolve, the next step is shown (unless button or waitForUser is set).
          */
         actions: [
           component.myFirstFunction,
           component.mySecondFunction
-        ], 
-        /*
-         * Will show a loading animation (default: false)
-         */
+        ],
+        /** Shows a loading animation (default: false) */
         showLoadingBar: true,
-        /*
-         * The main title of the step
+        /**
+         * If set, a button is shown with this label.
+         * Step will not auto-advance; the button advances to the next step.
          */
-        content: () => <div>HTML goes here</div>,
-        /*
-         * Instruction text shown at the bottom of the page
+        button: 'Button label',
+        /**
+         * If true, step will not auto-advance.
+         * Use this for steps where a form or custom UI calls component.nextStep().
          */
-        instruction: 'Click the button',
-        /*
-         * If set, a button will be added with the specified label. 
-         * When present, step will not continue until the button is pressed (including if actions are set).
+        waitForUser: true,
+        /**
+         * Custom handler for the button click (overrides default nextStep behaviour).
          */
-        button: 'Button label'
+        onButton: () => component.exit('User chose to exit')
       }
     ]
   };

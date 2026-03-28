@@ -1,9 +1,13 @@
-import CliCommand from '../lib/CliCommand.js'
-import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
+import { randomBytes } from 'crypto'
 import fs from 'fs/promises'
 import path from 'path'
+import prompts from 'prompts'
+import CliCommand from '../lib/CliCommand.js'
+import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
+import exec from '../lib/utils/exec.js'
+import getInstalledVersion from '../lib/utils/getInstalledVersion.js'
+import Installer from '../lib/Installer.js'
 import UiServer from '../lib/UiServer.js'
-import Utils from '../lib/Utils.js'
 
 export default class Install extends CliCommand {
   get config () {
@@ -11,80 +15,92 @@ export default class Install extends CliCommand {
       ...super.config,
       description: 'Installs the application into destination directory',
       params: { destination: 'The destination folder for the install' },
+      checkPrerequisites: true,
+      getReleaseData: true,
       options: [
         ...DEFAULT_OPTIONS,
-        ['-e --super-email <email>', 'The admin user email address'],
-        ['-p --pipe-passwd', 'Whether the admin password will be piped into the script']
+        ['-e --super-email <email>', 'The admin user email address']
       ]
     }
   }
 
   async runTask () {
-    await this.handleExistingInstall()
+    await this.checkTargetDir()
 
     if (this.options.ui) {
       return new UiServer(this.options)
         .on('exit', e => this.cleanUp(e))
     }
-    if (this.options.devMode) {
-      console.log('IMPORTANT: dev mode flag currently has no effect when running in headless mode\n')
-    }
     try {
       if (!this.options.tag) this.options.tag = await this.getReleaseInput()
 
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`)
-      await this.cloneRepo()
-      await Utils.registerSuperUser(this.options)
-      await Utils.clearInstallState(this.options.cwd)
+      if (this.options.resumeInstall) {
+        console.log('Resuming previous install, reinstalling dependencies')
+        await exec('npm ci', this.options.cwd)
+      } else {
+        await new Installer(this.options).install()
+      }
+      await this.createSuperUser()
 
-      this.cleanUp()
+      this.logSuccess('Install completed successfully!')
     } catch (e) {
       this.cleanUp(e)
     }
   }
 
-  async handleExistingInstall () {
-    const checkpoint = await Utils.getInstallState(this.options.cwd)
-    if (checkpoint) {
-      const { resume } = await this.getInput([{
-        type: 'confirm',
-        name: 'resume',
-        message: 'A previous install was interrupted. Resume from where you left off?',
-        initial: true
+  async createSuperUser () {
+    let email = this.options.superEmail
+    if (!email) {
+      const { emailInput } = await prompts([{
+        type: 'text',
+        name: 'emailInput',
+        message: 'Enter an email address for the super admin account'
       }])
-      if (resume) {
-        this.options.resumeStep = checkpoint.step
-        return
-      }
-      await Utils.clearInstallState(this.options.cwd)
-      await fs.rm(this.options.cwd, { recursive: true, force: true })
-      await fs.mkdir(this.options.cwd, { recursive: true })
-      return
+      email = emailInput
     }
-    let files
-    try {
-      files = await fs.readdir(this.options.cwd)
-    } catch (e) {}
-    if (files?.some(f => f !== 'conf')) throw new Error('Install directory must be empty')
+    if (!email) throw new Error('Email is required for super admin account')
+
+    const password = randomBytes(16).toString('base64url')
+    const confDir = path.resolve(this.options.cwd, 'conf')
+    await fs.mkdir(confDir, { recursive: true })
+    await fs.writeFile(path.resolve(confDir, '.superuser'), JSON.stringify({ email, password }, null, 2))
+
+    console.log('\nSuper admin account will be created on first app start.')
+    console.log(`Email: ${email}`)
+    console.log(`Password: ${password}`)
+    console.log('Please save this password. You will be asked to change it on first login.\n')
   }
 
-  async cleanUp (error) {
-    if (error) {
-      console.log('Install failed, performing cleanup operation')
-      try { // for obvious reasons don't remove dest if git clone threw EEXIST
-        if (error.code !== 'GITCLONEEEXIST') {
-          console.log('- Removing broken install files')
-          await fs.rm(this.options.cwd, { recursive: true, force: true })
-          if (this.configContents) {
-            console.log('- Reinstating original config file')
-            await fs.writeFile(path.resolve(this.options.cwd, `conf/${process.env.NODE_ENV}.config.js`), this.configContents)
-          }
-        }
-      } catch (e) {
-        console.log('Oh dear, cleanup failed.\n')
-        console.trace(e)
-      }
+  async checkTargetDir () {
+    const previousTag = await getInstalledVersion(this.options.cwd)
+    if (!previousTag) {
+      let files
+      try {
+        files = await fs.readdir(this.options.cwd)
+      } catch (e) {}
+      if (files?.some(f => f !== 'conf')) throw new Error('Install directory must be empty')
+      return
     }
-    super.cleanUp(error)
+    const hasPackageJson = await fs.access(path.resolve(this.options.cwd, 'package.json')).then(() => true, () => false)
+    const choices = [
+      { title: 'Remove and start fresh', value: 'fresh' },
+      ...(hasPackageJson ? [{ title: `Resume install (${previousTag})`, value: 'resume' }] : []),
+      { title: 'Cancel', value: 'cancel' }
+    ]
+    const { action } = await prompts([{
+      type: 'select',
+      name: 'action',
+      message: `A previous install (${previousTag}) was found in this directory.`,
+      choices
+    }])
+    if (action === 'cancel' || !action) throw new Error('Install cancelled')
+    if (action === 'resume') {
+      this.options.tag = previousTag
+      this.options.resumeInstall = true
+      return
+    }
+    await fs.rm(this.options.cwd, { recursive: true, force: true })
+    await fs.mkdir(this.options.cwd, { recursive: true })
   }
 }

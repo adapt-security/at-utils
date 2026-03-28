@@ -9,36 +9,36 @@ class Installer extends React.Component {
       if(!config.steps.length) throw new Error('No installer steps defined!');
     } catch(e) {
       return this.onError(e);
-    } 
+    }
     config.steps = [
       {
-        title: `Checking releases`,
+        title: 'Checking releases',
         breadcrumb: false,
         icon: 'lnr-hourglass',
         showLoadingBar: true,
-        actions: [this.fetchReleases],
-        haltOnComplete: true
+        actions: [this.fetchReleases]
       },
       {
-        title: `No releases found`,
+        title: 'No releases found',
         breadcrumb: false,
         icon: `lnr-thumbs-${config.action === 'update' ? 'up' : 'down'}`,
         content: () => <div>
           <p>Sorry, no releases were found at this time.</p>
           <p>You can try using the --prerelease flag to include pre-release versions (WARNING: may contain bugs).</p>
         </div>,
-        actions: [() => this.exit('No releases found')],
         button: 'Exit',
+        onButton: () => this.exit('No releases found')
       },
       ...config.steps
     ];
-    this.state = { 
+    this.state = {
       config: {},
       showAdvanced: false,
       step: 0,
       ...config
     };
   }
+
   async componentDidMount() {
     try {
       await this.performStep();
@@ -46,37 +46,45 @@ class Installer extends React.Component {
       this.onError(e);
     }
   }
+
   render() {
     return (
       <div>
         <Breadcrumbs steps={this.state.steps} activeStep={this.state.step} onClose={() => this.exit('User cancelled the install')}/>
         <div className="install-steps-container">
-          {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} />)}
+          {this.state.steps.map((s,i) => <StepItem key={i} data={s} isActive={i === this.state.step} onButtonClick={() => this.onStepButton(s)} />)}
         </div>
       </div>
     );
   }
-  async performStep(step = this.state.steps[this.state.step]) {
-    if(!step) return this.exit();
-    if(step.button) await this.awaitButtonPress();
-    if(step.actions) for (const a of step.actions) await a.call(this);
-    if(step.actions && this.state.action === 'install' && this.state.step > 1) {
-      await this.saveCheckpoint();
-    }
-    if(!step.haltOnComplete) {
-      this.setState({ step: this.state.step+1 });
-      await this.performStep();
+
+  onStepButton(step) {
+    if(step.onButton) {
+      step.onButton();
+    } else {
+      this.nextStep();
     }
   }
 
-  async awaitButtonPress(eventName = 'click-button') {
-    return new Promise(resolve => {
-      const resolver = () => {
-        document.removeEventListener(eventName, resolver);
-        resolve();
-      };
-      document.addEventListener(eventName, resolver);
-    });
+  async performStep(step = this.state.steps[this.state.step]) {
+    if(!step) return this.exit();
+    if(step.button || step.waitForUser) return;
+    await this.runActions(step);
+    if(!step.haltOnComplete) this.advance();
+  }
+
+  async nextStep() {
+    await this.runActions(this.state.steps[this.state.step]);
+    this.advance();
+  }
+
+  advance() {
+    this.setState({ step: this.state.step + 1 }, () => this.performStep());
+  }
+
+  async runActions(step) {
+    if(!step?.actions) return;
+    for(const a of step.actions) await a.call(this);
   }
 
   /**
@@ -84,17 +92,16 @@ class Installer extends React.Component {
    */
 
   post(url, data = {}, options = {}) {
-    return this.fetch(url, 'POST', { 
+    return this.apiRequest(url, 'POST', {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }, options);
   }
 
-  async fetch(url, method = 'GET', options = {}) {
+  async apiRequest(url, method = 'GET', options = {}) {
     const res = await fetch(url, { ...options, method });
     if(options.handleErrors !== false && res.status > 299) {
-      const message = await res.text() ?? res.statusText;
-      throw new Error(message);
+      throw new Error(await res.text() ?? res.statusText);
     }
     return res;
   }
@@ -107,60 +114,23 @@ class Installer extends React.Component {
    * API calls
    */
 
-  async createUser(userData) { 
-    const { email, password } = userData;
-    const res = await this.post('/registeruser', { email, password }, { handleErrors: false });
-    if(res.status === 400) return this.setState({ validationErrors: { superUser: { __errors: [await res.text()] } } });
-    if(res.status > 299) throw new Error(await res.text());
-  }
-
   async download() {
-    await this.post('/prereq');
     await this.post(`/download?tag=${this.state.selectedRelease}`);
     await this.fetchSchemas();
     await this.generateSecrets();
   }
 
-  async getModules() {
-    const dependencies = Object.keys(await (await this.fetch('/modules')).json());
-    this.setState({ dependencies });
-  }
-  
-  async downloadModules() {
-    if(!this.state?.dependenciesChecked?.length) {
-      return;
-    }
-    return this.post('/installmodules', this.state.dependenciesChecked);
-  }
-
   async fetchReleases() {
-    const { currentVersion, releases } = await (await this.fetch('/releases')).json();
+    const { currentVersion, releases } = await (await this.apiRequest('/releases')).json();
     const latestRelease = releases.find(r => r.tag_name)?.tag_name;
-
-    let checkpoint = null;
-    if(this.state.action === 'install') {
-      try {
-        const res = await this.fetch('/checkpoint', 'GET', { handleErrors: false });
-        if(res.status === 200) checkpoint = await res.json();
-      } catch(e) {}
-    }
-
     this.setState({
       currentRelease: currentVersion,
       newRelease: latestRelease,
-      selectedRelease: checkpoint?.selectedRelease || latestRelease,
+      selectedRelease: latestRelease,
       releases
     });
-
     if(!releases.length) {
       this.setState({ step: 1 });
-    } else if(checkpoint && checkpoint.step >= 2) {
-      const resumeStep = checkpoint.step + 1;
-      this.setState({ step: resumeStep });
-      if(resumeStep > this.state.downloadStep) {
-        await this.fetchSchemas();
-        await this.generateSecrets();
-      }
     } else {
       this.setState({ step: 2 });
     }
@@ -168,76 +138,37 @@ class Installer extends React.Component {
   }
 
   async fetchSchemas() {
-    const configSchemas = Object.values(await (await this.fetch(`/schemas/config`)).json());
-    this.setState({ 
-      configSchema: { properties: configSchemas.reduce((m,s) => Object.assign(m, { [s.name]: { title: s.name, ...s.schema } }), {}) },
-      userSchema: await (await this.fetch(`/schemas/user`)).json() 
+    const configSchemas = Object.values(await (await this.apiRequest('/schemas/config')).json());
+    this.setState({
+      configSchema: { properties: configSchemas.reduce((m,s) => Object.assign(m, { [s.name]: { title: s.name, ...s.schema } }), {}) }
     });
   }
 
-  async generateSecrets() { 
-    this.setState({ config: { ...this.state.config, ...(await (await this.fetch('/secrets')).json()) } });
+  async generateSecrets() {
+    this.setState({ config: { ...this.state.config, ...(await (await this.apiRequest('/secrets')).json()) } });
   }
 
-  async waitForForm() {
-    return new Promise(resolve => document.addEventListener('form-submit', () => resolve()));
-  }
-  
-  async cacheConfig({ formData }) {
-    this.setState({ config: formData });
-  }
-  
   async saveConfig({ formData }) {
     const res = await this.post('/save', formData);
     this.setState({ rootDir: (await res.json()).rootDir });
   }
 
-  async saveCheckpoint() {
-    await this.post('/checkpoint', {
-      step: this.state.step,
-      selectedRelease: this.state.selectedRelease
-    });
+  async createSuperUser() {
+    const res = await this.post('/superuser', { email: this.state.superUserEmail });
+    const { password } = await res.json();
+    this.setState({ generatedPassword: password });
   }
 
   async update() {
     await this.post(`/update?version=${this.state.selectedRelease}`);
   }
-  
-  async startApp() {
-    await this.post('/start');
-  }
-  
+
   async getCwd() {
-    this.setState({ cmds: (await (await this.fetch('/commands')).json()) });
+    this.setState({ cmds: (await (await this.apiRequest('/commands')).json()) });
   }
 
   async exit(errorMsg) {
     await this.post('/exit', errorMsg);
     return window.close();
-  }
-  
-  /**
-   * UI actions
-   */
-
-  toggleLocalModule(name, checked) {
-    let deps = this.state.dependenciesChecked || [];
-    if(name === "all") {
-      deps = this.state.dependencies;
-      document.dispatchEvent(new Event('click-button'));
-    } else if(checked) {
-      deps.push(name);
-    } else {
-      const i = deps.indexOf(name);
-      if(i > -1) deps.splice(i, 1);
-    }
-    this.setState({ dependenciesChecked: deps });
-  }
-
-  validateUser({ superUser: { password, confirmPassword } }, errors) {
-    if (password !== confirmPassword) {
-      errors.superUser.confirmPassword.addError("Passwords don't match");
-    }
-    return errors;
   }
 }

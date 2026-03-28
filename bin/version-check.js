@@ -1,7 +1,7 @@
-import SimpleCliCommand from '../lib/SimpleCliCommand.js'
-import { compareVersions } from '../lib/versionCompare.js'
+import CliCommand from '../lib/CliCommand.js'
+import { compareVersions } from '../lib/utils/versionCompare.js'
 
-export default class VersionCheck extends SimpleCliCommand {
+export default class VersionCheck extends CliCommand {
   get config () {
     return {
       ...super.config,
