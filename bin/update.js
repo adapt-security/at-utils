@@ -1,6 +1,7 @@
 import CliCommand from '../lib/CliCommand.js'
 import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
 import Installer from '../lib/Installer.js'
+import loadPackage from '../lib/utils/loadPackage.js'
 import UiServer from '../lib/UiServer.js'
 
 export default class Update extends CliCommand {
@@ -21,12 +22,13 @@ export default class Update extends CliCommand {
   }
 
   async runTask () {
+    await this.resolveRepo()
+
     if (this.options.ui) {
       return new UiServer(this.options)
         .on('exit', e => this.cleanUp(e))
     }
     if (this.options.tag) {
-      // --tag specified, skip release comparison and update directly
       console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
       try {
         await new Installer(this.options).update()
@@ -63,5 +65,16 @@ export default class Update extends CliCommand {
     } catch (e) {
       this.cleanUp(e)
     }
+  }
+
+  async resolveRepo () {
+    if (this.options.repo !== 'adapt-security/adapt-authoring') return
+    try {
+      const pkg = await loadPackage(this.options.cwd)
+      const repoField = typeof pkg.repository === 'object' ? pkg.repository.url : pkg.repository
+      const match = repoField?.match(/github[.:]([^/]+\/[^/.]+?)(?:\.git)?$/) ||
+        repoField?.match(/^github:(.+)$/)
+      if (match) this.options.repo = match[1]
+    } catch (e) {} // no package.json yet, use default
   }
 }
