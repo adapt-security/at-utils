@@ -4,19 +4,6 @@
  * Reusable components used in installer pages
  */
 
-function AdaptDependencies(props) {
-  if(!props.data) return '';
-  const checked = props.checked || [];
-  return <div>
-    <div className="dependencies">
-      {props.data.map((d, i) => <Checkbox key={i} label={d} checked={checked.includes(d)} onChange={e => props.onChange(d, e.target.checked)} />)}
-    </div>
-    <div className="buttons">
-      <button className="btn btn-info select all" onClick={() => props.onChange("all")}>Download all</button>
-    </div>
-  </div>;
-}
-
 function AppStartInstructions(props) {
   if(!props.cmds) return '';
   const { windows, bash } = props.cmds;

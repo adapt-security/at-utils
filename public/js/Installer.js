@@ -120,16 +120,6 @@ class Installer extends React.Component {
     await this.generateSecrets();
   }
 
-  async getModules() {
-    const dependencies = Object.keys(await (await this.apiRequest('/modules')).json());
-    this.setState({ dependencies });
-  }
-
-  async downloadModules() {
-    if(!this.state?.dependenciesChecked?.length) return;
-    return this.post('/installmodules', this.state.dependenciesChecked);
-  }
-
   async fetchReleases() {
     const { currentVersion, releases } = await (await this.apiRequest('/releases')).json();
     const latestRelease = releases.find(r => r.tag_name)?.tag_name;
@@ -180,23 +170,5 @@ class Installer extends React.Component {
   async exit(errorMsg) {
     await this.post('/exit', errorMsg);
     return window.close();
-  }
-
-  /**
-   * UI actions
-   */
-
-  toggleLocalModule(name, checked) {
-    let deps = this.state.dependenciesChecked || [];
-    if(name === "all") {
-      deps = this.state.dependencies;
-      this.nextStep();
-    } else if(checked) {
-      deps.push(name);
-    } else {
-      const i = deps.indexOf(name);
-      if(i > -1) deps.splice(i, 1);
-    }
-    this.setState({ dependenciesChecked: deps });
   }
 }
