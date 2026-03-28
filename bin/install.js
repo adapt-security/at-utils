@@ -4,6 +4,7 @@ import path from 'path'
 import prompts from 'prompts'
 import CliCommand from '../lib/CliCommand.js'
 import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
+import getInstalledVersion from '../lib/utils/getInstalledVersion.js'
 import Installer from '../lib/Installer.js'
 import UiServer from '../lib/UiServer.js'
 
@@ -66,6 +67,19 @@ export default class Install extends CliCommand {
   }
 
   async checkTargetDir () {
+    const previousTag = await getInstalledVersion(this.options.cwd)
+    if (previousTag) {
+      const { retry } = await prompts([{
+        type: 'confirm',
+        name: 'retry',
+        message: `A previous install (${previousTag}) was found in this directory. Remove it and start fresh?`,
+        initial: true
+      }])
+      if (!retry) throw new Error('Install cancelled')
+      await fs.rm(this.options.cwd, { recursive: true, force: true })
+      await fs.mkdir(this.options.cwd, { recursive: true })
+      return
+    }
     let files
     try {
       files = await fs.readdir(this.options.cwd)
