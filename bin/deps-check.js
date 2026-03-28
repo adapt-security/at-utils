@@ -4,7 +4,7 @@ import buildPackageIndex from '../lib/utils/buildPackageIndex.js'
 import CliCommand from '../lib/CliCommand.js'
 import getModuleDirs from '../lib/utils/getModuleDirs.js'
 import isModule from '../lib/utils/isModule.js'
-import { isAdaptModule, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
+import { isAdaptModule, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/utils/peerDeps.js'
 
 const CORE_PKG = 'adapt-authoring-core'
 

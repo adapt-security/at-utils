@@ -1,5 +1,5 @@
 import CliCommand from '../lib/CliCommand.js'
-import { compareVersions } from '../lib/versionCompare.js'
+import { compareVersions } from '../lib/utils/versionCompare.js'
 
 export default class VersionCheck extends CliCommand {
   get config () {

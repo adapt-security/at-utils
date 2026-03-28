@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import semver from 'semver'
 import CliCommand from '../lib/CliCommand.js'
-import { compareVersions } from '../lib/versionCompare.js'
+import { compareVersions } from '../lib/utils/versionCompare.js'
 
 export default class ReleaseNotes extends CliCommand {
   get config () {
