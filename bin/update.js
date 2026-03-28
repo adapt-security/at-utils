@@ -21,12 +21,23 @@ export default class Update extends CliCommand {
   }
 
   async runTask () {
-    if (!this.options.releaseData.currentVersion) {
-      throw new Error(`Adapt authoring tool install not found in ${this.options.cwd}`)
-    }
     if (this.options.ui) {
       return new UiServer(this.options)
         .on('exit', e => this.cleanUp(e))
+    }
+    if (this.options.tag) {
+      // --tag specified, skip release comparison and update directly
+      console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
+      try {
+        await new Installer(this.options).update()
+        this.logSuccess('Update completed successfully!')
+      } catch (e) {
+        this.cleanUp(e)
+      }
+      return
+    }
+    if (!this.options.releaseData?.currentVersion) {
+      throw new Error(`Adapt authoring tool install not found in ${this.options.cwd}`)
     }
     if (!this.options.releaseData.releases.length) {
       console.log('No updates available.')
@@ -43,7 +54,7 @@ export default class Update extends CliCommand {
       return
     }
     try {
-      if (!this.options.tag) this.options.tag = await this.getReleaseInput()
+      this.options.tag = await this.getReleaseInput()
 
       console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
       await new Installer(this.options).update()
