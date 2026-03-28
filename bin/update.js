@@ -1,7 +1,7 @@
 import CliCommand from '../lib/CliCommand.js'
 import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
+import Installer from '../lib/Installer.js'
 import UiServer from '../lib/UiServer.js'
-import Utils from '../lib/Utils.js'
 
 export default class Update extends CliCommand {
   get config () {
@@ -9,6 +9,8 @@ export default class Update extends CliCommand {
       ...super.config,
       description: 'Updates the application in destination directory',
       params: { destination: 'The destination folder for the source code' },
+      checkPrerequisites: true,
+      getReleaseData: true,
       options: [
         ...DEFAULT_OPTIONS,
         ['-d --dry-run', 'Check for update without performing any update actions'],
@@ -27,7 +29,8 @@ export default class Update extends CliCommand {
         .on('exit', e => this.cleanUp(e))
     }
     if (!this.options.releaseData.releases.length) {
-      return this.cleanUp('No release data was retrievable.')
+      console.log('No updates available.')
+      return
     }
     const latestRelease = this.options.releaseData.releases[0]
 
@@ -39,11 +42,13 @@ export default class Update extends CliCommand {
     if (this.options.dryRun) {
       return
     }
-    console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
     try {
       if (!this.options.tag) this.options.tag = await this.getReleaseInput()
-      await Utils.updateRepo(this.options)
-      this.cleanUp()
+
+      console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
+      await new Installer(this.options).update()
+
+      this.logSuccess('Update completed successfully!')
     } catch (e) {
       this.cleanUp(e)
     }

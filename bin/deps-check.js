@@ -1,12 +1,14 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import SimpleCliCommand from '../lib/SimpleCliCommand.js'
-import Utils from '../lib/Utils.js'
+import buildPackageIndex from '../lib/utils/buildPackageIndex.js'
+import CliCommand from '../lib/CliCommand.js'
+import getModuleDirs from '../lib/utils/getModuleDirs.js'
+import isModule from '../lib/utils/isModule.js'
 import { isAdaptModule, deriveExpectedPeerDeps, deriveExpectedDeps, findOutdatedVersions } from '../lib/peerDeps.js'
 
 const CORE_PKG = 'adapt-authoring-core'
 
-export default class DepsCheck extends SimpleCliCommand {
+export default class DepsCheck extends CliCommand {
   get config () {
     return {
       ...super.config,
@@ -25,14 +27,14 @@ export default class DepsCheck extends SimpleCliCommand {
     let moduleDirs
 
     if (this.options.recursive) {
-      moduleDirs = Utils.getModuleDirs(cwd)
+      moduleDirs = getModuleDirs(cwd)
       if (moduleDirs.length === 0) {
         console.log('No modules found in child directories.')
         process.exitCode = 1
         return
       }
     } else {
-      if (!this.options.versionsOnly && !Utils.isModule(cwd)) {
+      if (!this.options.versionsOnly && !isModule(cwd)) {
         console.error(`Not a valid module directory (no adapt-authoring.json found in ${cwd})`)
         process.exitCode = 1
         return
@@ -40,7 +42,7 @@ export default class DepsCheck extends SimpleCliCommand {
       moduleDirs = [cwd]
     }
 
-    const pkgIndex = Utils.buildPackageIndex(join(cwd, this.options.recursive ? '.' : '..'))
+    const pkgIndex = buildPackageIndex(join(cwd, this.options.recursive ? '.' : '..'))
     let totalErrors = 0
 
     for (const moduleDir of moduleDirs) {

@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import semver from 'semver'
-import SimpleCliCommand from '../lib/SimpleCliCommand.js'
+import CliCommand from '../lib/CliCommand.js'
 import { compareVersions } from '../lib/versionCompare.js'
 
-export default class ReleaseNotes extends SimpleCliCommand {
+export default class ReleaseNotes extends CliCommand {
   get config () {
     return {
       ...super.config,

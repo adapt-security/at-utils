@@ -1,7 +1,7 @@
-import SimpleCliCommand from '../lib/SimpleCliCommand.js'
+import CliCommand from '../lib/CliCommand.js'
 import checkSchemaForDuplicates from '../lib/utils/checkSchemaForDuplicates.js'
 
-export default class Schemacheck extends SimpleCliCommand {
+export default class Schemacheck extends CliCommand {
   get config () {
     return {
       ...super.config,

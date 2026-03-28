@@ -1,9 +1,9 @@
-import SimpleCliCommand from '../lib/SimpleCliCommand.js'
+import CliCommand from '../lib/CliCommand.js'
 import fs from 'node:fs/promises'
 import { glob } from 'glob'
 import path from 'node:path'
 
-export default class Langcheck extends SimpleCliCommand {
+export default class Langcheck extends CliCommand {
   get config () {
     return {
       ...super.config,

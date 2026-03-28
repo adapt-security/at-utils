@@ -1,4 +1,4 @@
-import SimpleCliCommand from '../lib/SimpleCliCommand.js'
+import CliCommand from '../lib/CliCommand.js'
 import storeDefaults from '../lib/utils/storeDefaults.js'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
@@ -6,7 +6,7 @@ import { globSync } from 'glob'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-export default class Confgen extends SimpleCliCommand {
+export default class Confgen extends CliCommand {
   get config () {
     return {
       ...super.config,
