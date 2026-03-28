@@ -4,6 +4,7 @@ import path from 'path'
 import prompts from 'prompts'
 import CliCommand from '../lib/CliCommand.js'
 import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
+import exec from '../lib/utils/exec.js'
 import getInstalledVersion from '../lib/utils/getInstalledVersion.js'
 import Installer from '../lib/Installer.js'
 import UiServer from '../lib/UiServer.js'
@@ -34,7 +35,12 @@ export default class Install extends CliCommand {
       if (!this.options.tag) this.options.tag = await this.getReleaseInput()
 
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`)
-      await new Installer(this.options).install()
+      if (this.options.resumeInstall) {
+        console.log('Resuming previous install, reinstalling dependencies')
+        await exec('npm ci', this.options.cwd)
+      } else {
+        await new Installer(this.options).install()
+      }
       await this.createSuperUser()
 
       this.logSuccess('Install completed successfully!')
@@ -68,22 +74,33 @@ export default class Install extends CliCommand {
 
   async checkTargetDir () {
     const previousTag = await getInstalledVersion(this.options.cwd)
-    if (previousTag) {
-      const { retry } = await prompts([{
-        type: 'confirm',
-        name: 'retry',
-        message: `A previous install (${previousTag}) was found in this directory. Remove it and start fresh?`,
-        initial: true
-      }])
-      if (!retry) throw new Error('Install cancelled')
-      await fs.rm(this.options.cwd, { recursive: true, force: true })
-      await fs.mkdir(this.options.cwd, { recursive: true })
+    if (!previousTag) {
+      let files
+      try {
+        files = await fs.readdir(this.options.cwd)
+      } catch (e) {}
+      if (files?.some(f => f !== 'conf')) throw new Error('Install directory must be empty')
       return
     }
-    let files
-    try {
-      files = await fs.readdir(this.options.cwd)
-    } catch (e) {}
-    if (files?.some(f => f !== 'conf')) throw new Error('Install directory must be empty')
+    const hasPackageJson = await fs.access(path.resolve(this.options.cwd, 'package.json')).then(() => true, () => false)
+    const choices = [
+      { title: 'Remove and start fresh', value: 'fresh' },
+      ...(hasPackageJson ? [{ title: `Resume install (${previousTag})`, value: 'resume' }] : []),
+      { title: 'Cancel', value: 'cancel' }
+    ]
+    const { action } = await prompts([{
+      type: 'select',
+      name: 'action',
+      message: `A previous install (${previousTag}) was found in this directory.`,
+      choices
+    }])
+    if (action === 'cancel' || !action) throw new Error('Install cancelled')
+    if (action === 'resume') {
+      this.options.tag = previousTag
+      this.options.resumeInstall = true
+      return
+    }
+    await fs.rm(this.options.cwd, { recursive: true, force: true })
+    await fs.mkdir(this.options.cwd, { recursive: true })
   }
 }
