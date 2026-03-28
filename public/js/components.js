@@ -18,9 +18,7 @@ function AdaptDependencies(props) {
 }
 
 function AppStartInstructions(props) {
-  if(!props.cmds) {
-    return '';
-  }
+  if(!props.cmds) return '';
   const { windows, bash } = props.cmds;
   return <div className="start-instructions">
     <p>To start the application, run the following commands in your favourite terminal application:</p>
@@ -50,7 +48,7 @@ function Breadcrumbs(props) {
 function Checkbox(props) {
   return <div className={`checkbox ${props.checked ? 'checked' : ''}`}>
     <label className="control-label">
-      <input type="checkbox" checked={props.checked} onChange={props.onChange} /> 
+      <input type="checkbox" checked={props.checked} onChange={props.onChange} />
       {props.label}
     </label>
   </div>
@@ -61,12 +59,30 @@ function ConfigForm(props) {
   return <div>
     <div className="alert alert-info"><b>Tip</b>: any settings which aren't required or have default values have been hidden. These can be revealed by selecting the checkbox below (<i>not recommended for beginners</i>).</div>
     <Checkbox label="Show advanced settings" checked={component.state.showAdvanced} onChange={() => component.setState({ showAdvanced: !component.state.showAdvanced })}/>
-    <Form key={"config"} id={"config"} schema={component.state.configSchema} formData={component.state.config} showOptional={component.state.showAdvanced} onChange={component.cacheConfig.bind(component)} onSubmit={component.saveConfig.bind(component)}/>
+    <Form key={"config"} id={"config"} schema={component.state.configSchema} formData={component.state.config} showOptional={component.state.showAdvanced} onChange={d => component.setState({ config: d.formData })} onSubmit={async d => { await component.saveConfig(d); component.nextStep(); }}/>
   </div>;
 }
 
 function DocsLink() {
   return <p>Head over to the <a href="https://adapt-security.github.io/adapt-authoring-documentation/" target="_blank">Project documentation</a> for guides and API docs.</p>;
+}
+
+function EmailInput({ component }) {
+  return <div>
+    <p>Enter the email address for your super admin account. A password will be generated automatically.</p>
+    <div className="form-group">
+      <label className="control-label" htmlFor="superuser-email">Email address</label>
+      <input id="superuser-email" type="email" className="form-control"
+        value={component.state.superUserEmail || ''}
+        onChange={e => component.setState({ superUserEmail: e.target.value })}
+      />
+    </div>
+    <button className="btn btn-info" style={{marginTop: '10px'}}
+      onClick={() => component.nextStep()}
+      disabled={!component.state.superUserEmail}>
+      Continue
+    </button>
+  </div>;
 }
 
 function ErrorDisplay(e) {
@@ -80,7 +96,7 @@ function ErrorDisplay(e) {
         <h2>Something went wrong</h2>
         <p>An error occurred, see below for more information.</p>
         <p className="message">
-          {errorLines.map((s,i) => <span>{s}{i < errorLines.length-1 ? <br/> : ''}</span>)}
+          {errorLines.map((s,i) => <span key={i}>{s}{i < errorLines.length-1 ? <br/> : ''}</span>)}
         </p>
         <p className="instruction">You can safely close this window.</p>
       </div>
@@ -97,7 +113,7 @@ class Form extends React.Component {
         });
       });
       return { ...this.props.schema, required: Object.keys(this.props.schema.properties) };
-    } 
+    }
     const requiredSchema = { type: 'object', properties: {} };
     Object.entries(this.props.schema.properties).reduce((m,[k,v]) => {
       if(v.required) {
@@ -116,16 +132,15 @@ class Form extends React.Component {
   }
   render() {
     if(!this.props.schema) return null;
-    const validate = this.props.validate || undefined;
     try {
-      return <JSONSchemaForm.default 
-        id={this.props.id} 
-        schema={this.filterOptional()} 
-        formData={this.props.formData} 
-        validate={validate} 
-        extraErrors={this.props.extraErrors} 
-        onChange={this.props.onChange ? (...args) => this.props.onChange(...args) : () => {}} 
-        onSubmit={(...args) => document.dispatchEvent(new Event('form-submit')) && this.props.onSubmit(...args)} 
+      return <JSONSchemaForm.default
+        id={this.props.id}
+        schema={this.filterOptional()}
+        formData={this.props.formData}
+        validate={this.props.validate}
+        extraErrors={this.props.extraErrors}
+        onChange={this.props.onChange || (() => {})}
+        onSubmit={this.props.onSubmit}
         onError={this.onError} />
     } catch(e) {
       console.error(e);
@@ -137,19 +152,28 @@ class Form extends React.Component {
   }
 }
 
+function GeneratedPassword({ password }) {
+  if(!password) return null;
+  return <div className="user-credentials">
+    <p><strong>Your super admin password:</strong></p>
+    <pre className="left-align">{password}</pre>
+    <p className="instruction">Please save this password. You will be asked to change it on first login.</p>
+  </div>;
+}
+
 function Instruction(props) {
   return <p className="instruction">{props.text}</p>;
 }
 
 function NavButton(props) {
-  return <button className="btn btn-info" onClick={() => document.dispatchEvent(new Event('click-button'))}>
+  return <button className="btn btn-info" onClick={props.onClick}>
     {props.label}
   </button>;
 }
 
 function ReleaseSelect({ component }) {
   const releases = component.state?.releases || [];
-  const selected = component.state?.latestRelease;
+  const selected = component.state?.selectedRelease;
   return <p>
     <select id="release" value={selected} onChange={e => component.setState({ selectedRelease: e.target.value })}>
       {releases.map((r, i) => {
@@ -161,11 +185,8 @@ function ReleaseSelect({ component }) {
 }
 
 function ReleaseNotes({ state: { releases, selectedRelease }}) {
-  if(!releases) {
-    return '';
-  }
+  if(!releases) return '';
   const release = releases.find(r => r.tag_name === selectedRelease)
-
   return <div className="release-notes">
     {release.bump && <p className="bump-type"><strong>Update type:</strong> {release.bump}</p>}
     {release.bump === 'major' && <div className="alert alert-warning">
@@ -177,16 +198,16 @@ function ReleaseNotes({ state: { releases, selectedRelease }}) {
 
 function StepItem(props) {
   return <div className={`install-step-container ${props.isActive ? 'active' : ''}`}>
-    <div className={`install-step ${props.stepAlignment || 'center'}`}>
+    <div className={`install-step ${props.data.stepAlignment || 'center'}`}>
       {props.data.icon ? <div className="icon"><span className={`lnr ${props.data.icon}`}></span></div> : ''}
       {props.data.title ? <h2>{props.data.title}</h2> : ''}
       {props.data.content ? props.data.content() : ''}
-      {props.data.showLoadingBar ? 
+      {props.data.showLoadingBar ?
         <div className="progress">
           <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{width: "100%"}}></div>
         </div> : ''}
       {props.data.instruction ? <p className="instruction">{props.data.instruction}</p> : ''}
-      {props.data.button ? <NavButton label={props.data.button} /> : ''}
+      {props.data.button ? <NavButton label={props.data.button} onClick={props.onButtonClick} /> : ''}
     </div>
   </div>
 }

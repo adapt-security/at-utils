@@ -1,24 +1,22 @@
-const config = component => { 
-  const superUser = {
-    email: 'dev@adapt.test',
-    password: 'password'
-  };
+const config = component => {
   return {
+    action: 'install',
+    superUserEmail: 'dev@adapt.test',
     steps: [
       {
-        title: `Let's code Adapt!`,
-        breadcrumb: `Welcome`,
+        title: "Let's code Adapt!",
+        breadcrumb: 'Welcome',
         icon: 'lnr-code',
         content: () => <div>
-          <p>This installer will set up a development version of the Adapt authoring tool. <em>This is meant for developers only, here be dragons...</em></p>   
+          <p>This installer will set up a development version of the Adapt authoring tool. <em>This is meant for developers only, here be dragons...</em></p>
           <ReleaseSelect component={component}/>
         </div>,
         instruction: 'Choose your release and click the button below to start the download.',
-        button: `Let's go!`,
+        button: "Let's go!",
       },
       {
-        title: `Downloading`,
-        breadcrumb: `Download`,
+        title: 'Downloading',
+        breadcrumb: 'Download',
         icon: 'lnr-cloud-download',
         showLoadingBar: true,
         content: () => <div>
@@ -31,66 +29,60 @@ const config = component => {
         ]
       },
       {
-        title: `Configure your environment`,
-        breadcrumb: `Configure`,
+        title: 'Configure your environment',
+        breadcrumb: 'Configure',
         icon: 'lnr-cog small',
         stepAlignment: 'left',
         content: () => <div>
-          <p>Add your configuration settings below. We've added some defaults, but feel free to change these to match your environment.</p> 
+          <p>Add your configuration settings below. We've added some defaults, but feel free to change these to match your environment.</p>
           <ConfigForm component={component} />
         </div>,
-        actions: [component.waitForForm]
+        waitForUser: true
       },
       {
-        title: `Download local modules`,
-        breadcrumb: `Choose modules`,
+        title: 'Download local modules',
+        breadcrumb: 'Choose modules',
         icon: 'lnr-cog',
         content: () => <div>
-          <p>At this point you can choose to download any of the Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_adapt_modules</em> folder in your authoring tool root.</p>
-          <p>Please note that for obvious reasons, any modules that you download in this way will need to be updated individually using git.</p>
-          <p>To add additional non-core Adapt modules for local development, clone these into the <em>local_adapt_modules</em> and add the local path to the <em>workspaces</em> section of your local <em>package.json</em></p>
+          <p>Choose any Adapt authoring tool modules to work on locally. These will be downloaded to a <em>local_adapt_modules</em> folder in your authoring tool root.</p>
+          <p>To add additional non-core modules for local development, clone them into <em>local_adapt_modules</em> and add the local path to the <em>workspaces</em> section of your local <em>package.json</em>.</p>
           <AdaptDependencies data={component.state.dependencies} checked={component.state.dependenciesChecked} onChange={component.toggleLocalModule.bind(component)}/>
         </div>,
         button: 'Continue'
       },
       {
-        title: `Booting up`,
-        breadcrumb: `Boot`,
+        title: 'Setting up',
+        breadcrumb: 'Setup',
         icon: 'lnr-rocket',
         showLoadingBar: true,
-        content: () => <p>Please wait while the application downloads any local modules and starts up.</p>,
+        content: () => <p>Please wait while the application downloads any local modules and completes setup.</p>,
         actions: [
           component.downloadModules,
-          component.startApp,
-          () => component.createUser(superUser),
+          component.createSuperUser,
           component.getCwd
         ]
       },
       {
-        title: `Let's get coding!`,
+        title: "Let's get coding!",
         breadcrumb: 'Finish',
         icon: 'lnr-code',
         content: () => <div>
           <p>Your Adapt authoring tool environment has been set up successfully!</p>
-          <p>You can log into the instance with the following credentials:</p>
-          <div className="user-credentials">
-            <div className="email">{superUser.email}</div>
-            <div className="password">{superUser.password}</div>
-          </div>
+          <p>You can log in with <strong>{component.state.superUserEmail}</strong> and the following password:</p>
+          <GeneratedPassword password={component.state.generatedPassword} />
           <AppStartInstructions cmds={component.state.cmds}/>
           <DocsLink />
         </div>,
         button: 'Exit'
       }
     ],
-    downloadStep: 3,
     config: {
       'adapt-authoring-auth': {
         defaultTokenLifespan: '99y'
       },
       'adapt-authoring-core': {
         isProduction: false,
-        logLevels: ["error", "warn", "success", "info", "debug", "verbose"]
+        logLevels: ['error', 'warn', 'success', 'info', 'debug', 'verbose']
       },
       'adapt-authoring-mongodb': {
         connectionUri: 'mongodb://0.0.0.0/adapt-authoring-dev'

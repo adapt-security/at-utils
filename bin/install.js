@@ -1,8 +1,10 @@
+import { randomBytes } from 'crypto'
+import fs from 'fs/promises'
+import path from 'path'
+import prompts from 'prompts'
 import CliCommand from '../lib/CliCommand.js'
 import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
-import fs from 'fs/promises'
 import Installer from '../lib/Installer.js'
-import registerSuperUser from '../lib/utils/registerSuperUser.js'
 import UiServer from '../lib/UiServer.js'
 
 export default class Install extends CliCommand {
@@ -15,8 +17,7 @@ export default class Install extends CliCommand {
       getReleaseData: true,
       options: [
         ...DEFAULT_OPTIONS,
-        ['-e --super-email <email>', 'The admin user email address'],
-        ['-p --pipe-passwd', 'Whether the admin password will be piped into the script']
+        ['-e --super-email <email>', 'The admin user email address']
       ]
     }
   }
@@ -33,12 +34,35 @@ export default class Install extends CliCommand {
 
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`)
       await new Installer(this.options).install()
-      await registerSuperUser(this.options)
+      await this.createSuperUser()
 
       this.logSuccess('Install completed successfully!')
     } catch (e) {
       this.cleanUp(e)
     }
+  }
+
+  async createSuperUser () {
+    let email = this.options.superEmail
+    if (!email) {
+      const { emailInput } = await prompts([{
+        type: 'text',
+        name: 'emailInput',
+        message: 'Enter an email address for the super admin account'
+      }])
+      email = emailInput
+    }
+    if (!email) throw new Error('Email is required for super admin account')
+
+    const password = randomBytes(16).toString('base64url')
+    const confDir = path.resolve(this.options.cwd, 'conf')
+    await fs.mkdir(confDir, { recursive: true })
+    await fs.writeFile(path.resolve(confDir, '.superuser'), JSON.stringify({ email, password }, null, 2))
+
+    console.log('\nSuper admin account will be created on first app start.')
+    console.log(`Email: ${email}`)
+    console.log(`Password: ${password}`)
+    console.log('Please save this password. You will be asked to change it on first login.\n')
   }
 
   async checkTargetDir () {
