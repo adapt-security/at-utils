@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { BUMP_ORDER, extractVersions, normalizeBump } from '../lib/versionCompare.js'
+import { BUMP_ORDER, extractVersions, normalizeBump } from '../lib/utils/versionCompare.js'
 
 describe('versionCompare', () => {
   describe('BUMP_ORDER', () => {

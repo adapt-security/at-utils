@@ -1,7 +1,8 @@
 import CliCommand from '../lib/CliCommand.js'
 import DEFAULT_OPTIONS from '../lib/DEFAULT_OPTIONS.js'
+import Installer from '../lib/Installer.js'
+import loadPackage from '../lib/utils/loadPackage.js'
 import UiServer from '../lib/UiServer.js'
-import Utils from '../lib/Utils.js'
 
 export default class Update extends CliCommand {
   get config () {
@@ -9,6 +10,8 @@ export default class Update extends CliCommand {
       ...super.config,
       description: 'Updates the application in destination directory',
       params: { destination: 'The destination folder for the source code' },
+      checkPrerequisites: true,
+      getReleaseData: true,
       options: [
         ...DEFAULT_OPTIONS,
         ['-d --dry-run', 'Check for update without performing any update actions'],
@@ -19,15 +22,28 @@ export default class Update extends CliCommand {
   }
 
   async runTask () {
-    if (!this.options.releaseData.currentVersion) {
-      throw new Error(`Adapt authoring tool install not found in ${this.options.cwd}`)
-    }
+    await this.resolveRepo()
+
     if (this.options.ui) {
       return new UiServer(this.options)
         .on('exit', e => this.cleanUp(e))
     }
+    if (this.options.tag) {
+      console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
+      try {
+        await new Installer(this.options).update()
+        this.logSuccess('Update completed successfully!')
+      } catch (e) {
+        this.cleanUp(e)
+      }
+      return
+    }
+    if (!this.options.releaseData?.currentVersion) {
+      throw new Error(`Adapt authoring tool install not found in ${this.options.cwd}`)
+    }
     if (!this.options.releaseData.releases.length) {
-      return this.cleanUp('No release data was retrievable.')
+      console.log('No updates available.')
+      return
     }
     const latestRelease = this.options.releaseData.releases[0]
 
@@ -39,13 +55,26 @@ export default class Update extends CliCommand {
     if (this.options.dryRun) {
       return
     }
-    console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
     try {
-      if (!this.options.tag) this.options.tag = await this.getReleaseInput()
-      await Utils.updateRepo(this.options)
-      this.cleanUp()
+      this.options.tag = await this.getReleaseInput()
+
+      console.log(`Updating Adapt authoring tool in ${this.options.cwd}\n`)
+      await new Installer(this.options).update()
+
+      this.logSuccess('Update completed successfully!')
     } catch (e) {
       this.cleanUp(e)
     }
+  }
+
+  async resolveRepo () {
+    if (this.options.repo !== 'adapt-security/adapt-authoring') return
+    try {
+      const pkg = await loadPackage(this.options.cwd)
+      const repoField = typeof pkg.repository === 'object' ? pkg.repository.url : pkg.repository
+      const match = repoField?.match(/github[.:]([^/]+\/[^/.]+?)(?:\.git)?$/) ||
+        repoField?.match(/^github:(.+)$/)
+      if (match) this.options.repo = match[1]
+    } catch (e) {} // no package.json yet, use default
   }
 }
