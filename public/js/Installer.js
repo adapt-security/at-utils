@@ -16,7 +16,8 @@ class Installer extends React.Component {
         breadcrumb: false,
         icon: 'lnr-hourglass',
         showLoadingBar: true,
-        actions: [this.fetchReleases]
+        actions: [this.fetchReleases],
+        haltOnComplete: true
       },
       {
         title: 'No releases found',
@@ -123,17 +124,14 @@ class Installer extends React.Component {
   async fetchReleases() {
     const { currentVersion, releases } = await (await this.apiRequest('/releases')).json();
     const latestRelease = releases.find(r => r.tag_name)?.tag_name;
-    this.setState({
+    const step = releases.length ? 2 : 1;
+    await new Promise(resolve => this.setState({
       currentRelease: currentVersion,
       newRelease: latestRelease,
       selectedRelease: latestRelease,
-      releases
-    });
-    if(!releases.length) {
-      this.setState({ step: 1 });
-    } else {
-      this.setState({ step: 2 });
-    }
+      releases,
+      step
+    }, resolve));
     await this.performStep();
   }
 
