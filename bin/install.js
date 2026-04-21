@@ -26,14 +26,12 @@ export default class Install extends CliCommand {
       return new UiServer(this.options)
         .on('exit', e => this.cleanUp(e))
     }
-    if (this.options.devMode) {
-      console.log('IMPORTANT: dev mode flag currently has no effect when running in headless mode\n')
-    }
     try {
       if (!this.options.tag) this.options.tag = await this.getReleaseInput()
 
       console.log(`Installing Adapt authoring tool ${this.options.tag} in ${this.options.cwd}`)
       await this.cloneRepo()
+      if (this.options.devMode) await this.installDevModules()
       await Utils.registerSuperUser(this.options)
       await Utils.clearInstallState(this.options.cwd)
 
@@ -41,6 +39,16 @@ export default class Install extends CliCommand {
     } catch (e) {
       this.cleanUp(e)
     }
+  }
+
+  async installDevModules () {
+    const modules = await Utils.loadDevModulesConfig(this.options.cwd)
+    if (!modules?.length) {
+      console.log('Dev mode: no repos.json found in install root, skipping local modules')
+      return
+    }
+    console.log(`Dev mode: cloning ${modules.length} local modules from repos.json`)
+    await Utils.installLocalModules({ ...this.options, modules })
   }
 
   async handleExistingInstall () {
