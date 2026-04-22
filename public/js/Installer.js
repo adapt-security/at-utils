@@ -59,11 +59,15 @@ class Installer extends React.Component {
     );
   }
 
-  onStepButton(step) {
-    if(step.onButton) {
-      step.onButton();
-    } else {
-      this.nextStep();
+  async onStepButton(step) {
+    try {
+      if(step.onButton) {
+        await step.onButton();
+      } else {
+        await this.nextStep();
+      }
+    } catch(e) {
+      this.onError(e);
     }
   }
 
