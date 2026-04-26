@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import fs from 'fs/promises'
 import path from 'path'
+import { fileURLToPath } from 'url'
 import { Command, program } from 'commander'
-import Utils from './lib/Utils.js'
+import getCliRoot from './lib/utils/getCliRoot.js'
+import loadPackage from './lib/utils/loadPackage.js'
 import CliCommand from './lib/CliCommand.js'
 
 const scriptsDir = new URL('bin', import.meta.url)
@@ -42,9 +44,9 @@ function wrapParam (p) {
   return `${optional ? '[' : '<'}${name}${optional ? ']' : '>'}`
 }
 
-async function run () {
+export async function run () {
   try {
-    const { repository, version } = await Utils.loadPackage(Utils.getCliRoot())
+    const { repository, version } = await loadPackage(getCliRoot())
     const repoName = repository.toString().replace('github:', '')
     console.log(`\nRunning ${repoName}@${version}\n`)
 
@@ -60,4 +62,6 @@ async function run () {
   }
 }
 
-export default run()
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  run()
+}
