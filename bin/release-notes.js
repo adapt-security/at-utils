@@ -40,7 +40,10 @@ export default class ReleaseNotes extends CliCommand {
     if (this.options.json) {
       const deps = []
       for (const change of changes) {
-        if (!change.newVer) continue
+        if (!change.newVer) {
+          deps.push({ name: change.name, oldVer: change.oldVer, newVer: null, removed: true })
+          continue
+        }
         const repo = this.getRepo(cwd, change.name)
         if (!repo) {
           console.warn(`Warning: could not resolve repository for ${change.name}, skipping.`)
@@ -50,12 +53,14 @@ export default class ReleaseNotes extends CliCommand {
         if (!releases) continue
         const filtered = this.filterReleases(releases, change.oldVer, change.newVer)
         if (filtered.length === 0) continue
-        deps.push({
+        const entry = {
           name: change.name,
           oldVer: change.oldVer,
           newVer: change.newVer,
           releases: filtered.map(r => ({ tag: r.tag_name, body: r.body || '' }))
-        })
+        }
+        if (!change.oldVer) entry.added = true
+        deps.push(entry)
       }
       console.log(JSON.stringify({ tag, dependencies: deps }, null, 2))
       return
@@ -70,21 +75,42 @@ export default class ReleaseNotes extends CliCommand {
     console.log('The following modules were updated in this release. Please see individual module release notes for specific changes and how they may affect your environment, particularly any breaking changes.\n')
 
     const skipped = []
-    const sorted = changes.filter(c => c.newVer).sort((a, b) => a.name.localeCompare(b.name))
+    const sorted = changes.filter(c => c.newVer && c.oldVer).sort((a, b) => a.name.localeCompare(b.name))
+    const added = changes.filter(c => c.newVer && !c.oldVer).sort((a, b) => a.name.localeCompare(b.name))
+    const removed = changes.filter(c => !c.newVer).sort((a, b) => a.name.localeCompare(b.name))
 
     for (const { key, heading } of bumpGroups) {
       const group = sorted.filter(c => c.bump === key)
       if (group.length === 0) continue
       console.log(`${heading}\n`)
       for (const change of group) {
-        const from = change.oldVer || '(new)'
         const repo = this.getRepo(cwd, change.name)
         if (!repo) skipped.push(change.name)
         const link = repo ? ` [releases](https://github.com/${repo}/releases)` : ''
-        console.log(`* ${change.name} (${from} → ${change.newVer})${link}`)
+        console.log(`* ${change.name} (${change.oldVer} → ${change.newVer})${link}`)
       }
       console.log()
     }
+
+    if (added.length) {
+      console.log('## ➕ New dependencies\n')
+      for (const change of added) {
+        const repo = this.getRepo(cwd, change.name)
+        if (!repo) skipped.push(change.name)
+        const link = repo ? ` [releases](https://github.com/${repo}/releases)` : ''
+        console.log(`* ${change.name} (${change.newVer})${link}`)
+      }
+      console.log()
+    }
+
+    if (removed.length) {
+      console.log('## 🗑️ Removed dependencies\n')
+      for (const change of removed) {
+        console.log(`* ${change.name} (${change.oldVer})`)
+      }
+      console.log()
+    }
+
     if (skipped.length) {
       console.warn(`Could not resolve repository for: ${skipped.join(', ')}`)
     }
