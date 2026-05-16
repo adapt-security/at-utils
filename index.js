@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs/promises'
+import { realpathSync } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Command, program } from 'commander'
@@ -62,6 +63,6 @@ export async function run () {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   run()
 }
