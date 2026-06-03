@@ -1,6 +1,6 @@
 {
   "name": "@adapt-security/at-utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A collection of CLI helper utilities for maintaining installations of the Adapt authoring tool.",
   "keywords": [
     "Adapt"
