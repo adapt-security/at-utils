@@ -54,7 +54,7 @@ export default class Langcheck extends CliCommand {
   }
 
   async getTranslatedStrings (root) {
-    const langPacks = await glob(`${root}/adapt-authoring-*/lang`)
+    const langPacks = await glob('adapt-authoring-*/lang', { cwd: root, absolute: true })
     const keyMap = {}
     await Promise.all(langPacks.map(async langDir => {
       const files = await glob('**/*.json', { cwd: langDir, absolute: true })
