@@ -1,10 +1,14 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
+import { fileURLToPath } from 'node:url'
+import { spawnSync } from 'node:child_process'
 import Langcheck from '../bin/lang-check.js'
 import { reconcileLangKeys } from '../lib/utils/reconcileLangKeys.js'
+
+const INDEX = join(dirname(fileURLToPath(import.meta.url)), '..', 'index.js')
 
 async function withRoot (build, run) {
   // interpolating root into a glob pattern would parse '[id]' as a char class
@@ -88,6 +92,43 @@ describe('Langcheck', () => {
           assert.deepEqual(orphan.sort(), ['app.extra'])
         }
       )
+    })
+  })
+
+  describe('exit code (CI failure signal)', () => {
+    function runCli (build) {
+      const root = join(tmpdir(), `lang-check-cli-${Date.now()}-${process.hrtime()[1]}`)
+      try {
+        build(root)
+        return spawnSync('node', [INDEX, 'lang-check'], { cwd: root, encoding: 'utf8' })
+      } finally {
+        rmSync(root, { recursive: true, force: true })
+      }
+    }
+
+    it('exits non-zero when a declared key has no translation', () => {
+      const res = runCli(root => {
+        writeJson(join(root, 'node_modules', 'adapt-authoring-foo', 'strings'), 'strings.json', { 'app.needed': {} })
+        writeJson(join(root, 'node_modules', 'adapt-authoring-foo', 'lang', 'en'), 'app.json', { present: 'x' })
+      })
+      assert.equal(res.status, 1)
+    })
+
+    it('exits zero when every declared key is translated', () => {
+      const res = runCli(root => {
+        writeJson(join(root, 'node_modules', 'adapt-authoring-foo', 'strings'), 'strings.json', { 'app.present': {} })
+        writeJson(join(root, 'node_modules', 'adapt-authoring-foo', 'lang', 'en'), 'app.json', { present: 'x' })
+      })
+      assert.equal(res.status, 0)
+    })
+
+    it('exits non-zero when a lang file is malformed', () => {
+      const res = runCli(root => {
+        const dir = join(root, 'node_modules', 'adapt-authoring-foo', 'strings')
+        mkdirSync(dir, { recursive: true })
+        writeFileSync(join(dir, 'strings.json'), '{ not valid json')
+      })
+      assert.equal(res.status, 1)
     })
   })
 })
